@@ -1,9 +1,11 @@
 import * as React from 'react';
 
-import './BookList.css';
+import './BookListByAuthor.css';
 
 import { Book } from '../types';
 import * as tools from '../tools/tools';
+
+import BookEntry from './BookEntry';
 
 interface BookListProps {
   books: Book[],
@@ -17,7 +19,7 @@ interface Series {
 
 type BookOrSeries = Book | Series;
 
-export default function BookList({ books, authorPath }: BookListProps): JSX.Element {
+export default function BookListByAuthor({ books, authorPath }: BookListProps): JSX.Element {
   const booksByAuthor = books.filter(
     (b) => tools.authorPath(b.author) === authorPath,
   );
@@ -29,9 +31,14 @@ export default function BookList({ books, authorPath }: BookListProps): JSX.Elem
 
   entries.sort((a, b) => a.title.localeCompare(b.title));
 
+  const firstBook = booksByAuthor[0];
+  if (!firstBook) {
+    return <div className="error">empty book list – how did that happen?</div>;
+  }
+
   return (
-    <main className="BookList">
-      <h2>Books by { tools.authorName(booksByAuthor[0].author) }</h2>
+    <main className={`BookListByAuthor ${firstBook.author ? '' : 'unknown'}`}>
+      <h2>Books by { tools.authorName(firstBook.author) }</h2>
       <ul>
         { entries.map(renderBookOrSeries) }
       </ul>
@@ -48,7 +55,7 @@ function renderBookOrSeries(x: BookOrSeries) {
 }
 
 function renderBook(book: Book, extraClass?: string) {
-  return <li key={book.title} className={extraClass}>{ book.title }</li>;
+  return <li key={book.title} className={extraClass}><BookEntry book={book} /></li>;
 }
 
 function renderSeries(series: Series) {

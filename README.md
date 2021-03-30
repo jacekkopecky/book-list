@@ -14,7 +14,8 @@ A book has these properties:
 
 ## todo
 
-* click book to show all properties and manipulation buttons
+* switching between owned and not
+* editing of books
 * mobile interface
    - swipe book to change status
    - swipe between author and series view

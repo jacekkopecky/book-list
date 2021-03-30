@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import './AuthorList.css';
+
 import { Author, Book } from '../types';
 import * as tools from '../tools/tools';
 

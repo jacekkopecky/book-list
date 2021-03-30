@@ -1,0 +1,38 @@
+.ExpandedBook {
+  position: relative;
+  border: solid thin black;
+  border-radius: 0.5em;
+  padding: 0.25em 0.5em;
+}
+
+.BookList.unknown .ExpandedBook .author {
+  display: none;
+}
+
+.BookList:not(.unknown) .ExpandedBook .author {
+  display: none;
+}
+
+.ExpandedBook .notes.none,
+.ExpandedBook .author.unknown {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.CloseButton {
+  position: absolute;
+  display: block;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  font-size: 2em;
+  line-height: 100%;
+  top: 0.1em;
+  right: 0.1em;
+  font-family: sans-serif;
+}
+
+.CloseButton:hover {
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -12,7 +12,7 @@ import './App.css';
 import { Book } from '../types';
 
 import AuthorList from './AuthorList';
-import BookList from './BookList';
+import BookListByAuthor from './BookListByAuthor';
 
 export default function App(): JSX.Element {
   const [books/* , setBooks */] = React.useState<Book[]>([
@@ -100,7 +100,7 @@ function BookListWithParams({ books } : { books: Book[] }): JSX.Element {
   const params = useParams<Record<'id', string>>();
 
   return (
-    <BookList
+    <BookListByAuthor
       books={books}
       authorPath={params.id}
     />
