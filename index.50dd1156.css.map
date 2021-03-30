@@ -1,1 +1,0 @@
-{"mappings":"AAAA,KACA,qBACA,CCFA,oBACA,gBACA","sources":["./src/js/components/App.css","./src/js/components/BookList.css"],"sourcesContent":["html {\n  box-sizing: border-box;\n}\n",".BookList .inSeries {\n  padding-left: 1em;\n}\n"],"names":[],"version":3,"file":"index.50dd1156.css.map"}
