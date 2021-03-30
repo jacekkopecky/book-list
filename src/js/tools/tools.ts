@@ -10,5 +10,9 @@ export function authorKey(author: Author = UNKNOWN): string {
 }
 
 export function authorPath(author: Author = UNKNOWN): string {
-  return `${author.fname} ${author.lname}`.replace(/\s/g, '-');
+  return authorName(author).replace(/\s/g, '-');
+}
+
+export function authorName(author: Author = UNKNOWN): string {
+  return `${author.fname} ${author.lname}`;
 }

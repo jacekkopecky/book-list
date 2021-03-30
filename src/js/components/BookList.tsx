@@ -30,9 +30,12 @@ export default function BookList({ books, authorPath }: BookListProps): JSX.Elem
   entries.sort((a, b) => a.title.localeCompare(b.title));
 
   return (
-    <ul className="BookList">
-      { entries.map(renderBookOrSeries) }
-    </ul>
+    <main className="BookList">
+      <h2>Books by { tools.authorName(booksByAuthor[0].author) }</h2>
+      <ul>
+        { entries.map(renderBookOrSeries) }
+      </ul>
+    </main>
   );
 }
 

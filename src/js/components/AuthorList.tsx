@@ -13,9 +13,12 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
   const sorted = Array.from(authors.keys()).sort();
 
   return (
-    <ul className="AuthorList">
-      { sorted.map((x) => renderAuthor(x)) }
-    </ul>
+    <main className="AuthorList">
+      <h2>Authors</h2>
+      <ul>
+        { sorted.map((x) => renderAuthor(x)) }
+      </ul>
+    </main>
   );
 
   function renderAuthor(key: string) {
