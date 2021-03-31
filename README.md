@@ -16,23 +16,23 @@ A book has these properties:
 
 * switching between owned and not
 * editing of books
-* mobile interface
-   - swipe book to change status
-   - swipe between author and series view
 * search functionality
 * add functionality
    - in main list
    - in list by author (pre-fills author)
-   - in list by series (pre-fills series)
+   - in list by series (pre-fills series, also author if all books in the series are by the same author)
    - autocomplete/autosuggest matches for author / series
    - maybe drop-down of alphabetical list for author / series
+* google auth
+* server with a database
+* service worker for offline work, background sync
+* better mobile interface
+   - swipe book to change status
+   - swipe between author and series view
 * desktop interface
 * a book in a book list should show the first two lines of the notes
 * there should be a listing of series, not just books
    - list of books in series should show author at top (if all books by same author) or by each book
-* google auth
-* server with a database
-* service worker for offline work, background sync
 
 ## API
 
