@@ -11,7 +11,6 @@ import {
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -97,33 +96,37 @@ export default function App(): JSX.Element {
 
   const narrow = useMediaQuery(theme.breakpoints.down('xs'));
 
+  const appBar = (
+    <AppBar position="static" style={{ zIndex: 1, position: 'relative' }}>
+      <Toolbar><h1>bananas for books</h1></Toolbar>
+      { /* when changing the title above, also change it in index.html and 404.html */ }
+    </AppBar>
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <CssBaseline />
 
-        { !narrow && (
-          <AppBar position="static" style={{ zIndex: 1, position: 'relative' }}>
-            <Toolbar><h1>bananas for books</h1></Toolbar>
-            { /* when changing the title above, also change it in index.html and 404.html */ }
-          </AppBar>
-        ) }
-
         <Switch>
           <Route exact path="/">
+            { !narrow && appBar }
             <MainTabs narrow={narrow}>
               <AuthorList books={books} />
             </MainTabs>
           </Route>
           <Route exact path="/series">
+            { !narrow && appBar }
             <MainTabs narrow={narrow}>
               <AuthorList books={books} />
             </MainTabs>
           </Route>
           <Route exact path="/author/:id">
+            { !narrow && appBar }
             <BookListWithParams books={books} />
           </Route>
           <Route path="*">
+            { appBar }
             <NotFound />
           </Route>
         </Switch>
@@ -142,6 +145,14 @@ function BookListWithParams({ books } : { books: Book[] }): JSX.Element {
     />
   );
 }
+
+const containerProps = {
+  component: 'main' as const,
+  maxWidth: 'sm' as const,
+  style: {
+    backgroundColor: theme.palette.background.paper,
+  },
+};
 
 interface MainTabsProps {
   narrow: boolean,
@@ -162,22 +173,14 @@ function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
             </Tabs>
           </Toolbar>
         </AppBar>
-        <Container
-          component="main"
-          maxWidth="sm"
-          style={{ backgroundColor: theme.palette.background.paper }}
-        >
+        <Container {...containerProps}>
           <>
             { children }
           </>
         </Container>
       </>
     ) : (
-      <Container
-        component="main"
-        maxWidth="sm"
-        style={{ backgroundColor: theme.palette.background.paper }}
-      >
+      <Container {...containerProps}>
         <Tabs value={location.pathname} textColor="primary" indicatorColor="primary">
           <Tab component={Link} value="/" label="Authors" to="/" />
           <Tab component={Link} value="/series" label="Series" to="/series" />
@@ -188,5 +191,11 @@ function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
 }
 
 function NotFound() {
-  return <main>404 page not found</main>;
+  const location = useLocation();
+
+  return (
+    <Container {...containerProps}>
+      <p>404 page not found: { location.pathname }</p>
+    </Container>
+  );
 }
