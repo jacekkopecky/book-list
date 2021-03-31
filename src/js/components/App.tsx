@@ -5,9 +5,22 @@ import {
   Switch,
   Route,
   useParams,
+  useLocation,
 } from 'react-router-dom';
 
+import AppBar from '@material-ui/core/AppBar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
+
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { ThemeProvider } from '@material-ui/core/styles';
+
 import './App.css';
+import theme from './theme';
 
 import { Book } from '../types';
 
@@ -82,25 +95,40 @@ const DEFAULT_BOOKS = [
 export default function App(): JSX.Element {
   const [books/* , setBooks */] = React.useState<Book[]>(DEFAULT_BOOKS);
 
-  return (
-    <Router>
-      <header id="app-header">
-        <h1><Link to="/">bananas for books</Link></h1>
-        { /* when changing the title above, also change it in index.html and 404.html */ }
-      </header>
+  const narrow = useMediaQuery(theme.breakpoints.down('xs'));
 
-      <Switch>
-        <Route exact path="/">
-          <AuthorList books={books} />
-        </Route>
-        <Route exact path="/author/:id">
-          <BookListWithParams books={books} />
-        </Route>
-        <Route path="*">
-          <NotFound />
-        </Route>
-      </Switch>
-    </Router>
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <CssBaseline />
+
+        { !narrow && (
+          <AppBar position="static" style={{ zIndex: 1, position: 'relative' }}>
+            <Toolbar><h1>bananas for books</h1></Toolbar>
+            { /* when changing the title above, also change it in index.html and 404.html */ }
+          </AppBar>
+        ) }
+
+        <Switch>
+          <Route exact path="/">
+            <MainTabs narrow={narrow}>
+              <AuthorList books={books} />
+            </MainTabs>
+          </Route>
+          <Route exact path="/series">
+            <MainTabs narrow={narrow}>
+              <AuthorList books={books} />
+            </MainTabs>
+          </Route>
+          <Route exact path="/author/:id">
+            <BookListWithParams books={books} />
+          </Route>
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
+      </Router>
+    </ThemeProvider>
   );
 }
 
@@ -113,6 +141,50 @@ function BookListWithParams({ books } : { books: Book[] }): JSX.Element {
       authorPath={params.id}
     />
   );
+}
+
+interface MainTabsProps {
+  narrow: boolean,
+  children?: React.ReactNode,
+}
+
+function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
+  const location = useLocation();
+
+  return narrow
+    ? (
+      <>
+        <AppBar position="relative">
+          <Toolbar>
+            <Tabs value={location.pathname}>
+              <Tab component={Link} value="/" label="Authors" to="/" />
+              <Tab component={Link} value="/series" label="Series" to="/series" />
+            </Tabs>
+          </Toolbar>
+        </AppBar>
+        <Container
+          component="main"
+          maxWidth="sm"
+          style={{ backgroundColor: theme.palette.background.paper }}
+        >
+          <>
+            { children }
+          </>
+        </Container>
+      </>
+    ) : (
+      <Container
+        component="main"
+        maxWidth="sm"
+        style={{ backgroundColor: theme.palette.background.paper }}
+      >
+        <Tabs value={location.pathname} textColor="primary" indicatorColor="primary">
+          <Tab component={Link} value="/" label="Authors" to="/" />
+          <Tab component={Link} value="/series" label="Series" to="/series" />
+        </Tabs>
+        { children }
+      </Container>
+    );
 }
 
 function NotFound() {

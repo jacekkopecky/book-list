@@ -16,7 +16,6 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
 
   return (
     <main className="AuthorList">
-      <h2>Authors</h2>
       <ul>
         { sorted.map((x) => renderAuthor(x)) }
       </ul>
