@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 import { Author } from '../types';
 
 export const UNKNOWN: Author = {
@@ -36,4 +38,9 @@ export function formatMTime(mtime: number): string {
   if (months < 12) return rtf.format(-months, 'month');
 
   return rtf.format(-Math.round(months / 12), 'year');
+}
+
+// adopted from https://reactrouter.com/web/example/query-parameters
+export function useQuery(): URLSearchParams {
+  return new URLSearchParams(useLocation().search);
 }

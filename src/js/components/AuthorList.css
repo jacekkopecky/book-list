@@ -1,9 +1,0 @@
-.AuthorList > ul {
-  list-style: none;
-  padding: 0;
-}
-
-.AuthorList > ul > li > a {
-  color: inherit;
-  text-decoration: none;
-}
