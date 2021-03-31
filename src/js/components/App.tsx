@@ -22,6 +22,7 @@ import './App.css';
 import theme from './theme';
 
 import { Book } from '../types';
+import * as tools from '../tools/tools';
 
 import AuthorList from './AuthorList';
 import BookListByAuthor from './BookListByAuthor';
@@ -30,21 +31,27 @@ const DEFAULT_BOOKS = [
   {
     id: '345',
     title: 'It',
-    author: { fname: 'Steven', lname: 'King' },
+    author: { fname: 'Stephen', lname: 'King' },
     owned: false,
     mtime: Date.now(),
   },
   {
     id: '345',
     title: 'Something',
-    owned: false,
+    owned: true,
+    mtime: Date.now() - 30 * 1000,
+  },
+  {
+    id: '345',
+    title: 'Something Else',
+    owned: true,
     mtime: Date.now() - 30 * 1000,
   },
   {
     id: '385',
     title: 'Light Fantastic',
     author: { fname: 'Toni', lname: 'Braxton' },
-    owned: false,
+    owned: true,
     notes: 'lsdkjfoiwuer',
     mtime: Date.now() - 30 * 60 * 1000,
   },
@@ -85,7 +92,7 @@ const DEFAULT_BOOKS = [
   {
     id: '367',
     title: '4',
-    author: { fname: 'Stephen', lname: 'Zing' },
+    author: { fname: 'Steven', lname: 'Zing' },
     owned: false,
     mtime: Date.now() - 350 * 24 * 60 * 60 * 1000,
   },
@@ -161,6 +168,8 @@ interface MainTabsProps {
 
 function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
   const location = useLocation();
+  const query = tools.useQuery();
+  const ownedPostfix = query.has('owned') ? 'I have' : 'I want';
 
   return narrow
     ? (
@@ -168,8 +177,18 @@ function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
         <AppBar position="relative">
           <Toolbar>
             <Tabs value={location.pathname}>
-              <Tab component={Link} value="/" label="Authors" to="/" />
-              <Tab component={Link} value="/series" label="Series" to="/series" />
+              <Tab
+                component={Link}
+                value="/"
+                label={`Authors ${ownedPostfix}`}
+                to={`/${location.search}`}
+              />
+              <Tab
+                component={Link}
+                value="/series"
+                label={`Series ${ownedPostfix}`}
+                to={`/series${location.search}`}
+              />
             </Tabs>
           </Toolbar>
         </AppBar>
@@ -182,8 +201,18 @@ function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
     ) : (
       <Container {...containerProps}>
         <Tabs value={location.pathname} textColor="primary" indicatorColor="primary">
-          <Tab component={Link} value="/" label="Authors" to="/" />
-          <Tab component={Link} value="/series" label="Series" to="/series" />
+          <Tab
+            component={Link}
+            value="/"
+            label={`Authors ${ownedPostfix}`}
+            to={`/${location.search}`}
+          />
+          <Tab
+            component={Link}
+            value="/series"
+            label={`Series ${ownedPostfix}`}
+            to={`/series${location.search}`}
+          />
         </Tabs>
         { children }
       </Container>
