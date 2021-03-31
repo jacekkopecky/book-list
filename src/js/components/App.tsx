@@ -118,7 +118,7 @@ export default function App(): JSX.Element {
           <Route exact path="/series">
             { !narrow && appBar }
             <MainTabs narrow={narrow}>
-              <AuthorList books={books} />
+              <SeriesList books={books} />
             </MainTabs>
           </Route>
           <Route exact path="/author/:id">
@@ -198,4 +198,8 @@ function NotFound() {
       <p>404 page not found: { location.pathname }</p>
     </Container>
   );
+}
+
+function SeriesList({ books }: { books: Book[] }): JSX.Element {
+  return <p>not implemented</p>;
 }
