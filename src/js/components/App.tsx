@@ -1,32 +1,26 @@
 import * as React from 'react';
 import {
   BrowserRouter as Router,
-  Link,
   Switch,
   Route,
   useParams,
   useLocation,
 } from 'react-router-dom';
 
-import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import Toolbar from '@material-ui/core/Toolbar';
 
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
-import theme from './theme';
+import theme, { containerProps } from './theme';
 
 import { Book } from '../types';
-import * as tools from '../tools/tools';
 
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
 import BookListByAuthor from './BookListByAuthor';
+import MainAppBar from './MainAppBar';
 
 const DEFAULT_BOOKS = [
   {
@@ -102,15 +96,6 @@ const DEFAULT_BOOKS = [
 export default function App(): JSX.Element {
   const [books/* , setBooks */] = React.useState<Book[]>(DEFAULT_BOOKS);
 
-  const narrow = useMediaQuery(theme.breakpoints.down('xs'));
-
-  const appBar = (
-    <AppBar position="static" style={{ zIndex: 1, position: 'relative' }}>
-      <Toolbar><h1>bananas for books</h1></Toolbar>
-      { /* when changing the title above, also change it in index.html and 404.html */ }
-    </AppBar>
-  );
-
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -118,23 +103,15 @@ export default function App(): JSX.Element {
 
         <Switch>
           <Route exact path="/">
-            { !narrow && appBar }
-            <MainTabs narrow={narrow}>
-              <AuthorList books={books} />
-            </MainTabs>
+            <AuthorList books={books} />
           </Route>
           <Route exact path="/series">
-            { !narrow && appBar }
-            <MainTabs narrow={narrow}>
-              <SeriesList books={books} />
-            </MainTabs>
+            <SeriesList books={books} />
           </Route>
           <Route exact path="/author/:id">
-            { !narrow && appBar }
             <BookListWithParams books={books} />
           </Route>
           <Route path="*">
-            { appBar }
             <NotFound />
           </Route>
         </Switch>
@@ -154,78 +131,15 @@ function BookListWithParams({ books } : { books: Book[] }): JSX.Element {
   );
 }
 
-const containerProps = {
-  component: 'main' as const,
-  maxWidth: 'sm' as const,
-  style: {
-    backgroundColor: theme.palette.background.paper,
-  },
-};
-
-interface MainTabsProps {
-  narrow: boolean,
-  children?: React.ReactNode,
-}
-
-function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
-  const location = useLocation();
-  const query = tools.useQuery();
-  const ownedPostfix = query.has('owned') ? 'I have' : 'I want';
-
-  return narrow
-    ? (
-      <>
-        <AppBar position="relative">
-          <Toolbar>
-            <Tabs value={location.pathname}>
-              <Tab
-                component={Link}
-                value="/"
-                label={`Authors ${ownedPostfix}`}
-                to={`/${location.search}`}
-              />
-              <Tab
-                component={Link}
-                value="/series"
-                label={`Series ${ownedPostfix}`}
-                to={`/series${location.search}`}
-              />
-            </Tabs>
-          </Toolbar>
-        </AppBar>
-        <Container {...containerProps}>
-          <>
-            { children }
-          </>
-        </Container>
-      </>
-    ) : (
-      <Container {...containerProps}>
-        <Tabs value={location.pathname} indicatorColor="primary">
-          <Tab
-            component={Link}
-            value="/"
-            label={`Authors ${ownedPostfix}`}
-            to={`/${location.search}`}
-          />
-          <Tab
-            component={Link}
-            value="/series"
-            label={`Series ${ownedPostfix}`}
-            to={`/series${location.search}`}
-          />
-        </Tabs>
-        { children }
-      </Container>
-    );
-}
-
 function NotFound() {
   const location = useLocation();
 
   return (
-    <Container {...containerProps}>
-      <p>404 page not found: { location.pathname }</p>
-    </Container>
+    <>
+      <MainAppBar />
+      <Container {...containerProps}>
+        <p>404 page not found: { location.pathname }</p>
+      </Container>
+    </>
   );
 }

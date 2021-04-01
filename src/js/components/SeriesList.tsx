@@ -12,8 +12,10 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { Book } from '../types';
 import * as tools from '../tools/tools';
+
 import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
+import MainTabs from './MainTabs';
 
 export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
   const history = useHistory();
@@ -32,7 +34,7 @@ export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
   const switchButton = showingOwned ? 'Show series I want' : 'Show series I have';
 
   return (
-    <>
+    <MainTabs>
       <List>
         { sorted.length > 0 ? sorted.map((x) => renderSeries(x)) : <EmptyListItem /> }
       </List>
@@ -48,7 +50,7 @@ export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
         </Fab>
         <Fab aria-label="add" color="secondary"><AddIcon /></Fab>
       </ActionButtons>
-    </>
+    </MainTabs>
   );
 
   function renderSeries(name: string) {

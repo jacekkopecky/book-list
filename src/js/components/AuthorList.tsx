@@ -12,8 +12,10 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { Author, Book } from '../types';
 import * as tools from '../tools/tools';
+
 import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
+import MainTabs from './MainTabs';
 
 export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
   const history = useHistory();
@@ -31,7 +33,7 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
   const switchButton = showingOwned ? 'Show authors I want' : 'Show authors I have';
 
   return (
-    <>
+    <MainTabs>
       <List>
         { sorted.length > 0 ? sorted.map((x) => renderAuthor(x)) : <EmptyListItem /> }
       </List>
@@ -47,7 +49,7 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
         </Fab>
         <Fab aria-label="add" color="secondary"><AddIcon /></Fab>
       </ActionButtons>
-    </>
+    </MainTabs>
   );
 
   function renderAuthor(key: string) {
