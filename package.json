@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "description": "a little program for keeping track of the books you have and want",
   "scripts": {
-    "build": "npm run --silent build:ts && npm run --silent build:react",
+    "build": "npm run --silent build:version && npm run --silent build:ts && npm run --silent build:react",
     "build:react": "parcel build --no-cache --dist-dir dist/ src/index.html src/404.html",
     "build:ts": "tsc",
+    "build:version": "( /bin/echo -n 'version: '; node -p -e 'require(`./package.json`).version'; /bin/echo -n 'date:    '; date; /bin/echo -n 'git sha: '; git rev-parse HEAD; ) > dist/version.txt",
     "serve": "NODE_ENV=development PORT=8080 parcel serve --no-cache --dist-dir dist/ src/index.html",
     "test": "npm run --silent lint",
     "lint": "echo lint javascript && npm run --silent lint:js && echo lint css && npm run --silent lint:css",
