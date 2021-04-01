@@ -6,6 +6,7 @@ import { Book } from '../types';
 import * as tools from '../tools/tools';
 
 import BookEntry from './BookEntry';
+import MainHeading from './MainHeading';
 
 interface BookListProps {
   books: Book[],
@@ -37,12 +38,11 @@ export default function BookListByAuthor({ books, authorPath }: BookListProps): 
   }
 
   return (
-    <main className={`BookListByAuthor ${firstBook.author ? '' : 'unknown'}`}>
-      <h2>Books by { tools.authorName(firstBook.author) }</h2>
+    <MainHeading title={`Books by ${tools.authorName(firstBook.author)}`}>
       <ul>
         { entries.map(renderBookOrSeries) }
       </ul>
-    </main>
+    </MainHeading>
   );
 }
 

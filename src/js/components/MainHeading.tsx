@@ -1,14 +1,11 @@
 import * as React from 'react';
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
 
 import AppBar from '@material-ui/core/AppBar';
 import Container from '@material-ui/core/Container';
+import Divider from '@material-ui/core/Divider';
+import Toolbar from '@material-ui/core/Toolbar';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import Toolbar from '@material-ui/core/Toolbar';
 
 import MainAppBar from './MainAppBar';
 
@@ -16,41 +13,25 @@ import * as tools from '../tools/tools';
 import { containerProps } from './theme';
 
 interface MainTabsProps {
+  title: string,
   children?: React.ReactNode,
 }
 
-export default function MainTabs({ children }: MainTabsProps): JSX.Element {
-  const location = useLocation();
-  const query = tools.useQuery();
-  const ownedPostfix = query.has('owned') ? 'I have' : 'I want';
-
+export default function MainHeading({ title, children }: MainTabsProps): JSX.Element {
   const narrow = tools.isNarrow();
 
-  const tabs = [
-    <Tab
-      key={0}
-      component={Link}
-      value="/"
-      label={`Authors ${ownedPostfix}`}
-      to={`/${location.search}`}
-    />,
-    <Tab
-      key={1}
-      component={Link}
-      value="/series"
-      label={`Series ${ownedPostfix}`}
-      to={`/series${location.search}`}
-    />,
-  ];
+  const tabs = (
+    <Tabs value="1" variant="fullWidth" indicatorColor="primary">
+      <Tab value="1" label={title} />
+    </Tabs>
+  );
 
   if (narrow) {
     return (
       <>
         <AppBar position="relative">
           <Toolbar>
-            <Tabs value={location.pathname}>
-              { tabs }
-            </Tabs>
+            { tabs }
           </Toolbar>
         </AppBar>
         <Container {...containerProps}>
@@ -65,9 +46,8 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
       <>
         <MainAppBar />
         <Container {...containerProps}>
-          <Tabs value={location.pathname} indicatorColor="primary">
-            { tabs }
-          </Tabs>
+          { tabs }
+          <Divider />
           { children }
         </Container>
       </>
