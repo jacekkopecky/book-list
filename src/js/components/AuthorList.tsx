@@ -26,7 +26,7 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
   return (
     <MainTabs>
       <List>
-        { sorted.length > 0 ? sorted.map((x) => renderAuthor(x)) : <EmptyListItem text="no authors" /> }
+        { sorted.length > 0 ? sorted.map(renderAuthor) : <EmptyListItem text="no authors" /> }
       </List>
 
       <ActionButtons
