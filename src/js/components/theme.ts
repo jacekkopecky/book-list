@@ -4,7 +4,7 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       main: '#4488ff',
-      contrastColor: 'white',
+      contrastText: 'white',
     },
     secondary: {
       main: '#66ff88',
@@ -16,3 +16,11 @@ const theme = createMuiTheme({
 });
 
 export default theme;
+
+export const containerProps = {
+  component: 'main' as const,
+  maxWidth: 'sm' as const,
+  style: {
+    backgroundColor: theme.palette.background.paper,
+  },
+};
