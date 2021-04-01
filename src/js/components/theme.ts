@@ -10,7 +10,7 @@ const theme = createMuiTheme({
       main: '#66ff88',
     },
     text: {
-      primary: 'black',
+      primary: '#000',
     },
   },
 });
@@ -22,5 +22,6 @@ export const containerProps = {
   maxWidth: 'sm' as const,
   style: {
     backgroundColor: theme.palette.background.paper,
+    paddingBottom: theme.spacing(10),
   },
 };

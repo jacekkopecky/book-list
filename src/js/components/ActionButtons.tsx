@@ -31,7 +31,7 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
           <ImportExportIcon />
           { switchText }
         </Fab>
-        <Fab aria-label="add" color="secondary"><AddIcon /></Fab>
+        <Fab aria-label="add" color="primary"><AddIcon /></Fab>
       </Container>
     </div>
   );
