@@ -1,12 +1,6 @@
-import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-
 import { Author } from '../types';
-
-import './tools.css';
 
 export const UNKNOWN: Author = {
   fname: 'unknown',
@@ -54,7 +48,3 @@ export function formatMTime(mtime: number): string {
 export function useQuery(): URLSearchParams {
   return new URLSearchParams(useLocation().search);
 }
-
-export const EMPTY_LIST = (
-  <ListItem divider><ListItemText className="empty">empty</ListItemText></ListItem>
-);

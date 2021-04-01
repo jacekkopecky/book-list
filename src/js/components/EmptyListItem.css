@@ -1,4 +1,4 @@
-.MuiListItemText-root.empty {
+.EmptyListItem {
   font-style: italic;
   opacity: 0.5;
 }

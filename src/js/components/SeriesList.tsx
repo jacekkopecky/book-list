@@ -13,6 +13,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { Book } from '../types';
 import * as tools from '../tools/tools';
 import ActionButtons from './ActionButtons';
+import EmptyListItem from './EmptyListItem';
 
 export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
   const query = tools.useQuery();
@@ -33,7 +34,7 @@ export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
   return (
     <>
       <List>
-        { sorted.length > 0 ? sorted.map((x) => renderSeries(x)) : tools.EMPTY_LIST }
+        { sorted.length > 0 ? sorted.map((x) => renderSeries(x)) : <EmptyListItem /> }
       </List>
 
       <ActionButtons>
