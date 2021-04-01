@@ -1,9 +1,4 @@
-import * as React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-
-import Fab from '@material-ui/core/Fab';
-
-import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Theme } from '@material-ui/core/styles';
@@ -64,22 +59,14 @@ export function isNarrow(): boolean {
   );
 }
 
-export function useShowingOwned(name: string): [boolean, JSX.Element] {
+export function useShowingOwned(): [boolean, (value: boolean) => void] {
   const history = useHistory();
 
   const showingOwned = useQuery().has('owned');
 
-  const switchText = showingOwned ? `Show ${name} I want` : `Show ${name} I have`;
+  const setShowingOwned = (value: boolean) => {
+    history.replace(value ? '?owned' : '?');
+  };
 
-  const fab = (
-    <Fab
-      variant="extended"
-      onClick={() => history.replace(showingOwned ? '?' : '?owned')}
-    >
-      <ImportExportIcon />
-      { switchText }
-    </Fab>
-  );
-
-  return [showingOwned, fab];
+  return [showingOwned, setShowingOwned];
 }
