@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Fab from '@material-ui/core/Fab';
 import List from '@material-ui/core/List';
@@ -7,7 +7,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import AddIcon from '@material-ui/icons/Add';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { Author, Book } from '../types';
@@ -18,9 +17,7 @@ import EmptyListItem from './EmptyListItem';
 import MainTabs from './MainTabs';
 
 export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
-  const history = useHistory();
-
-  const showingOwned = tools.useQuery().has('owned');
+  const [showingOwned, showingSwitchFab] = tools.useShowingOwned('authors');
 
   const authors = new Map<string, Author | undefined>();
   const selectedBooks = books.filter((b) => b.owned === showingOwned);
@@ -30,8 +27,6 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
 
   const sorted = Array.from(authors.keys()).sort();
 
-  const switchButton = showingOwned ? 'Show authors I want' : 'Show authors I have';
-
   return (
     <MainTabs>
       <List>
@@ -40,13 +35,7 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
 
       <ActionButtons>
         <Fab aria-label="search" color="primary"><SearchIcon /></Fab>
-        <Fab
-          variant="extended"
-          onClick={() => history.replace(showingOwned ? '?' : '?owned')}
-        >
-          <ImportExportIcon />
-          { switchButton }
-        </Fab>
+        { showingSwitchFab }
         <Fab aria-label="add" color="secondary"><AddIcon /></Fab>
       </ActionButtons>
     </MainTabs>
