@@ -25,6 +25,7 @@ import { Book } from '../types';
 import * as tools from '../tools/tools';
 
 import AuthorList from './AuthorList';
+import SeriesList from './SeriesList';
 import BookListByAuthor from './BookListByAuthor';
 
 const DEFAULT_BOOKS = [
@@ -227,8 +228,4 @@ function NotFound() {
       <p>404 page not found: { location.pathname }</p>
     </Container>
   );
-}
-
-function SeriesList({ books }: { books: Book[] }): JSX.Element {
-  return <p>not implemented</p>;
 }

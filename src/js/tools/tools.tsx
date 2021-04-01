@@ -1,6 +1,12 @@
+import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
 import { Author } from '../types';
+
+import './tools.css';
 
 export const UNKNOWN: Author = {
   fname: 'unknown',
@@ -12,7 +18,11 @@ export function authorKey(author: Author = UNKNOWN): string {
 }
 
 export function authorPath(author: Author = UNKNOWN): string {
-  return authorName(author).replace(/\s/g, '-');
+  return encodeURIComponent(authorName(author).replace(/\s/g, '-'));
+}
+
+export function seriesPath(series: string): string {
+  return encodeURIComponent(series.replace(/\s/g, '-'));
 }
 
 export function authorName(author: Author = UNKNOWN): string {
@@ -44,3 +54,7 @@ export function formatMTime(mtime: number): string {
 export function useQuery(): URLSearchParams {
   return new URLSearchParams(useLocation().search);
 }
+
+export const EMPTY_LIST = (
+  <ListItem divider><ListItemText className="empty">empty</ListItemText></ListItem>
+);

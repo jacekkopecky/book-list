@@ -10,29 +10,30 @@ import AddIcon from '@material-ui/icons/Add';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { Author, Book } from '../types';
+import { Book } from '../types';
 import * as tools from '../tools/tools';
 import ActionButtons from './ActionButtons';
 
-export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
+export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
   const query = tools.useQuery();
   const history = useHistory();
   const showingOwned = query.has('owned');
 
-  const authors = new Map<string, Author | undefined>();
+  const series = new Set<string>();
+
   const selectedBooks = books.filter((b) => b.owned === showingOwned);
   for (const book of selectedBooks) {
-    authors.set(tools.authorKey(book.author), book.author);
+    if (book.series) series.add(book.series);
   }
 
-  const sorted = Array.from(authors.keys()).sort();
+  const sorted = Array.from(series).sort();
 
-  const switchButton = showingOwned ? 'Show authors I want' : 'Show authors I have';
+  const switchButton = showingOwned ? 'Show series I want' : 'Show series I have';
 
   return (
     <>
       <List>
-        { sorted.length > 0 ? sorted.map((x) => renderAuthor(x)) : tools.EMPTY_LIST }
+        { sorted.length > 0 ? sorted.map((x) => renderSeries(x)) : tools.EMPTY_LIST }
       </List>
 
       <ActionButtons>
@@ -49,13 +50,12 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
     </>
   );
 
-  function renderAuthor(key: string) {
-    const author = authors.get(key) ?? tools.UNKNOWN;
-    const id = tools.authorPath(author);
-    const link = `/author/${id}${showingOwned ? '?owned' : ''}`;
+  function renderSeries(name: string) {
+    const id = tools.seriesPath(name);
+    const link = `/series/${id}${showingOwned ? '?owned' : ''}`;
     return (
-      <ListItem key={key} button divider component={Link} to={link}>
-        <ListItemText>{ author.fname } { author.lname }</ListItemText>
+      <ListItem key={name} button divider component={Link} to={link}>
+        <ListItemText>{ name }</ListItemText>
       </ListItem>
     );
   }
