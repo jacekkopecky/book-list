@@ -8,19 +8,18 @@ import {
 } from 'react-router-dom';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
-import theme, { containerProps } from './theme';
+import theme from './theme';
 
 import { Book } from '../types';
 
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
+import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
-import MainAppBar from './MainAppBar';
 
 const DEFAULT_BOOKS = [
   {
@@ -134,12 +133,5 @@ function BookListWithParams({ books } : { books: Book[] }): JSX.Element {
 function NotFound() {
   const location = useLocation();
 
-  return (
-    <>
-      <MainAppBar />
-      <Container {...containerProps}>
-        <p>404 page not found: { location.pathname }</p>
-      </Container>
-    </>
-  );
+  return <ErrorComponent text={`404 page not found: ${location.pathname}`} />;
 }
