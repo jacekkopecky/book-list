@@ -16,9 +16,9 @@ import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
 
 export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
-  const query = tools.useQuery();
   const history = useHistory();
-  const showingOwned = query.has('owned');
+
+  const showingOwned = tools.useQuery().has('owned');
 
   const series = new Set<string>();
 
