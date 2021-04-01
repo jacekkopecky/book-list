@@ -14,7 +14,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import './App.css';
 import theme from './theme';
 
-import { Book } from '../types';
+import { Book, SetOwnedCallback } from '../types';
 
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
@@ -93,7 +93,18 @@ const DEFAULT_BOOKS = [
 ];
 
 export default function App(): JSX.Element {
-  const [books/* , setBooks */] = React.useState<Book[]>(DEFAULT_BOOKS);
+  const [books, setBooks] = React.useState<Book[]>(DEFAULT_BOOKS);
+
+  const setOwned = (book: Book, owned: boolean) => {
+    const newBook = {
+      ...book,
+      owned,
+      mtime: Date.now(),
+    };
+    const newBooks = books.filter((b) => b !== book);
+    newBooks.push(newBook);
+    setBooks(newBooks);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -108,7 +119,7 @@ export default function App(): JSX.Element {
             <SeriesList books={books} />
           </Route>
           <Route exact path="/author/:id">
-            <BookListWithParams books={books} />
+            <BookListWithParams books={books} setOwned={setOwned} />
           </Route>
           <Route path="*">
             <NotFound />
@@ -119,12 +130,17 @@ export default function App(): JSX.Element {
   );
 }
 
-function BookListWithParams({ books } : { books: Book[] }): JSX.Element {
+interface BookListWithParamsProps {
+  books: Book[],
+  setOwned: SetOwnedCallback,
+}
+
+function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
   const params = useParams<Record<'id', string>>();
 
   return (
     <BookListByAuthor
-      books={books}
+      {...props}
       authorPath={params.id}
     />
   );

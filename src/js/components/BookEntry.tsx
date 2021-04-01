@@ -14,11 +14,20 @@ import MenuBook from '@material-ui/icons/MenuBook';
 
 import './BookEntry.css';
 
-import { Book } from '../types';
+import { Book, SetOwnedCallback } from '../types';
 import * as tools from '../tools/tools';
 
-export default function BookEntry({ book }: { book: Book }): JSX.Element {
+interface BookEntryProps {
+  book: Book,
+  setOwned: SetOwnedCallback,
+}
+
+export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Element {
   const [expanded, setExpanded] = React.useState(false);
+
+  const setBookOwned = () => {
+    setOwned(book, true);
+  };
 
   return (
     <>
@@ -37,6 +46,7 @@ export default function BookEntry({ book }: { book: Book }): JSX.Element {
                 Series: { book.series }
               </div>
             ) }
+
             { book.author ? (
               <div className="author">
                 Author: { tools.authorName(book.author) }
@@ -46,6 +56,7 @@ export default function BookEntry({ book }: { book: Book }): JSX.Element {
                 Author unknown
               </div>
             ) }
+
             { book.notes ? (
               <div className="notes">
                 Notes: { book.notes }
@@ -58,7 +69,11 @@ export default function BookEntry({ book }: { book: Book }): JSX.Element {
 
             <div className="mtime">Last updated { tools.formatMTime(book.mtime) }</div>
             <Grid container className="buttons">
-              { book.owned || <Button color="primary" variant="outlined">I have it now</Button> }
+              { book.owned || (
+                <Button color="primary" variant="outlined" onClick={setBookOwned}>
+                  I have it now
+                </Button>
+              ) }
               <Button color="primary" variant="outlined">Edit</Button>
             </Grid>
           </ListItemText>

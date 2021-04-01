@@ -2,6 +2,7 @@ export interface Author {
   fname: string,
   lname: string,
 }
+
 export interface Book {
   id: unknown,
   title: string,
@@ -11,3 +12,5 @@ export interface Book {
   notes?: string,
   mtime: number,
 }
+
+export type SetOwnedCallback = (book: Book, owned: boolean) => void;

@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import Folder from '@material-ui/icons/Folder';
 
-import { Book } from '../types';
+import { Book, SetOwnedCallback } from '../types';
 import * as tools from '../tools/tools';
 
 import ActionButtons from './ActionButtons';
@@ -21,6 +21,7 @@ import MainHeading from './MainHeading';
 interface BookListProps {
   books: Book[],
   authorPath: string,
+  setOwned: SetOwnedCallback,
 }
 
 interface Series {
@@ -30,7 +31,9 @@ interface Series {
 
 type BookOrSeries = Book | Series;
 
-export default function BookListByAuthor({ books, authorPath }: BookListProps): JSX.Element {
+export default function BookListByAuthor(props: BookListProps): JSX.Element {
+  const { books, authorPath, setOwned } = props;
+
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const booksByAuthor = books.filter((b) => tools.authorPath(b.author) === authorPath);
@@ -52,7 +55,7 @@ export default function BookListByAuthor({ books, authorPath }: BookListProps): 
   return (
     <MainHeading title={prefix + tools.authorName(firstBook.author)}>
       <List className="BookListByAuthor">
-        { entries.length > 0 ? entries.map(renderBookOrSeries) : <EmptyListItem text="no books" /> }
+        { entries.length > 0 ? entries.map((x) => renderBookOrSeries(x, setOwned)) : <EmptyListItem text="no books" /> }
       </List>
       <ActionButtons
         itemName="books"
@@ -86,17 +89,17 @@ function findSeries(books: Book[]): Series[] {
   return Array.from(seriesMap.values());
 }
 
-function renderBookOrSeries(x: BookOrSeries) {
+function renderBookOrSeries(x: BookOrSeries, setOwned: SetOwnedCallback) {
   if (isBook(x)) {
-    return renderBook(x);
+    return renderBook(x, setOwned);
   } else {
-    return <BookSeriesList series={x} key={`${x.title} (series contents)`} />;
+    return <BookSeriesList series={x} key={`${x.title} (series contents)`} setOwned={setOwned} />;
   }
 }
 
-function renderBook(book: Book) {
+function renderBook(book: Book, setOwned: SetOwnedCallback) {
   return (
-    <BookEntry key={book.title} book={book} />
+    <BookEntry key={book.title} book={book} setOwned={setOwned} />
   );
 }
 
@@ -110,7 +113,12 @@ const useStyles = makeStyles((theme) => createStyles({
   },
 }));
 
-function BookSeriesList({ series } : { series: Series }): JSX.Element {
+interface BookSeriesListProps {
+  series: Series,
+  setOwned: SetOwnedCallback,
+}
+
+function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element {
   const classes = useStyles();
 
   series.books.sort((a, b) => a.title.localeCompare(b.title));
@@ -124,7 +132,7 @@ function BookSeriesList({ series } : { series: Series }): JSX.Element {
       </ListItem>
       <ListItem className={classes.nested}>
         <List disablePadding className={classes.wide}>
-          { series.books.map(renderBook) }
+          { series.books.map((b) => renderBook(b, setOwned)) }
         </List>
       </ListItem>
     </>
