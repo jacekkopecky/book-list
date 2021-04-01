@@ -5,10 +5,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import './EmptyListItem.css';
 
-export default function EmptyListItem(): JSX.Element {
+export default function EmptyListItem({ text = 'empty' }: { text?: string }): JSX.Element {
   return (
     <ListItem divider className="EmptyListItem">
-      <ListItemText className="empty">empty</ListItemText>
+      <ListItemText className="empty">{ text }</ListItemText>
     </ListItem>
   );
 }

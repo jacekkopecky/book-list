@@ -27,7 +27,7 @@ export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
   return (
     <MainTabs>
       <List>
-        { sorted.length > 0 ? sorted.map((x) => renderSeries(x)) : <EmptyListItem /> }
+        { sorted.length > 0 ? sorted.map((x) => renderSeries(x)) : <EmptyListItem text="no series" /> }
       </List>
 
       <ActionButtons
