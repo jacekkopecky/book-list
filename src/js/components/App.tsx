@@ -201,7 +201,7 @@ function MainTabs({ narrow, children }: MainTabsProps): JSX.Element {
       </>
     ) : (
       <Container {...containerProps}>
-        <Tabs value={location.pathname} textColor="primary" indicatorColor="primary">
+        <Tabs value={location.pathname} indicatorColor="primary">
           <Tab
             component={Link}
             value="/"

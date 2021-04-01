@@ -14,7 +14,6 @@ A book has these properties:
 
 ## todo
 
-* switching between owned and not
 * editing of books
 * search functionality
 * add functionality
