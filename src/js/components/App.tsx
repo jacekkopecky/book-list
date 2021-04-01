@@ -23,26 +23,26 @@ import BookListByAuthor from './BookListByAuthor';
 
 const DEFAULT_BOOKS = [
   {
-    id: '345',
+    id: 1,
     title: 'It',
     author: { fname: 'Stephen', lname: 'King' },
     owned: false,
     mtime: Date.now(),
   },
   {
-    id: '345',
+    id: 2,
     title: 'Something',
     owned: true,
     mtime: Date.now() - 30 * 1000,
   },
   {
-    id: '345',
+    id: 3,
     title: 'Something Else',
     owned: true,
     mtime: Date.now() - 30 * 1000,
   },
   {
-    id: '385',
+    id: 4,
     title: 'Light Fantastic',
     author: { fname: 'Toni', lname: 'Braxton' },
     owned: true,
@@ -50,7 +50,7 @@ const DEFAULT_BOOKS = [
     mtime: Date.now() - 30 * 60 * 1000,
   },
   {
-    id: '385',
+    id: 5,
     title: 'Slight Fantastic',
     series: 'Discworld',
     author: { fname: 'Toni', lname: 'Braxton' },
@@ -64,12 +64,12 @@ const DEFAULT_BOOKS = [
       dolor quo cernantur iis senserit praetermissum est possumus, deserunt amet malis
       probant quem, tempor possumus iudicem. Quo quo velit commodo, te sunt admodum
       consequat. Elit iis quamquam hic noster. Et incididunt voluptatibus, ut se duis
-      probant ea se in noster quis noster, duis ut laborum ea export.`,
+      probant ea se in noster quis noster, duis ut laborum ea export.`.replace(/[\n\s]+/g, ' '),
     owned: false,
     mtime: Date.now() - 10 * 60 * 60 * 1000,
   },
   {
-    id: '385',
+    id: 6,
     title: 'Bright Fantastic',
     series: 'Discworld',
     author: { fname: 'Toni', lname: 'Braxton' },
@@ -77,14 +77,14 @@ const DEFAULT_BOOKS = [
     mtime: Date.now() - 10 * 24 * 60 * 60 * 1000,
   },
   {
-    id: '367',
+    id: 7,
     title: '3',
     author: { fname: 'Ally', lname: 'Yence' },
     owned: false,
     mtime: Date.now() - 50 * 24 * 60 * 60 * 1000,
   },
   {
-    id: '367',
+    id: 8,
     title: '4',
     author: { fname: 'Steven', lname: 'Zing' },
     owned: false,

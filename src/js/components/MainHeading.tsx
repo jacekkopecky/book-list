@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import AppBar from '@material-ui/core/AppBar';
 import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
@@ -47,7 +46,6 @@ export default function MainHeading({ title, children }: MainTabsProps): JSX.Ele
         <MainAppBar />
         <Container {...containerProps}>
           { tabs }
-          <Divider />
           { children }
         </Container>
       </>

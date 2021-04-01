@@ -15,6 +15,8 @@ import MainAppBar from './MainAppBar';
 import * as tools from '../tools/tools';
 import { containerProps } from './theme';
 
+import './MainTabs.css';
+
 interface MainTabsProps {
   children?: React.ReactNode,
 }
@@ -48,7 +50,7 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
       <>
         <AppBar position="relative">
           <Toolbar>
-            <Tabs value={location.pathname}>
+            <Tabs value={location.pathname} variant="fullWidth" className="MainTabs">
               { tabs }
             </Tabs>
           </Toolbar>
