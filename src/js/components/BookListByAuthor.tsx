@@ -1,11 +1,21 @@
 import * as React from 'react';
 
-import './BookListByAuthor.css';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+
+import Folder from '@material-ui/icons/Folder';
 
 import { Book } from '../types';
 import * as tools from '../tools/tools';
 
+import ActionButtons from './ActionButtons';
 import BookEntry from './BookEntry';
+import EmptyListItem from './EmptyListItem';
+import ErrorComponent from './ErrorComponent';
 import MainHeading from './MainHeading';
 
 interface BookListProps {
@@ -21,49 +31,36 @@ interface Series {
 type BookOrSeries = Book | Series;
 
 export default function BookListByAuthor({ books, authorPath }: BookListProps): JSX.Element {
-  const booksByAuthor = books.filter(
-    (b) => tools.authorPath(b.author) === authorPath,
-  );
+  const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
-  // todo add series to books
-  const series = findSeries(booksByAuthor);
+  const booksByAuthor = books.filter((b) => tools.authorPath(b.author) === authorPath);
 
-  const entries = [...booksByAuthor, ...series];
+  const selectedBooks = booksByAuthor.filter((b) => b.owned === showingOwned);
 
+  const series = findSeries(selectedBooks);
+
+  const entries = [...selectedBooks, ...series];
   entries.sort((a, b) => a.title.localeCompare(b.title));
 
   const firstBook = booksByAuthor[0];
   if (!firstBook) {
-    return <div className="error">empty book list – how did that happen?</div>;
+    return <ErrorComponent text="empty book list – how did that happen?" />;
   }
+
+  const prefix = showingOwned ? 'Books I Have By ' : 'Wanted Books By ';
 
   return (
-    <MainHeading title={`Books by ${tools.authorName(firstBook.author)}`}>
-      <ul>
-        { entries.map(renderBookOrSeries) }
-      </ul>
+    <MainHeading title={prefix + tools.authorName(firstBook.author)}>
+      <List className="BookListByAuthor">
+        { entries.length > 0 ? entries.map(renderBookOrSeries) : <EmptyListItem text="no books" /> }
+      </List>
+      <ActionButtons
+        itemName="books"
+        onSwitchOwned={setShowingOwned}
+        showingOwned={showingOwned}
+      />
     </MainHeading>
   );
-}
-
-function renderBookOrSeries(x: BookOrSeries) {
-  if (isBook(x)) {
-    return renderBook(x);
-  } else {
-    return renderSeries(x);
-  }
-}
-
-function renderBook(book: Book, extraClass?: string) {
-  return <li key={book.title} className={extraClass}><BookEntry book={book} /></li>;
-}
-
-function renderSeries(series: Series) {
-  series.books.sort((a, b) => a.title.localeCompare(b.title));
-  return [
-    <li key={`${series.title} (series)`}>{ series.title } (series)</li>,
-    ...series.books.map((x) => renderBook(x, 'inSeries')),
-  ];
 }
 
 function isBook(x: BookOrSeries) : x is Book {
@@ -87,4 +84,49 @@ function findSeries(books: Book[]): Series[] {
   }
 
   return Array.from(seriesMap.values());
+}
+
+function renderBookOrSeries(x: BookOrSeries) {
+  if (isBook(x)) {
+    return renderBook(x);
+  } else {
+    return <BookSeriesList series={x} key={`${x.title} (series contents)`} />;
+  }
+}
+
+function renderBook(book: Book) {
+  return (
+    <BookEntry key={book.title} book={book} />
+  );
+}
+
+const useStyles = makeStyles((theme) => createStyles({
+  nested: {
+    paddingLeft: theme.spacing(4),
+    paddingRight: '0',
+  },
+  wide: {
+    width: '100%',
+  },
+}));
+
+function BookSeriesList({ series } : { series: Series }): JSX.Element {
+  const classes = useStyles();
+
+  series.books.sort((a, b) => a.title.localeCompare(b.title));
+  const title = `${series.title} (series)`;
+
+  return (
+    <>
+      <ListItem>
+        <ListItemIcon><Folder /></ListItemIcon>
+        <ListItemText primary={title} />
+      </ListItem>
+      <ListItem className={classes.nested}>
+        <List disablePadding className={classes.wide}>
+          { series.books.map(renderBook) }
+        </List>
+      </ListItem>
+    </>
+  );
 }
