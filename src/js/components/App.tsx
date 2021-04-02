@@ -21,6 +21,7 @@ import {
   NewBook,
   SetOwnedCallback,
   SaveBookCallback,
+  DeleteBookCallback,
   AddBookCallback,
   AddBookTrigger,
 } from '../types';
@@ -51,12 +52,30 @@ export default function App(): JSX.Element {
 
 function AppInsideRouter(): JSX.Element {
   const [books, setBooks] = tools.useLocalStorage<Book[]>('bookList', DEFAULT_BOOKS);
+  const [bin, setBin] = tools.useLocalStorage<Book[]>('bookBin', []);
   const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});
 
   const saveBook: SaveBookCallback = (book) => {
     const newBooks = books.filter((b) => b.id !== book.id);
     book.mtime = Date.now();
     newBooks.push(book);
+    setBooks(newBooks);
+  };
+
+  const deleteBook: DeleteBookCallback = (book) => {
+    const oldBook = books.find((b) => b.id === book.id);
+    if (!oldBook) return; // nothing to do
+
+    // put the old book in the bin
+    const binnedBook = {
+      ...oldBook,
+      mtime: Date.now(),
+    };
+    const newBin = [...bin, binnedBook];
+    setBin(newBin);
+
+    // remove it from books
+    const newBooks = books.filter((b) => b.id !== book.id);
     setBooks(newBooks);
   };
 
@@ -106,7 +125,7 @@ function AppInsideRouter(): JSX.Element {
           <BookListWithParams variant="series" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
         </Route>
         <Route exact path="/edit/:id">
-          <BookEditWithParams books={books} save={saveBook} />
+          <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
         </Route>
         <Route exact path="/new">
           <BookEdit originalBook={bookTemplate} add={addBook} />
@@ -150,12 +169,13 @@ function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
 interface BookEditWithParamsProps {
   books: Book[],
   save: SaveBookCallback,
+  delete: DeleteBookCallback,
 }
 
-function BookEditWithParams({ books, save } : BookEditWithParamsProps): JSX.Element {
+function BookEditWithParams(props: BookEditWithParamsProps): JSX.Element {
   const params = useParams<Record<'id', string>>();
 
-  const book = books.find((b) => String(b.id) === params.id);
+  const book = props.books.find((b) => String(b.id) === params.id);
   if (!book) {
     return <ErrorComponent text={`cannot find book for id ${params.id}`} />;
   }
@@ -163,7 +183,8 @@ function BookEditWithParams({ books, save } : BookEditWithParamsProps): JSX.Elem
   return (
     <BookEdit
       originalBook={book}
-      save={save}
+      save={props.save}
+      delete={props.delete}
     />
   );
 }

@@ -1,3 +1,8 @@
 .BookEdit {
   padding-top: 1em;
 }
+
+.BookEdit .MuiButton-root.delete {
+  background: #c33;
+  color: white;
+}

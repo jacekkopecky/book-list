@@ -32,6 +32,7 @@ A book has these properties:
 * there should be a listing of series, not just books
    - list of books in series should show author at top (if all books by same author) or by each book
 * add dark mode (see https://material-ui.com/customization/palette/#dark-mode )
+* show books in the bin, empty bin
 
 * resolved:
    - problem: books listed by author are not listed in order they should be read

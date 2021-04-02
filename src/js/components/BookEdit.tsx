@@ -13,6 +13,7 @@ import {
   Book,
   NewBook,
   SaveBookCallback,
+  DeleteBookCallback,
   AddBookCallback,
 } from '../types';
 
@@ -22,6 +23,7 @@ import './BookEdit.css';
 interface BookEditProps {
   originalBook: Book,
   save: SaveBookCallback,
+  delete: DeleteBookCallback,
   add?: undefined,
 }
 
@@ -32,13 +34,11 @@ interface BookAddProps {
 }
 
 export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Element {
-  const { originalBook } = props;
-
   const history = useHistory();
 
   // clone the book for changing
   // we use an empty author so it's easier to handle, and we remove it when saving
-  const [book, setBook] = React.useState(() => ({ author: { fname: '', lname: '' }, ...originalBook }));
+  const [book, setBook] = React.useState(() => ({ author: { fname: '', lname: '' }, ...props.originalBook }));
 
   const setAuthorFname = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newBook = { ...book };
@@ -66,7 +66,21 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
     history.goBack();
   };
 
-  const title = originalBook.title ? `Editing ${originalBook.title}` : 'Adding a new book';
+  const doDelete = () => {
+    if (!props.save) return; // delete shouldn't be called on a new book
+
+    // eslint-disable-next-line no-alert
+    if (window.confirm(`Are you sure to delete “${props.originalBook.title}”?`)) {
+      props.delete(props.originalBook);
+      history.goBack();
+    }
+  };
+
+  const doCancel = () => {
+    history.goBack();
+  };
+
+  const title = props.save ? `Editing ${props.originalBook.title}` : 'Adding a new book';
 
   return (
     <MainHeading
@@ -80,7 +94,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               <Grid item>Want it</Grid>
               <Grid item>
                 <Switch
-                  checked={book.owned}
+                  checked={book.owned ?? false}
                   color="primary"
                   onChange={(e) => setBook({ ...book, owned: e.target.checked })}
                 />
@@ -95,7 +109,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               required
               fullWidth
               autoFocus
-              value={book.title}
+              value={book.title ?? ''}
               onChange={(e) => setBook({ ...book, title: e.target.value })}
             />
           </Grid>
@@ -105,7 +119,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               margin="normal"
               fullWidth
               helperText="first name"
-              value={book.author.fname}
+              value={book.author.fname ?? ''}
               onChange={setAuthorFname}
             />
           </Grid>
@@ -116,7 +130,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               margin="normal"
               fullWidth
               helperText="last name"
-              value={book.author.lname}
+              value={book.author.lname ?? ''}
               onChange={setAuthorLname}
             />
           </Grid>
@@ -126,7 +140,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               margin="normal"
               placeholder="optional"
               fullWidth
-              value={book.series}
+              value={book.series ?? ''}
               onChange={(e) => setBook({ ...book, series: e.target.value })}
             />
           </Grid>
@@ -137,11 +151,29 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               margin="normal"
               placeholder="optional"
               fullWidth
-              value={book.notes}
+              value={book.notes ?? ''}
               onChange={(e) => setBook({ ...book, notes: e.target.value })}
             />
           </Grid>
-          <Grid item container xs={12} justify="flex-end">
+          <Grid item container xs={6} justify="flex-start">
+            { props.save ? (
+              <Button
+                className="delete"
+                variant="contained"
+                onClick={doDelete}
+              >
+                Delete
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={doCancel}
+              >
+                Cancel
+              </Button>
+            ) }
+          </Grid>
+          <Grid item container xs={6} justify="flex-end">
             <Button
               color="primary"
               variant="contained"
