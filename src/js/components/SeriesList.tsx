@@ -5,14 +5,19 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { Book } from '../types';
+import { Book, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
 
 import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
 import MainTabs from './MainTabs';
 
-export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
+interface SeriesListProps {
+  books: Book[],
+  addBookTrigger: AddBookTrigger,
+}
+
+export default function SeriesList({ books, addBookTrigger }: SeriesListProps): JSX.Element {
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const series = new Set<string>();
@@ -34,6 +39,7 @@ export default function SeriesList({ books }: { books: Book[] }): JSX.Element {
         itemName="series"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
+        addBook={() => addBookTrigger({ owned: showingOwned })}
       />
     </MainTabs>
   );

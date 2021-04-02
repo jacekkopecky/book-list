@@ -5,14 +5,19 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { Author, Book } from '../types';
+import { Author, Book, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
 
 import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
 import MainTabs from './MainTabs';
 
-export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
+interface AuthorListProps {
+  books: Book[],
+  addBookTrigger: AddBookTrigger,
+}
+
+export default function AuthorList({ books, addBookTrigger }: AuthorListProps): JSX.Element {
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const authors = new Map<string, Author | undefined>();
@@ -33,6 +38,7 @@ export default function AuthorList({ books }: { books: Book[] }): JSX.Element {
         itemName="authors"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
+        addBook={() => addBookTrigger({ owned: showingOwned })}
       />
     </MainTabs>
   );

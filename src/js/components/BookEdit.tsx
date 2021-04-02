@@ -18,13 +18,22 @@ import {
 
 import './BookEdit.css';
 
+// we have to have either save and a book or add and a partial new book, but not both
 interface BookEditProps {
-  originalBook: Partial<Book>,
+  originalBook: Book,
   save: SaveBookCallback,
+  add?: undefined,
+}
+
+interface BookAddProps {
+  originalBook: Partial<NewBook>,
+  save?: undefined,
   add: AddBookCallback,
 }
 
-export default function BookEdit({ originalBook, save, add }: BookEditProps): JSX.Element {
+export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Element {
+  const { originalBook } = props;
+
   const history = useHistory();
 
   // clone the book for changing
@@ -44,13 +53,15 @@ export default function BookEdit({ originalBook, save, add }: BookEditProps): JS
   };
 
   const doSave = () => {
-    const bookForSaving = removeEmpties(book);
-    if (!verifyNewBook(bookForSaving)) return;
+    if (!verifyNewBook(book)) return;
 
-    if (verifyBook(bookForSaving)) {
-      save(bookForSaving);
+    const bookForSaving = removeEmpties(book);
+
+    if (props.save) {
+      if (!verifyBook(bookForSaving)) return;
+      props.save(bookForSaving);
     } else {
-      add(bookForSaving);
+      props.add(bookForSaving);
     }
     history.goBack();
   };
@@ -164,7 +175,7 @@ function verifyAuthor(book: Partial<Book>): boolean {
 }
 
 // remove empty-string values, and the whole author if both values are empty
-function removeEmpties(book: Partial<Book>) {
+function removeEmpties(book: NewBook) {
   const newBook = { ...book };
   if (newBook.author) {
     if (!newBook.author.fname.trim() && !newBook.author.lname.trim()) {

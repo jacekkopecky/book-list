@@ -10,7 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import Folder from '@material-ui/icons/Folder';
 
-import { Book, SetOwnedCallback } from '../types';
+import { Book, SetOwnedCallback, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
 
 import ActionButtons from './ActionButtons';
@@ -23,6 +23,7 @@ interface BookListProps {
   books: Book[],
   authorPath: string,
   setOwned: SetOwnedCallback,
+  addBookTrigger: AddBookTrigger,
 }
 
 interface Series {
@@ -33,7 +34,12 @@ interface Series {
 type BookOrSeries = Book | Series;
 
 export default function BookListByAuthor(props: BookListProps): JSX.Element {
-  const { books, authorPath, setOwned } = props;
+  const {
+    books,
+    authorPath,
+    setOwned,
+    addBookTrigger,
+  } = props;
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
@@ -66,6 +72,7 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
         itemName="books"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
+        addBook={() => addBookTrigger({ author: firstBook.author, owned: showingOwned })}
       />
     </MainHeading>
   );

@@ -5,6 +5,7 @@ import {
   Route,
   useParams,
   useLocation,
+  useHistory,
 } from 'react-router-dom';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -16,9 +17,11 @@ import theme from './theme';
 
 import {
   Book,
+  NewBook,
   SetOwnedCallback,
   SaveBookCallback,
   AddBookCallback,
+  AddBookTrigger,
 } from '../types';
 
 import AuthorList from './AuthorList';
@@ -101,7 +104,12 @@ const DEFAULT_BOOKS = [
 let nextId = Math.max(...DEFAULT_BOOKS.map((b) => b.id)) + 1;
 
 export default function App(): JSX.Element {
+  return <Router><AppInsideRouter /></Router>;
+}
+
+function AppInsideRouter(): JSX.Element {
   const [books, setBooks] = React.useState<Book[]>(DEFAULT_BOOKS);
+  const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});
 
   const saveBook: SaveBookCallback = (book) => {
     const newBooks = books.filter((b) => b.id !== book.id);
@@ -131,29 +139,37 @@ export default function App(): JSX.Element {
     saveBook(newBook);
   };
 
+  const history = useHistory();
+
+  const addBookTrigger: AddBookTrigger = (template = {}) => {
+    setBookTemplate(template);
+    history.push('/new');
+  };
+
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <CssBaseline />
+      <CssBaseline />
 
-        <Switch>
-          <Route exact path="/">
-            <AuthorList books={books} />
-          </Route>
-          <Route exact path="/series">
-            <SeriesList books={books} />
-          </Route>
-          <Route exact path="/author/:id">
-            <BookListWithParams books={books} setOwned={setOwned} />
-          </Route>
-          <Route exact path="/edit/:id">
-            <BookEditWithParams books={books} save={saveBook} add={addBook} />
-          </Route>
-          <Route path="*">
-            <NotFound />
-          </Route>
-        </Switch>
-      </Router>
+      <Switch>
+        <Route exact path="/">
+          <AuthorList books={books} addBookTrigger={addBookTrigger} />
+        </Route>
+        <Route exact path="/series">
+          <SeriesList books={books} addBookTrigger={addBookTrigger} />
+        </Route>
+        <Route exact path="/author/:id">
+          <BookListWithParams books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
+        </Route>
+        <Route exact path="/edit/:id">
+          <BookEditWithParams books={books} save={saveBook} />
+        </Route>
+        <Route exact path="/new">
+          <BookEdit originalBook={bookTemplate} add={addBook} />
+        </Route>
+        <Route path="*">
+          <NotFound />
+        </Route>
+      </Switch>
     </ThemeProvider>
   );
 }
@@ -161,6 +177,7 @@ export default function App(): JSX.Element {
 interface BookListWithParamsProps {
   books: Book[],
   setOwned: SetOwnedCallback,
+  addBookTrigger: AddBookTrigger,
 }
 
 function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
@@ -177,10 +194,9 @@ function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
 interface BookEditWithParamsProps {
   books: Book[],
   save: SaveBookCallback,
-  add: AddBookCallback,
 }
 
-function BookEditWithParams({ books, save, add } : BookEditWithParamsProps): JSX.Element {
+function BookEditWithParams({ books, save } : BookEditWithParamsProps): JSX.Element {
   const params = useParams<Record<'id', string>>();
 
   const book = books.find((b) => String(b.id) === params.id);
@@ -192,7 +208,6 @@ function BookEditWithParams({ books, save, add } : BookEditWithParamsProps): JSX
     <BookEdit
       originalBook={book}
       save={save}
-      add={add}
     />
   );
 }

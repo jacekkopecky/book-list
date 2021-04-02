@@ -69,7 +69,18 @@
         }
       },
       "rules": {
-        "indent": ["error", 2],
+        "indent": ["off"],
+        "@typescript-eslint/indent": ["error", 2],
+        "@typescript-eslint/member-delimiter-style": ["error", {
+            "multiline": {
+              "delimiter": "comma",
+              "requireLast": true
+            },
+            "singleline": {
+              "delimiter": "comma",
+              "requireLast": false
+            }
+          }],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
         "react/destructuring-assignment": [
           1,

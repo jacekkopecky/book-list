@@ -13,10 +13,16 @@ interface ActionButtonsProps {
   itemName: string,
   showingOwned: boolean,
   onSwitchOwned: (val: boolean) => void,
+  addBook: () => void,
 }
 
 export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
-  const { itemName, showingOwned, onSwitchOwned } = props;
+  const {
+    itemName,
+    showingOwned,
+    onSwitchOwned,
+    addBook,
+  } = props;
 
   const switchText = showingOwned ? `Show ${itemName} I want` : `Show ${itemName} I have`;
 
@@ -31,7 +37,7 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
           <ImportExportIcon />
           { switchText }
         </Fab>
-        <Fab aria-label="add" color="primary"><AddIcon /></Fab>
+        <Fab aria-label="add" color="primary" onClick={addBook}><AddIcon /></Fab>
       </Container>
     </div>
   );
