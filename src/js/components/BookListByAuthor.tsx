@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
@@ -45,8 +46,12 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
   const entries = [...selectedBooks, ...series];
   entries.sort((a, b) => a.title.localeCompare(b.title));
 
+  const history = useHistory();
   const firstBook = booksByAuthor[0];
   if (!firstBook) {
+    React.useEffect(() => {
+      history.goBack();
+    });
     return <ErrorComponent text="empty book list – how did that happen?" />;
   }
 
