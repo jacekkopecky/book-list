@@ -1,10 +1,14 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import AppBar from '@material-ui/core/AppBar';
 import Container from '@material-ui/core/Container';
-import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
+
+import BackIcon from '@material-ui/icons/ArrowBack';
 
 import MainAppBar from './MainAppBar';
 
@@ -17,12 +21,16 @@ interface MainTabsProps {
 }
 
 export default function MainHeading({ title, children }: MainTabsProps): JSX.Element {
+  const history = useHistory();
   const narrow = tools.isNarrow();
 
   const tabs = (
-    <Tabs value="1" variant="fullWidth" indicatorColor="primary">
-      <Tab value="1" label={title} />
-    </Tabs>
+    <>
+      <IconButton onClick={() => history.goBack()}><BackIcon /></IconButton>
+      <Tabs value="1" variant="fullWidth" indicatorColor="primary">
+        <Tab value="1" label={title} />
+      </Tabs>
+    </>
   );
 
   if (narrow) {
@@ -45,7 +53,9 @@ export default function MainHeading({ title, children }: MainTabsProps): JSX.Ele
       <>
         <MainAppBar />
         <Container {...containerProps}>
-          { tabs }
+          <Toolbar disableGutters>
+            { tabs }
+          </Toolbar>
           { children }
         </Container>
       </>
