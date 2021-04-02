@@ -64,6 +64,11 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
       props.add(bookForSaving);
     }
     history.goBack();
+    // todo could go forward instead (then browser back will return to editing)
+    // but if we don't have an ID, we need to get it from props.add() and first history.replace
+    // as if we were editing that book all along
+    // going forward would go to the list of books by the same author,
+    // owned or not depending on the book
   };
 
   const doDelete = () => {
