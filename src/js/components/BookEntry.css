@@ -1,4 +1,5 @@
-.BookListByAuthor .ExpandedBook .author {
+.BookListByAuthor .ExpandedBook .author,
+.BookListBySeries.singleAuthor .ExpandedBook .author {
   display: none;
 }
 

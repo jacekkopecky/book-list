@@ -14,15 +14,12 @@ A book has these properties:
 
 ## todo
 
-* deleting a book
-* editing functionality
-   - autocomplete/autosuggest matches for author / series
-   - maybe drop-down of alphabetical list for author / series
-* show author in BookListBySeries (either at the top if all books have the same author, or with each book)
-   - pre-fill author in created books if all books in the series have the same author
 * google auth
 * server with a database
 * search functionality
+* editing functionality
+   - autocomplete/autosuggest matches for author / series
+   - maybe drop-down of alphabetical list for author / series
 * service worker for offline work, background sync
 * better mobile interface
    - swipe book to change status

@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import List from '@material-ui/core/List';
 
-import { Book, SetOwnedCallback, AddBookTrigger } from '../types';
+import { Book, SetOwnedCallback, AddBookTrigger, NewBook } from '../types';
 import * as tools from '../tools/tools';
 
 import ActionButtons from './ActionButtons';
@@ -31,7 +31,9 @@ export default function BookListBySeries(props: BookListProps): JSX.Element {
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
-  const booksInSeries = selectBookInSeries(books, seriesPath);
+  const booksInSeries = selectBooksInSeries(books, seriesPath);
+
+  const singleAuthor = new Set(booksInSeries.map((b) => tools.authorName(b.author))).size === 1;
 
   const selectedBooks = booksInSeries.filter((b) => b.owned === showingOwned);
 
@@ -46,19 +48,26 @@ export default function BookListBySeries(props: BookListProps): JSX.Element {
     return <ErrorComponent text="empty book list – how did that happen?" />;
   }
 
-  // todo write the prefix
-  const title = showingOwned ? `Books I Have In ${firstBook.series} Series` : `Wanted Books In ${firstBook.series} Series`;
+  const titlePrefix = showingOwned ? `Books I Have In ${firstBook.series} Series` : `Wanted Books In ${firstBook.series} Series`;
+  const titleAuthor = `(By ${tools.authorName(firstBook.author)})`.replace(/\s/g, '\u00a0');
+
+  const title = singleAuthor ? `${titlePrefix} ${titleAuthor}` : titlePrefix;
+
+  const addBookTemplate: Partial<NewBook> = { series: firstBook.series, owned: showingOwned };
+  if (singleAuthor && firstBook.author) {
+    addBookTemplate.author = { ...firstBook.author };
+  }
 
   return (
     <MainHeading title={title}>
-      <List className="BookListBySeries">
+      <List className={`BookListBySeries ${singleAuthor ? 'singleAuthor' : ''}`}>
         { selectedBooks.length > 0 ? selectedBooks.map((x) => renderBook(x, setOwned)) : <EmptyListItem text="no books" /> }
       </List>
       <ActionButtons
         itemName="books"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger({ series: firstBook.series, owned: showingOwned })}
+        addBook={() => addBookTrigger(addBookTemplate)}
       />
     </MainHeading>
   );
@@ -70,7 +79,7 @@ function renderBook(book: BookInSeries, setOwned: SetOwnedCallback) {
   );
 }
 
-function selectBookInSeries(books: Book[], seriesPath: string): BookInSeries[] {
+function selectBooksInSeries(books: Book[], seriesPath: string): BookInSeries[] {
   const retval: BookInSeries[] = [];
   for (const book of books) {
     if (hasSeries(book) && tools.seriesPath(book.series) === seriesPath) retval.push(book);
