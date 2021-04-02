@@ -44,13 +44,13 @@ export default function BookEdit({ originalBook, save, add }: BookEditProps): JS
   };
 
   const doSave = () => {
-    removeEmpties(book);
-    if (!verifyNewBook(book)) return;
+    const bookForSaving = removeEmpties(book);
+    if (!verifyNewBook(bookForSaving)) return;
 
-    if (verifyBook(book)) {
-      save(book);
+    if (verifyBook(bookForSaving)) {
+      save(bookForSaving);
     } else {
-      add(book);
+      add(bookForSaving);
     }
     history.goBack();
   };
@@ -156,8 +156,8 @@ function verifyNewBook(book: Partial<Book>): book is NewBook {
 function verifyAuthor(book: Partial<Book>): boolean {
   if (!book.author) return true;
 
-  const fname = Boolean(book.author.fname?.trim());
-  const lname = Boolean(book.author.lname?.trim());
+  const fname = Boolean(book.author.fname.trim());
+  const lname = Boolean(book.author.lname.trim());
 
   // either both are there or both are empty
   return (fname && lname) || (!fname && !lname);
@@ -165,12 +165,15 @@ function verifyAuthor(book: Partial<Book>): boolean {
 
 // remove empty-string values, and the whole author if both values are empty
 function removeEmpties(book: Partial<Book>) {
-  if (book.author) {
-    if (!book.author.fname.trim() && !book.author.lname.trim()) {
-      delete book.author;
+  const newBook = { ...book };
+  if (newBook.author) {
+    if (!newBook.author.fname.trim() && !newBook.author.lname.trim()) {
+      delete newBook.author;
     }
   }
 
-  if (!book.series?.trim()) delete book.series;
-  if (!book.notes?.trim()) delete book.notes;
+  if (!newBook.series?.trim()) delete newBook.series;
+  if (!newBook.notes?.trim()) delete newBook.notes;
+
+  return newBook;
 }
