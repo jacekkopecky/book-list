@@ -20,6 +20,7 @@ A book has these properties:
    - in list by series (pre-fills series, also author if all books in the series are by the same author)
    - autocomplete/autosuggest matches for author / series
    - maybe drop-down of alphabetical list for author / series
+* deleting a book
 * google auth
 * server with a database
 * search functionality
