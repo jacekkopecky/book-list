@@ -68,7 +68,11 @@ export default function BookEdit({ originalBook, save, add }: BookEditProps): JS
             <Grid component="label" container alignItems="center" justify="flex-end" spacing={1}>
               <Grid item>Want it</Grid>
               <Grid item>
-                <Switch checked={book.owned} color="primary" />
+                <Switch
+                  checked={book.owned}
+                  color="primary"
+                  onChange={(e) => setBook({ ...book, owned: e.target.checked })}
+                />
               </Grid>
               <Grid item>Have it</Grid>
             </Grid>
@@ -80,7 +84,7 @@ export default function BookEdit({ originalBook, save, add }: BookEditProps): JS
               required
               fullWidth
               value={book.title}
-              onChange={(e) => { setBook({ ...book, title: e.target.value }); }}
+              onChange={(e) => setBook({ ...book, title: e.target.value })}
             />
           </Grid>
           <Grid item xs={5}>
@@ -111,7 +115,7 @@ export default function BookEdit({ originalBook, save, add }: BookEditProps): JS
               placeholder="optional"
               fullWidth
               value={book.series}
-              onChange={(e) => { setBook({ ...book, series: e.target.value }); }}
+              onChange={(e) => setBook({ ...book, series: e.target.value })}
             />
           </Grid>
           <Grid item xs={12}>
@@ -122,7 +126,7 @@ export default function BookEdit({ originalBook, save, add }: BookEditProps): JS
               placeholder="optional"
               fullWidth
               value={book.notes}
-              onChange={(e) => { setBook({ ...book, notes: e.target.value }); }}
+              onChange={(e) => setBook({ ...book, notes: e.target.value })}
             />
           </Grid>
           <Grid item container xs={12} justify="flex-end">
