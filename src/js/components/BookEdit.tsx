@@ -13,7 +13,7 @@ import {
   Book,
   NewBook,
   SaveBookCallback,
-  AddBookCallback
+  AddBookCallback,
 } from '../types';
 
 import './BookEdit.css';
