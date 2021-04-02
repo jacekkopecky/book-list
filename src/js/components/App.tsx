@@ -14,6 +14,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
 import theme from './theme';
+import * as tools from '../tools/tools';
 
 import {
   Book,
@@ -108,7 +109,7 @@ export default function App(): JSX.Element {
 }
 
 function AppInsideRouter(): JSX.Element {
-  const [books, setBooks] = React.useState<Book[]>(DEFAULT_BOOKS);
+  const [books, setBooks] = tools.useLocalStorage<Book[]>('bookList', DEFAULT_BOOKS);
   const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});
 
   const saveBook: SaveBookCallback = (book) => {
