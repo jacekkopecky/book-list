@@ -94,6 +94,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               margin="normal"
               required
               fullWidth
+              autoFocus
               value={book.title}
               onChange={(e) => setBook({ ...book, title: e.target.value })}
             />
