@@ -71,6 +71,7 @@
       "rules": {
         "indent": ["off"],
         "@typescript-eslint/indent": ["error", 2],
+        "default-case": ["off"],
         "@typescript-eslint/member-delimiter-style": ["error", {
             "multiline": {
               "delimiter": "comma",

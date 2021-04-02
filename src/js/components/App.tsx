@@ -29,6 +29,7 @@ import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
 import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
+import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
 
 const DEFAULT_BOOKS = [
@@ -99,7 +100,10 @@ function AppInsideRouter(): JSX.Element {
           <SeriesList books={books} addBookTrigger={addBookTrigger} />
         </Route>
         <Route exact path="/author/:id">
-          <BookListWithParams books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
+          <BookListWithParams variant="author" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
+        </Route>
+        <Route exact path="/series/:id">
+          <BookListWithParams variant="series" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
         </Route>
         <Route exact path="/edit/:id">
           <BookEditWithParams books={books} save={saveBook} />
@@ -117,6 +121,7 @@ function AppInsideRouter(): JSX.Element {
 
 interface BookListWithParamsProps {
   books: Book[],
+  variant: 'author' | 'series',
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
 }
@@ -124,12 +129,22 @@ interface BookListWithParamsProps {
 function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
   const params = useParams<Record<'id', string>>();
 
-  return (
-    <BookListByAuthor
-      {...props}
-      authorPath={params.id}
-    />
-  );
+  switch (props.variant) {
+    case 'author':
+      return (
+        <BookListByAuthor
+          {...props}
+          authorPath={params.id}
+        />
+      );
+    case 'series':
+      return (
+        <BookListBySeries
+          {...props}
+          seriesPath={params.id}
+        />
+      );
+  }
 }
 
 interface BookEditWithParamsProps {
