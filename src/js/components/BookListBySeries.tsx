@@ -3,7 +3,12 @@ import { useHistory } from 'react-router-dom';
 
 import List from '@material-ui/core/List';
 
-import { Book, SetOwnedCallback, AddBookTrigger, NewBook } from '../types';
+import {
+  Book,
+  SetOwnedCallback,
+  AddBookTrigger,
+  NewBook,
+} from '../types';
 import * as tools from '../tools/tools';
 
 import ActionButtons from './ActionButtons';
