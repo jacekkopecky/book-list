@@ -75,12 +75,14 @@ export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Eleme
 
             <div className="mtime">Last updated { tools.formatMTime(book.mtime) }</div>
             <Grid container className="buttons">
-              { book.owned || (
-                <Button color="primary" variant="outlined" onClick={setBookOwned}>
-                  I have it now
-                </Button>
-              ) }
-              <Button color="primary" variant="outlined" onClick={edit}>Edit</Button>
+              <>
+                { book.owned || (
+                  <Button color="primary" variant="outlined" onClick={setBookOwned}>
+                    I have it now
+                  </Button>
+                ) }
+                <Button color="primary" variant="outlined" onClick={edit}>Edit</Button>
+              </>
             </Grid>
           </ListItemText>
         </ListItem>
