@@ -23,7 +23,7 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
   return (
     <div className="action-buttons">
       <Container maxWidth="sm">
-        <Fab aria-label="search" color="primary"><SearchIcon /></Fab>
+        <Fab aria-label="search" color="primary" disabled><SearchIcon /></Fab>
         <Fab
           variant="extended"
           onClick={() => onSwitchOwned(!showingOwned)}

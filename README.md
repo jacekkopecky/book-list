@@ -14,8 +14,6 @@ A book has these properties:
 
 ## todo
 
-* editing of books
-* search functionality
 * add functionality
    - in main list
    - in list by author (pre-fills author)
@@ -24,6 +22,7 @@ A book has these properties:
    - maybe drop-down of alphabetical list for author / series
 * google auth
 * server with a database
+* search functionality
 * service worker for offline work, background sync
 * better mobile interface
    - swipe book to change status
