@@ -22,14 +22,11 @@ A book has these properties:
    - maybe drop-down of alphabetical list for author / series
 * service worker for offline work, background sync
 * better mobile interface
-   - swipe book to change status
+   - swipe book to change status or to edit
    - swipe between author and series view
-* desktop interface
-* a book in a book list should show the first two lines of the notes
-* there should be a listing of series, not just books
-   - list of books in series should show author at top (if all books by same author) or by each book
+* desktop interface with more columns of lists
 * add dark mode (see https://material-ui.com/customization/palette/#dark-mode )
-* show books in the bin, empty bin
+* show books that are in the bin, empty bin
 * after save could go forward not back in history (see todo in BookEdit.tsx)
 * top-level menu, about, version
 
