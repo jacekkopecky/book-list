@@ -39,7 +39,11 @@ export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Eleme
     <>
       <ListItem className="BookEntry" button onClick={() => setExpanded(!expanded)}>
         <ListItemIcon><MenuBook /></ListItemIcon>
-        <ListItemText primary={book.title} />
+        <ListItemText
+          primary={book.title}
+          secondary={expanded ? null : book.notes}
+          secondaryTypographyProps={{ noWrap: true }}
+        />
         { expanded ? <ExpandLess /> : <ExpandMore className="ExpandButton" /> }
       </ListItem>
       <Collapse in={expanded} timeout="auto" unmountOnExit>

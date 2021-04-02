@@ -10,6 +10,10 @@
   opacity: 1;
 }
 
+.ExpandedBook .notes {
+  white-space: pre-line;
+}
+
 .ExpandedBook .notes:not(.none) {
   margin-top: 0.25em;
   margin-bottom: 0.25em;
