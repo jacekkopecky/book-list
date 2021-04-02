@@ -14,12 +14,18 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import './App.css';
 import theme from './theme';
 
-import { Book, SetOwnedCallback } from '../types';
+import {
+  Book,
+  SetOwnedCallback,
+  SaveBookCallback,
+  AddBookCallback,
+} from '../types';
 
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
 import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
+import BookEdit from './BookEdit';
 
 const DEFAULT_BOOKS = [
   {
@@ -92,18 +98,37 @@ const DEFAULT_BOOKS = [
   },
 ];
 
+let nextId = Math.max(...DEFAULT_BOOKS.map((b) => b.id)) + 1;
+
 export default function App(): JSX.Element {
   const [books, setBooks] = React.useState<Book[]>(DEFAULT_BOOKS);
+
+  const saveBook: SaveBookCallback = (book) => {
+    const newBooks = books.filter((b) => b.id !== book.id);
+    book.mtime = Date.now();
+    newBooks.push(book);
+    setBooks(newBooks);
+  };
+
+  const addBook: AddBookCallback = (newBook) => {
+    const newBooks = Array.from(books);
+    const book: Book = {
+      id: nextId,
+      mtime: Date.now(),
+      ...newBook,
+    };
+    newBooks.push(book);
+    setBooks(newBooks);
+  };
+
+  nextId += 1;
 
   const setOwned = (book: Book, owned: boolean) => {
     const newBook = {
       ...book,
       owned,
-      mtime: Date.now(),
     };
-    const newBooks = books.filter((b) => b !== book);
-    newBooks.push(newBook);
-    setBooks(newBooks);
+    saveBook(newBook);
   };
 
   return (
@@ -120,6 +145,9 @@ export default function App(): JSX.Element {
           </Route>
           <Route exact path="/author/:id">
             <BookListWithParams books={books} setOwned={setOwned} />
+          </Route>
+          <Route exact path="/edit/:id">
+            <BookEditWithParams books={books} save={saveBook} add={addBook} />
           </Route>
           <Route path="*">
             <NotFound />
@@ -142,6 +170,29 @@ function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
     <BookListByAuthor
       {...props}
       authorPath={params.id}
+    />
+  );
+}
+
+interface BookEditWithParamsProps {
+  books: Book[],
+  save: SaveBookCallback,
+  add: AddBookCallback,
+}
+
+function BookEditWithParams({ books, save, add } : BookEditWithParamsProps): JSX.Element {
+  const params = useParams<Record<'id', string>>();
+
+  const book = books.find((b) => String(b.id) === params.id);
+  if (!book) {
+    return <ErrorComponent text={`cannot find book for id ${params.id}`} />;
+  }
+
+  return (
+    <BookEdit
+      originalBook={book}
+      save={save}
+      add={add}
     />
   );
 }

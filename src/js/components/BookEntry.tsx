@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -24,6 +25,11 @@ interface BookEntryProps {
 
 export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Element {
   const [expanded, setExpanded] = React.useState(false);
+
+  const history = useHistory();
+  const edit = () => {
+    history.push(`/edit/${encodeURIComponent(String(book.id))}`);
+  };
 
   const setBookOwned = () => {
     setOwned(book, true);
@@ -74,7 +80,7 @@ export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Eleme
                   I have it now
                 </Button>
               ) }
-              <Button color="primary" variant="outlined">Edit</Button>
+              <Button color="primary" variant="outlined" onClick={edit}>Edit</Button>
             </Grid>
           </ListItemText>
         </ListItem>
