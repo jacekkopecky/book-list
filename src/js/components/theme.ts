@@ -22,6 +22,5 @@ export const containerProps = {
   maxWidth: 'sm' as const,
   style: {
     backgroundColor: theme.palette.background.paper,
-    paddingBottom: theme.spacing(10),
   },
 };

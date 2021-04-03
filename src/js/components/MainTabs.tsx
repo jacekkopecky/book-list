@@ -48,14 +48,14 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
   if (narrow) {
     return (
       <>
-        <AppBar position="relative">
+        <AppBar position="sticky">
           <Toolbar>
             <Tabs value={location.pathname} variant="fullWidth" className="MainTabs">
               { tabs }
             </Tabs>
           </Toolbar>
         </AppBar>
-        <Container {...containerProps}>
+        <Container {...containerProps} className="narrow">
           <>
             { children }
           </>

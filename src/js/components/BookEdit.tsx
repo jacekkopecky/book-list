@@ -91,8 +91,8 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
     <MainHeading
       title={title}
     >
-      <Typography component="div">
-        <Grid container className="BookEdit" spacing={1}>
+      <Typography component="div" className="BookEdit">
+        <Grid container spacing={1}>
           <Grid item xs={6} />
           <Grid item xs={6}>
             <Grid component="label" container alignItems="center" justify="flex-end" spacing={1}>
@@ -160,6 +160,8 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               onChange={(e) => setBook({ ...book, notes: e.target.value })}
             />
           </Grid>
+        </Grid>
+        <Grid container alignContent="flex-end" className="bottom">
           <Grid item container xs={6} justify="flex-start">
             { props.save ? (
               <Button

@@ -36,12 +36,12 @@ export default function MainHeading({ title, children }: MainTabsProps): JSX.Ele
   if (narrow) {
     return (
       <>
-        <AppBar position="relative">
+        <AppBar position="sticky">
           <Toolbar>
             { tabs }
           </Toolbar>
         </AppBar>
-        <Container {...containerProps}>
+        <Container {...containerProps} className="narrow">
           <>
             { children }
           </>

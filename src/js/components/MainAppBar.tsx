@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 export default function MainAppBar(): JSX.Element {
   return (
-    <AppBar position="static" style={{ zIndex: 1, position: 'relative' }}>
+    <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h5">
           bananas for books
