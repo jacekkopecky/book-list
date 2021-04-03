@@ -26,7 +26,7 @@ export default function MainHeading({ title, children }: MainTabsProps): JSX.Ele
 
   const tabs = (
     <>
-      <IconButton onClick={() => history.goBack()}><BackIcon /></IconButton>
+      <IconButton color="inherit" onClick={() => history.goBack()}><BackIcon /></IconButton>
       <Tabs value="1" variant="fullWidth" indicatorColor="primary">
         <Tab value="1" label={title} />
       </Tabs>
