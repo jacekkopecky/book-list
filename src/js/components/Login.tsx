@@ -10,17 +10,16 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-enum LoginState {
-  loading,
-  loggedOut,
-  loggedIn,
-  error,
-}
+import { LoginState } from '../types';
 
 const auth2Promise = initializeGapi();
 
-export default function Login(): JSX.Element {
-  const [state, setState] = React.useState(LoginState.loading);
+interface LoginProps {
+  state: LoginState,
+  setState: (state: LoginState, email?: string) => void,
+}
+
+export default function Login({ state, setState }: LoginProps): JSX.Element {
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
   const [name, setName] = React.useState('');
 
@@ -35,6 +34,7 @@ export default function Login(): JSX.Element {
   const onLogin = (user: gapi.auth2.GoogleUser) => {
     closeMenu();
     setName(user.getBasicProfile().getName());
+    setState(LoginState.loggedIn, user.getBasicProfile().getEmail());
   };
 
   const logout = async () => {
@@ -84,7 +84,7 @@ export default function Login(): JSX.Element {
 
   let mainEl: JSX.Element;
   switch (state) {
-    case LoginState.loading:
+    case LoginState.starting:
       mainEl = (
         <Tooltip title="logging in">
           <CircularProgress color="inherit" size="2em" />
@@ -95,6 +95,7 @@ export default function Login(): JSX.Element {
       mainEl = <Button color="inherit" onClick={openMenu}>Login</Button>;
       break;
     case LoginState.loggedIn:
+    case LoginState.connected:
       mainEl = (
         <IconButton title="account" color="inherit" onClick={openMenu}>
           <AccountCircleIcon />
@@ -104,7 +105,7 @@ export default function Login(): JSX.Element {
     case LoginState.error:
     default:
       mainEl = (
-        <Tooltip title="log-in error, try again later">
+        <Tooltip title="log-in or connection error, try again later">
           <ErrorOutlineIcon />
         </Tooltip>
       );

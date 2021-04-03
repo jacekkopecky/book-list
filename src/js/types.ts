@@ -16,6 +16,14 @@ export interface Book extends NewBook {
   mtime: number,
 }
 
+export enum LoginState {
+  starting,
+  loggedOut,
+  loggedIn,
+  connected,
+  error,
+}
+
 export type SetOwnedCallback = (book: Book, owned: boolean) => void;
 export type SaveBookCallback = (book: Book) => void;
 export type DeleteBookCallback = (book: Book) => void;

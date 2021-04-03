@@ -8,12 +8,17 @@ import {
   useHistory,
 } from 'react-router-dom';
 
+import AppBar from '@material-ui/core/AppBar';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
-import theme from './theme';
+import theme, { containerProps } from './theme';
 import * as tools from '../tools/tools';
 
 import {
@@ -24,6 +29,7 @@ import {
   DeleteBookCallback,
   AddBookCallback,
   AddBookTrigger,
+  LoginState,
 } from '../types';
 
 import AuthorList from './AuthorList';
@@ -32,7 +38,7 @@ import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
 import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
-import MainAppBar from './MainAppBar';
+import Login from './Login';
 
 const DEFAULT_BOOKS = [
   {
@@ -52,6 +58,8 @@ export default function App(): JSX.Element {
 }
 
 function AppInsideRouter(): JSX.Element {
+  const [state, setState] = React.useState<LoginState>(LoginState.starting);
+  const [email, setEmail] = React.useState<string>();
   const [books, setBooks] = tools.useLocalStorage<Book[]>('bookList', DEFAULT_BOOKS);
   const [bin, setBin] = tools.useLocalStorage<Book[]>('bookBin', []);
   const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});
@@ -87,11 +95,10 @@ function AppInsideRouter(): JSX.Element {
       mtime: Date.now(),
       ...newBook,
     };
+    nextId += 1;
     newBooks.push(book);
     setBooks(newBooks);
   };
-
-  nextId += 1;
 
   const setOwned = (book: Book, owned: boolean) => {
     const newBook = {
@@ -108,36 +115,91 @@ function AppInsideRouter(): JSX.Element {
     history.push('/new');
   };
 
+  const setStateAndEmail = (s: LoginState, e?: string) => {
+    setState(s);
+    if (s === LoginState.loggedIn) {
+      setEmail(e);
+    } else {
+      setEmail(undefined);
+    }
+  };
+
+  React.useEffect(() => {
+    if (email) {
+      void loadBooks();
+    }
+  }, [email]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <MainAppBar />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h5" style={{ flexGrow: 1 }}>
+            bananas for books
+            { /* when changing the title above, also change it in index.html and 404.html */ }
+          </Typography>
+          <Login state={state} setState={setStateAndEmail} />
+        </Toolbar>
+      </AppBar>
 
-      <Switch>
-        <Route exact path="/">
-          <AuthorList books={books} addBookTrigger={addBookTrigger} />
-        </Route>
-        <Route exact path="/series">
-          <SeriesList books={books} addBookTrigger={addBookTrigger} />
-        </Route>
-        <Route exact path="/author/:id">
-          <BookListWithParams variant="author" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
-        </Route>
-        <Route exact path="/series/:id">
-          <BookListWithParams variant="series" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
-        </Route>
-        <Route exact path="/edit/:id">
-          <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
-        </Route>
-        <Route exact path="/new">
-          <BookEdit originalBook={bookTemplate} add={addBook} />
-        </Route>
-        <Route path="*">
-          <NotFound />
-        </Route>
-      </Switch>
+      { mainContent() }
     </ThemeProvider>
   );
+
+  function mainContent(): JSX.Element {
+    switch (state) {
+      case LoginState.connected: return (
+        <Switch>
+          <Route exact path="/">
+            <AuthorList books={books} addBookTrigger={addBookTrigger} />
+          </Route>
+          <Route exact path="/series">
+            <SeriesList books={books} addBookTrigger={addBookTrigger} />
+          </Route>
+          <Route exact path="/author/:id">
+            <BookListWithParams variant="author" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
+          </Route>
+          <Route exact path="/series/:id">
+            <BookListWithParams variant="series" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
+          </Route>
+          <Route exact path="/edit/:id">
+            <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
+          </Route>
+          <Route exact path="/new">
+            <BookEdit originalBook={bookTemplate} add={addBook} />
+          </Route>
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
+      );
+      case LoginState.starting: return (
+        <Container {...containerProps} className="loading">
+          <Typography>Starting…</Typography>
+        </Container>
+      );
+      case LoginState.loggedIn: return (
+        <Container {...containerProps} className="loading">
+          <CircularProgress />
+          <Typography>Loading books…</Typography>
+        </Container>
+      );
+      case LoginState.loggedOut: return (
+        <Container {...containerProps} className="loading">
+          <Typography>Please log in.</Typography>
+        </Container>
+      );
+      case LoginState.error:
+      default: return (
+        <ErrorComponent text="error, please try later" />
+      );
+    }
+  }
+
+  function loadBooks() {
+    setState(LoginState.connected);
+  }
 }
 
 interface BookListWithParamsProps {

@@ -20,13 +20,19 @@ body {
   overflow: auto;
 }
 
-#app > main > :first-child {
+#app > main.loading {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#app > main:not(.loading) > :first-child {
   position: sticky;
   top: 0;
   background-color: inherit;
   z-index: 1;
 }
 
-#app > main > :nth-child(2) {
+#app > main:not(.loading) > :nth-child(2) {
   flex-grow: 1;
 }
