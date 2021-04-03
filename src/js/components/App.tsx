@@ -32,6 +32,7 @@ import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
 import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
+import MainAppBar from './MainAppBar';
 
 const DEFAULT_BOOKS = [
   {
@@ -110,6 +111,7 @@ function AppInsideRouter(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <MainAppBar />
 
       <Switch>
         <Route exact path="/">

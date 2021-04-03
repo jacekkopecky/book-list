@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Theme } from '@material-ui/core/styles';
-
 import { Author } from '../types';
 
 export const UNKNOWN: Author = {
@@ -51,13 +48,6 @@ export function formatMTime(mtime: number): string {
 // useQuery adopted from https://reactrouter.com/web/example/query-parameters
 export function useQuery(): URLSearchParams {
   return new URLSearchParams(useLocation().search);
-}
-
-export function isNarrow(): boolean {
-  return useMediaQuery(
-    (theme: Theme) => theme.breakpoints.down('xs'),
-    { noSsr: true },
-  );
 }
 
 export function useShowingOwned(): [boolean, (value: boolean) => void] {
