@@ -9,8 +9,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 import BackIcon from '@material-ui/icons/ArrowBack';
 
-import MainAppBar from './MainAppBar';
-
 import { containerProps } from './theme';
 
 interface MainTabsProps {

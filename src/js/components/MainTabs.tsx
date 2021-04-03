@@ -8,8 +8,6 @@ import Container from '@material-ui/core/Container';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
-import MainAppBar from './MainAppBar';
-
 import * as tools from '../tools/tools';
 import { containerProps } from './theme';
 
