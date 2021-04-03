@@ -1,3 +1,3 @@
-version: 0.3.1
-date:    Fri Apr  2 20:01:34 UTC 2021
-git sha: 6125f774a8ad774e876af48ff2cbbb6ba18fc3d5
+version: 0.3.2
+date:    Sat Apr  3 12:58:18 UTC 2021
+git sha: 7af882341f35601c5ea01393da3aef7afd990ef8
