@@ -59,6 +59,7 @@ export default function App(): JSX.Element {
 
 function AppInsideRouter(): JSX.Element {
   const [state, setState] = React.useState<AppState>(AppState.starting);
+  const [customMessage, setCustomMessage] = React.useState('');
   const [email, setEmail] = React.useState<string>();
   const [books, setBooks] = tools.useLocalStorage<Book[]>('bookList', DEFAULT_BOOKS);
   const [bin, setBin] = tools.useLocalStorage<Book[]>('bookBin', []);
@@ -177,6 +178,11 @@ function AppInsideRouter(): JSX.Element {
       case AppState.starting: return (
         <Container {...containerProps} className="messageOnly">
           <Typography>Starting…</Typography>
+        </Container>
+      );
+      case AppState.progress: return (
+        <Container {...containerProps} className="messageOnly">
+          <Typography>{ customMessage || 'Please wait…' }</Typography>
         </Container>
       );
       case AppState.loggedIn: return (

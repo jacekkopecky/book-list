@@ -97,6 +97,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
       mainEl = <Button color="inherit" onClick={openMenu}>Login</Button>;
       break;
     case AppState.loggedIn:
+    case AppState.progress:
     case AppState.connected:
       mainEl = (
         <IconButton title="account" color="inherit" onClick={openMenu}>

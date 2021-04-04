@@ -21,6 +21,7 @@ export enum AppState {
   loggedOut,
   loggedIn,
   connected,
+  progress,
   error,
 }
 
