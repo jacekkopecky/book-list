@@ -20,7 +20,6 @@ A book has these properties:
    - autocomplete/autosuggest matches for author / series
    - maybe drop-down of alphabetical list for author / series
 * service worker for offline work, background sync
-* check when adding a book that its title isn't already there
 * better mobile interface
    - swipe book to change status or to edit
    - swipe between author and series view
