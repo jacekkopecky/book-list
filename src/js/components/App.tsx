@@ -29,7 +29,7 @@ import {
   DeleteBookCallback,
   AddBookCallback,
   AddBookTrigger,
-  LoginState,
+  AppState,
 } from '../types';
 
 import AuthorList from './AuthorList';
@@ -58,7 +58,7 @@ export default function App(): JSX.Element {
 }
 
 function AppInsideRouter(): JSX.Element {
-  const [state, setState] = React.useState<LoginState>(LoginState.starting);
+  const [state, setState] = React.useState<AppState>(AppState.starting);
   const [email, setEmail] = React.useState<string>();
   const [books, setBooks] = tools.useLocalStorage<Book[]>('bookList', DEFAULT_BOOKS);
   const [bin, setBin] = tools.useLocalStorage<Book[]>('bookBin', []);
@@ -115,9 +115,9 @@ function AppInsideRouter(): JSX.Element {
     history.push('/new');
   };
 
-  const setStateAndEmail = (s: LoginState, e?: string) => {
+  const setStateAndEmail = (s: AppState, e?: string) => {
     setState(s);
-    if (s === LoginState.loggedIn) {
+    if (s === AppState.loggedIn) {
       setEmail(e);
     } else {
       setEmail(undefined);
@@ -149,7 +149,7 @@ function AppInsideRouter(): JSX.Element {
 
   function mainContent(): JSX.Element {
     switch (state) {
-      case LoginState.connected: return (
+      case AppState.connected: return (
         <Switch>
           <Route exact path="/">
             <AuthorList books={books} addBookTrigger={addBookTrigger} />
@@ -174,23 +174,23 @@ function AppInsideRouter(): JSX.Element {
           </Route>
         </Switch>
       );
-      case LoginState.starting: return (
+      case AppState.starting: return (
         <Container {...containerProps} className="messageOnly">
           <Typography>Starting…</Typography>
         </Container>
       );
-      case LoginState.loggedIn: return (
+      case AppState.loggedIn: return (
         <Container {...containerProps} className="messageOnly">
           <CircularProgress />
           <Typography>Loading books…</Typography>
         </Container>
       );
-      case LoginState.loggedOut: return (
+      case AppState.loggedOut: return (
         <Container {...containerProps} className="messageOnly">
           <Typography>Please log in.</Typography>
         </Container>
       );
-      case LoginState.error:
+      case AppState.error:
       default: return (
         <ErrorComponent text="error, please try later" />
       );
@@ -198,7 +198,7 @@ function AppInsideRouter(): JSX.Element {
   }
 
   function loadBooks() {
-    setState(LoginState.connected);
+    setState(AppState.progress);
   }
 }
 

@@ -16,7 +16,7 @@ export interface Book extends NewBook {
   mtime: number,
 }
 
-export enum LoginState {
+export enum AppState {
   starting,
   loggedOut,
   loggedIn,

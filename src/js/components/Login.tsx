@@ -11,13 +11,13 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import config from '../config';
-import { LoginState } from '../types';
+import { AppState } from '../types';
 
 const auth2Promise = initializeGapi();
 
 interface LoginProps {
-  state: LoginState,
-  setState: (state: LoginState, email?: string) => void,
+  state: AppState,
+  setState: (state: AppState, email?: string) => void,
 }
 
 export default function Login({ state, setState }: LoginProps): JSX.Element {
@@ -35,23 +35,23 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
   const onLogin = (user: gapi.auth2.GoogleUser) => {
     closeMenu();
     setName(user.getBasicProfile().getName());
-    setState(LoginState.loggedIn, user.getBasicProfile().getEmail());
+    setState(AppState.loggedIn, user.getBasicProfile().getEmail());
   };
 
   const logout = async () => {
     closeMenu();
     try {
       await gapi.auth2.getAuthInstance().signOut();
-      setState(LoginState.loggedOut);
+      setState(AppState.loggedOut);
     } catch (e) {
       console.error('error logging out', e);
-      setState(LoginState.error);
+      setState(AppState.error);
     }
   };
 
   const error = (reason: unknown) => {
     console.error('failed to initialize Gapi auth2', reason);
-    setState(LoginState.error);
+    setState(AppState.error);
   };
 
   React.useEffect(() => {
@@ -69,41 +69,41 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
               onfailure: error,
             });
 
-            setState(googleAuth.isSignedIn.get() ? LoginState.loggedIn : LoginState.loggedOut);
+            setState(googleAuth.isSignedIn.get() ? AppState.loggedIn : AppState.loggedOut);
           },
           (reason) => {
             console.error('failed to initialize Gapi auth2', reason);
-            setState(LoginState.error);
+            setState(AppState.error);
           },
         );
       } catch (e) {
         console.error(e);
-        setState(LoginState.error);
+        setState(AppState.error);
       }
     })();
   }, []);
 
   let mainEl: JSX.Element;
   switch (state) {
-    case LoginState.starting:
+    case AppState.starting:
       mainEl = (
         <Tooltip title="logging in">
           <CircularProgress color="inherit" size="2em" />
         </Tooltip>
       );
       break;
-    case LoginState.loggedOut:
+    case AppState.loggedOut:
       mainEl = <Button color="inherit" onClick={openMenu}>Login</Button>;
       break;
-    case LoginState.loggedIn:
-    case LoginState.connected:
+    case AppState.loggedIn:
+    case AppState.connected:
       mainEl = (
         <IconButton title="account" color="inherit" onClick={openMenu}>
           <AccountCircleIcon />
         </IconButton>
       );
       break;
-    case LoginState.error:
+    case AppState.error:
     default:
       mainEl = (
         <Tooltip title="log-in or connection error, try again later">
@@ -123,7 +123,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
         onClose={closeMenu}
       >
         <MenuItem onClick={closeMenu}><div id="LoginGoogleButton" /></MenuItem>
-        { state === LoginState.loggedIn && (
+        { state === AppState.loggedIn && (
           <MenuItem disabled>{ name }</MenuItem>
         ) }
         <MenuItem onClick={logout}>Logout</MenuItem>
