@@ -103,6 +103,8 @@ exports.moveBookToBin = async (user, id) => {
   }
 };
 
+exports.getBin = (user) => getBinForUser(user, datastore);
+
 // helper functions for datastore access
 
 async function getBooksForUser(user, tx) {

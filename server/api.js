@@ -64,7 +64,11 @@ async function updateBook(req, res) {
 async function moveBookToBin(req, res) {
   const user = req.user.emails[0].value;
   const moved = await db.moveBookToBin(user, req.params.id);
-  res.sendStatus(moved ? 200 : 409);
+  if (moved) {
+    res.json(await db.getBin(user));
+  } else {
+    res.sendStatus(409);
+  }
 }
 
 // validation functions
