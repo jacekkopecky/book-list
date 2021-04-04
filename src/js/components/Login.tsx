@@ -10,6 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+import config from '../config';
 import { LoginState } from '../types';
 
 const auth2Promise = initializeGapi();
@@ -58,7 +59,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
       try {
         await auth2Promise;
         gapi.auth2.init({
-          client_id: '672418106267-kdholo3jd9fchkvf9a0qbr50s8pn5h7o.apps.googleusercontent.com',
+          client_id: config.client_id,
         }).then(
           (googleAuth) => {
             // todo
