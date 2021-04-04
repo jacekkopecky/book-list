@@ -14,8 +14,7 @@ A book has these properties:
 
 ## todo
 
-* google auth
-* server with a database
+* use id not title etc. for book key where available
 * search functionality
 * editing functionality
    - autocomplete/autosuggest matches for author / series
