@@ -127,7 +127,10 @@ function AppInsideRouter(): JSX.Element {
 
   React.useEffect(() => {
     if (email) {
-      void loadBooks();
+      loadBooks().catch((e) => {
+        console.error(e);
+        setState(AppState.error);
+      });
     }
   }, [email]);
 
@@ -203,8 +206,23 @@ function AppInsideRouter(): JSX.Element {
     }
   }
 
-  function loadBooks() {
+  async function loadBooks() {
     setState(AppState.progress);
+    const response = await tools.apiRequest('books');
+    if (response.ok) {
+      const data: unknown = await response.json();
+      console.log('response', data);
+
+      setState(AppState.progress);
+      if (!localStorage.getItem('booksSavedInCloud')) {
+        setState(AppState.progress);
+        setCustomMessage('Saving your books…');
+        await tools.saveBooks(books, setCustomMessage);
+        localStorage.setItem('booksSavedInCloud', 'yes');
+      }
+
+      setCustomMessage('Done, please wait for an upgrade…');
+    }
   }
 }
 

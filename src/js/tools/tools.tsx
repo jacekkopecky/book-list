@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 
-import { Author } from '../types';
+import { Author, Book } from '../types';
+
+import config from '../../../server/config';
 
 export const UNKNOWN: Author = {
   fname: 'unknown',
@@ -127,4 +129,39 @@ export function useLocalStorage<T>(
   };
 
   return [storedValue, setValue, deleteValue];
+}
+
+export function apiRequest(path: string, options?: RequestInit): Promise<Response> {
+  const idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+  return fetch(config.serverURL + path, {
+    method: 'GET',
+    ...options,
+    headers: {
+      ...options?.headers,
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+}
+
+export async function saveBooks(books: Book[], setMessage?: (m: string) => void): Promise<void> {
+  let num = 0;
+  for (const book of books) {
+    if (setMessage) setMessage(`${num} of ${books.length} saved`);
+
+    // eslint-disable-next-line no-await-in-loop
+    const response = await apiRequest('books', {
+      method: 'POST',
+      body: JSON.stringify(book),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.error(response);
+      throw new Error('error saving');
+    }
+
+    num += 1;
+  }
 }
