@@ -29,6 +29,7 @@ A book has these properties:
 * show books that are in the bin, empty bin
 * after save could go forward not back in history (see todo in BookEdit.tsx)
 * top-level menu, about, version
+* instead of whole-screen "saving", "adding", "deleting" these should be just a spinner over the "save" or "delete" button
 
 * resolved:
    - problem: books listed by author are not listed in order they should be read

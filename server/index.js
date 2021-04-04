@@ -19,3 +19,14 @@ app.get('/api/ping', (req, res) => { res.send('authorized'); });
 app.use('/api', api);
 
 exports.bookListAPI = app;
+
+if (process.env.TESTING && require.main === module) {
+  const port = Number(process.env.PORT) || 8082;
+  app.listen(port, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`started on port ${port}`);
+    }
+  });
+}

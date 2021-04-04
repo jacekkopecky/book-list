@@ -16,9 +16,14 @@ import config from '../../../server/config';
 
 const auth2Promise = initializeGapi();
 
+interface StateSetter {
+  (state: AppState.loggedIn, email: string): void,
+  (state: Exclude<AppState, AppState.loggedIn>): void,
+}
+
 interface LoginProps {
   state: AppState,
-  setState: (state: AppState, email?: string) => void,
+  setState: StateSetter,
 }
 
 export default function Login({ state, setState }: LoginProps): JSX.Element {
@@ -70,7 +75,12 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
               onfailure: error,
             });
 
-            setState(googleAuth.isSignedIn.get() ? AppState.loggedIn : AppState.loggedOut);
+            if (googleAuth.isSignedIn.get()) {
+              const email = googleAuth.currentUser.get().getBasicProfile().getEmail();
+              setState(AppState.loggedIn, email);
+            } else {
+              setState(AppState.loggedOut);
+            }
           },
           (reason) => {
             console.error('failed to initialize Gapi auth2', reason);

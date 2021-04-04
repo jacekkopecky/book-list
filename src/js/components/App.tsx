@@ -19,7 +19,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
 import theme, { containerProps } from './theme';
-import * as tools from '../tools/tools';
+import * as api from '../tools/api';
 
 import {
   Book,
@@ -40,65 +40,71 @@ import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
 import Login from './Login';
 
-const DEFAULT_BOOKS = [
-  {
-    id: 1,
-    title: 'Sample Book',
-    author: { fname: 'Stephen', lname: 'Austen' },
-    notes: 'you can remove this book',
-    owned: false,
-    mtime: Date.now(),
-  },
-];
-
-let nextId = Math.max(...DEFAULT_BOOKS.map((b) => b.id)) + 1;
-
 export default function App(): JSX.Element {
   return <Router><AppInsideRouter /></Router>;
 }
 
 function AppInsideRouter(): JSX.Element {
+  // state for application
   const [state, setState] = React.useState<AppState>(AppState.starting);
   const [customMessage, setCustomMessage] = React.useState('');
   const [email, setEmail] = React.useState<string>();
-  const [books, setBooks] = tools.useLocalStorage<Book[]>('bookList', DEFAULT_BOOKS);
-  const [bin, setBin] = tools.useLocalStorage<Book[]>('bookBin', []);
   const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});
 
-  const saveBook: SaveBookCallback = (book) => {
-    const newBooks = books.filter((b) => b.id !== book.id);
-    book.mtime = Date.now();
-    newBooks.push(book);
-    setBooks(newBooks);
+  // state that holds the actual books
+  const [books, setBooks] = React.useState<Book[]>([]);
+  const [, setBin] = React.useState<Book[]>([]); // ignoring the bin for now
+
+  const saveBook: SaveBookCallback = async (book) => {
+    try {
+      setState(AppState.progress);
+      setCustomMessage('saving your book');
+
+      const savedBook = await api.saveBook(book);
+      const newBooks = books.filter((b) => b.id !== savedBook.id);
+      newBooks.push(savedBook);
+
+      setBooks(newBooks);
+      setState(AppState.connected);
+    } catch (e) {
+      console.error(e);
+      setState(AppState.error);
+    }
   };
 
-  const deleteBook: DeleteBookCallback = (book) => {
-    const oldBook = books.find((b) => b.id === book.id);
-    if (!oldBook) return; // nothing to do
+  const deleteBook: DeleteBookCallback = async (book) => {
+    try {
+      setState(AppState.progress);
+      setCustomMessage('deleting the book');
 
-    // put the old book in the bin
-    const binnedBook = {
-      ...oldBook,
-      mtime: Date.now(),
-    };
-    const newBin = [...bin, binnedBook];
-    setBin(newBin);
+      const newBin = await api.deleteBook(book);
+      setBin(newBin);
 
-    // remove it from books
-    const newBooks = books.filter((b) => b.id !== book.id);
-    setBooks(newBooks);
+      // remove it from books
+      const newBooks = books.filter((b) => b.id !== book.id);
+      setBooks(newBooks);
+      setState(AppState.connected);
+    } catch (e) {
+      console.error(e);
+      setState(AppState.error);
+    }
   };
 
-  const addBook: AddBookCallback = (newBook) => {
-    const newBooks = Array.from(books);
-    const book: Book = {
-      id: nextId,
-      mtime: Date.now(),
-      ...newBook,
-    };
-    nextId += 1;
-    newBooks.push(book);
-    setBooks(newBooks);
+  const addBook: AddBookCallback = async (newBook) => {
+    try {
+      setState(AppState.progress);
+      setCustomMessage('adding the book');
+
+      const newBooks = Array.from(books);
+      const book = await api.submitNewBook(newBook);
+      newBooks.push(book);
+
+      setBooks(newBooks);
+      setState(AppState.connected);
+    } catch (e) {
+      console.error(e);
+      setState(AppState.error);
+    }
   };
 
   const setOwned = (book: Book, owned: boolean) => {
@@ -127,7 +133,16 @@ function AppInsideRouter(): JSX.Element {
 
   React.useEffect(() => {
     if (email) {
-      loadBooks().catch((e) => {
+      (async () => {
+        setState(AppState.progress);
+        setCustomMessage('loading your books from the cloud');
+
+        const booksAndBin = await api.loadBooks();
+
+        setBooks(booksAndBin.books);
+        setBin(booksAndBin.bin);
+        setState(AppState.connected);
+      })().catch((e) => {
         console.error(e);
         setState(AppState.error);
       });
@@ -203,25 +218,6 @@ function AppInsideRouter(): JSX.Element {
       default: return (
         <ErrorComponent text="error, please try later" />
       );
-    }
-  }
-
-  async function loadBooks() {
-    setState(AppState.progress);
-    const response = await tools.apiRequest('books');
-    if (response.ok) {
-      const data: unknown = await response.json();
-      console.log('response', data);
-
-      setState(AppState.progress);
-      if (!localStorage.getItem('booksSavedInCloud')) {
-        setState(AppState.progress);
-        setCustomMessage('Saving your books…');
-        await tools.saveBooks(books, setCustomMessage);
-        localStorage.setItem('booksSavedInCloud', 'yes');
-      }
-
-      setCustomMessage('Done, please wait for an upgrade…');
     }
   }
 }

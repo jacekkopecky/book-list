@@ -38,8 +38,8 @@ exports.addBook = async (user, newBook) => {
     return newBook;
   } catch (e) {
     await tx.rollback();
-    console.error('error adding book');
-    console.error(e);
+    console.error('error adding book', e);
+    throw new Error('error adding book');
   }
 };
 

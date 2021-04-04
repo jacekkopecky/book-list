@@ -12,7 +12,7 @@ export interface NewBook {
 }
 
 export interface Book extends NewBook {
-  id: unknown,
+  id: string,
   mtime: number,
 }
 
