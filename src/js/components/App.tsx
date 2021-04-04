@@ -175,18 +175,18 @@ function AppInsideRouter(): JSX.Element {
         </Switch>
       );
       case LoginState.starting: return (
-        <Container {...containerProps} className="loading">
+        <Container {...containerProps} className="messageOnly">
           <Typography>Starting…</Typography>
         </Container>
       );
       case LoginState.loggedIn: return (
-        <Container {...containerProps} className="loading">
+        <Container {...containerProps} className="messageOnly">
           <CircularProgress />
           <Typography>Loading books…</Typography>
         </Container>
       );
       case LoginState.loggedOut: return (
-        <Container {...containerProps} className="loading">
+        <Container {...containerProps} className="messageOnly">
           <Typography>Please log in.</Typography>
         </Container>
       );
