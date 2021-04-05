@@ -166,6 +166,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             { props.save ? (
               <Button
                 className="delete"
+                color="secondary"
                 variant="contained"
                 onClick={doDelete}
               >
