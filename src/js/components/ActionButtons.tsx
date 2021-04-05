@@ -24,7 +24,7 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
     addBook,
   } = props;
 
-  const switchText = showingOwned ? `Show ${itemName} I want` : `Show ${itemName} I have`;
+  const switchText = showingOwned ? `Show ${itemName} I\u00a0want` : `Show ${itemName} I\u00a0have`;
 
   return (
     <div className="action-buttons">
