@@ -13,3 +13,7 @@
   padding-left: 0;
   padding-right: 0;
 }
+
+.action-buttons .MuiFab-root {
+  line-height: 1.2;
+}
