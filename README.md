@@ -14,6 +14,7 @@ A book has these properties:
 
 ## todo
 
+* manifest for installing
 * use id not title etc. for book key where available
 * search functionality
 * editing functionality
