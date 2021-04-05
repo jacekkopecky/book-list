@@ -14,7 +14,6 @@ A book has these properties:
 
 ## todo
 
-* manifest for installing
 * use id not title etc. for book key where available
 * search functionality
 * editing functionality
@@ -25,11 +24,12 @@ A book has these properties:
    - swipe book to change status or to edit
    - swipe between author and series view
 * desktop interface with more columns of lists
-* add dark mode (see https://material-ui.com/customization/palette/#dark-mode )
-* show books that are in the bin, empty bin
+* add dark mode? (see https://material-ui.com/customization/palette/#dark-mode )
+* show books that are in the bin (sort by when binned? show when?), allow recovering, empty bin
 * after save could go forward not back in history (see todo in BookEdit.tsx)
 * top-level menu, about, version
 * instead of whole-screen "saving", "adding", "deleting" these should be just a spinner over the "save" or "delete" button
+* ci/cd deployment of server? (then fix notes below)
 
 * resolved:
    - problem: books listed by author are not listed in order they should be read
@@ -38,3 +38,17 @@ A book has these properties:
 ## API
 
 See [`docs/API.md`](docs/API.md) for documentation of the API.
+
+## Server
+
+The server is a Google cloud function; not deployed by CI/CD at the moment.
+
+To deploy, you need to install the `gcloud` tools, configure at least the
+_core/project_ and _functions/region_ settings, and do the following:
+
+```sh
+cd server # if not already there
+
+npm ci
+npm run deploy
+```
