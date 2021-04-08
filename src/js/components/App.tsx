@@ -39,6 +39,7 @@ import BookListByAuthor from './BookListByAuthor';
 import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
 import Login from './Login';
+import Admin from './Admin';
 
 export default function App(): JSX.Element {
   return <Router><AppInsideRouter /></Router>;
@@ -187,6 +188,9 @@ function AppInsideRouter(): JSX.Element {
           </Route>
           <Route exact path="/new">
             <BookEdit originalBook={bookTemplate} add={addBook} />
+          </Route>
+          <Route exact path="/admin">
+            <Admin />
           </Route>
           <Route path="*">
             <NotFound />

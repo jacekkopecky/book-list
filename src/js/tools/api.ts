@@ -99,6 +99,25 @@ export async function deleteBook(book: Book): Promise<Book[]> {
   }
 }
 
+// returns a list of users, or null if the caller is not admin
+export async function adminListEmails(): Promise<string[] | null> {
+  const response = await apiRequest('admin/users');
+  if (response.ok) {
+    const data: unknown = await response.json();
+    if (Array.isArray(data) && data.every((d) => typeof d === 'string')) {
+      return data as string[];
+    } else {
+      console.error('invalid user list array', data);
+      throw new Error('received invalid array of users');
+    }
+  } else if (response.status === 403) {
+    return null;
+  } else {
+    console.error(response);
+    throw new Error('could not load users');
+  }
+}
+
 // validation functions
 
 type IncomingBook = Partial<Record<keyof Book, unknown>>;
