@@ -152,3 +152,12 @@ async function saveBinForUser(user, books, tx) {
 
   await tx.save(entity);
 }
+
+// admin functions
+
+exports.listUsers = async () => {
+  const query = datastore.createQuery(BOOKS_KIND).select('__key__');
+  const list = (await datastore.runQuery(query))[0];
+
+  return list.map((e) => e[datastore.KEY].name);
+};

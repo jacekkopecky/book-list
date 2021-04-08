@@ -4,6 +4,7 @@ const GoogleAuth = require('simple-google-openid');
 
 const config = require('./config');
 const api = require('./api');
+const admin = require('./api-admin');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use('/api', GoogleAuth.guardMiddleware());
 
 app.get('/api/ping', (req, res) => { res.send('authorized'); });
 
+app.use('/api/admin', admin);
 app.use('/api', api);
 
 exports.bookListAPI = app;
