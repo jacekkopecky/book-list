@@ -27,7 +27,7 @@ export default function SeriesList({ books, addBookTrigger }: SeriesListProps): 
     if (book.series) series.add(book.series);
   }
 
-  const sorted = Array.from(series).sort();
+  const sorted = Array.from(series).sort(tools.localeCompare);
 
   return (
     <MainTabs>

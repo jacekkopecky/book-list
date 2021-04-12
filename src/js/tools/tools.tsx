@@ -8,7 +8,8 @@ export const UNKNOWN: Author = {
   lname: 'author',
 };
 
-export function authorKey(author: Author = UNKNOWN): string {
+export function authorKey(author?: Author): string | null {
+  if (!author) return null;
   return `${author.lname}#${author.fname}`;
 }
 
@@ -154,4 +155,12 @@ export function removeEmpties(book: NewBook | Book): NewBook | Book {
   if (!newBook.notes) delete newBook.notes;
 
   return newBook;
+}
+
+// compare strings with the default locale, ignore case and accents, sort empty at the end
+export function localeCompare(a: string | null, b: string | null): number {
+  if (a == null && b == null) return 0;
+  if (a == null) return 1;
+  if (b == null) return -1;
+  return a.localeCompare(b, undefined, { sensitivity: 'base' });
 }

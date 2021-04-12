@@ -20,13 +20,13 @@ interface AuthorListProps {
 export default function AuthorList({ books, addBookTrigger }: AuthorListProps): JSX.Element {
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
-  const authors = new Map<string, Author | undefined>();
+  const authors = new Map<string | null, Author | undefined>();
   const selectedBooks = books.filter((b) => b.owned === showingOwned);
   for (const book of selectedBooks) {
     authors.set(tools.authorKey(book.author), book.author);
   }
 
-  const sorted = Array.from(authors.keys()).sort();
+  const sorted = Array.from(authors.keys()).sort(tools.localeCompare);
 
   return (
     <MainTabs>
@@ -43,7 +43,7 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
     </MainTabs>
   );
 
-  function renderAuthor(key: string) {
+  function renderAuthor(key: string | null) {
     const author = authors.get(key) ?? tools.UNKNOWN;
     const id = tools.authorPath(author);
     const link = `/author/${id}${showingOwned ? '?owned' : ''}`;

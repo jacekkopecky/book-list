@@ -50,7 +50,7 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
   const series = findSeries(selectedBooks);
 
   const entries = [...selectedBooks, ...series];
-  entries.sort((a, b) => a.title.localeCompare(b.title));
+  entries.sort((a, b) => tools.localeCompare(a.title, b.title));
 
   const history = useHistory();
   const firstBook = booksByAuthor[0];
@@ -133,7 +133,7 @@ interface BookSeriesListProps {
 function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element {
   const classes = useStyles();
 
-  series.books.sort((a, b) => a.title.localeCompare(b.title));
+  series.books.sort((a, b) => tools.localeCompare(a.title, b.title));
   const title = `${series.title} (series)`;
 
   return (
