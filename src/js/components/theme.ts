@@ -19,8 +19,7 @@ export default theme;
 
 export const containerProps = {
   component: 'main' as const,
-  maxWidth: 'sm' as const,
   style: {
-    backgroundColor: theme.palette.background.paper,
+    '--bg': theme.palette.background.paper,
   },
 };

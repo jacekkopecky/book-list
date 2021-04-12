@@ -4,6 +4,7 @@ body {
   padding: 0;
   position: relative;
   height: 100%;
+  font-size: 1rem !important;
 }
 
 #app {
@@ -18,6 +19,27 @@ body {
   display: flex;
   flex-direction: column;
   overflow: auto;
+  background-color: var(--bg);
+}
+
+@media screen and (min-width: 42em) {
+  #app > main {
+    padding-left: calc((100% - 40em) / 2);
+    padding-right: calc((100% - 40em) / 2);
+    background-color: transparent;
+    max-width: none;
+  }
+
+  #app > main::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: calc((100% - 40em) / 2 - 1em);
+    right: calc((100% - 40em) / 2 - 1em);
+    top: 0;
+    bottom: 0;
+    background-color: var(--bg);
+  }
 }
 
 #app > main.messageOnly {
@@ -29,7 +51,7 @@ body {
 #app > main:not(.messageOnly) > :first-child {
   position: sticky;
   top: 0;
-  background-color: inherit;
+  background-color: var(--bg);
   z-index: 1;
 }
 
