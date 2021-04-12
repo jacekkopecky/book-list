@@ -1,4 +1,5 @@
 import { Author, Book, NewBook } from '../types';
+import { removeEmpties } from './tools';
 
 import config from '../../../server/config';
 
@@ -20,6 +21,8 @@ export async function loadBooks(): Promise<BooksAndBin> {
     const data: unknown = await response.json();
 
     if (validateBooksAndBin(data)) {
+      trimStringValues(data.books);
+      trimStringValues(data.bin);
       return data;
     } else {
       console.error('invalid book array', data);
@@ -168,4 +171,8 @@ function validateBooksAndBin(maybeBooksAndBin?: unknown): maybeBooksAndBin is Bo
   if (!validateBookArray(booksAndBin.bin)) return false;
 
   return true;
+}
+
+function trimStringValues(books: Book[]) {
+  books.forEach(removeEmpties);
 }

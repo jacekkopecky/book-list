@@ -16,6 +16,7 @@ import {
   DeleteBookCallback,
   AddBookCallback,
 } from '../types';
+import { removeEmpties } from '../tools/tools';
 
 import './BookEdit.css';
 
@@ -213,29 +214,4 @@ function verifyAuthor(book: Partial<Book>): boolean {
 
   // either both are there or both are empty
   return (fname && lname) || (!fname && !lname);
-}
-
-// remove empty-string values, and the whole author if both values are empty
-// also trim string values
-function removeEmpties(book: NewBook) {
-  const newBook = { ...book };
-
-  newBook.title = newBook.title.trim();
-
-  if (newBook.author) {
-    newBook.author.fname = newBook.author.fname.trim();
-    newBook.author.lname = newBook.author.lname.trim();
-
-    if (!newBook.author.fname && !newBook.author.lname) {
-      delete newBook.author;
-    }
-  }
-
-  newBook.series = newBook.series?.trim();
-  newBook.notes = newBook.notes?.trim();
-
-  if (!newBook.series) delete newBook.series;
-  if (!newBook.notes) delete newBook.notes;
-
-  return newBook;
 }
