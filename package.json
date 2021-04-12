@@ -1,6 +1,6 @@
 {
   "name": "book-list",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "a little program for keeping track of the books you have and want",
   "scripts": {
     "build": "mkdir -p dist; npm run --silent build:version && npm run --silent build:ts && npm run --silent build:react",
