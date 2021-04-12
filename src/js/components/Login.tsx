@@ -139,6 +139,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
           <MenuItem disabled>{ name }</MenuItem>
         ) }
         <MenuItem onClick={logout}>Logout</MenuItem>
+        <MenuItem onClick={() => { window.location.href = '/version.txt'; }}>Version</MenuItem>
       </Menu>
     </>
   );
