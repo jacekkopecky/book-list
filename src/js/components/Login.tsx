@@ -68,7 +68,6 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
           client_id: config.clientId,
         }).then(
           (googleAuth) => {
-            // todo
             gapi.signin2.render('LoginGoogleButton', {
               theme: 'light',
               onsuccess: onLogin,
@@ -140,6 +139,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
         ) }
         <MenuItem onClick={logout}>Logout</MenuItem>
         <MenuItem onClick={() => { window.location.href = '/version.txt'; }}>Version</MenuItem>
+        <MenuItem onClick={() => { window.location.href = '/admin'; }}>Admin</MenuItem>
       </Menu>
     </>
   );
