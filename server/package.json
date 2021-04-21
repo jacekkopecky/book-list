@@ -1,6 +1,6 @@
 {
   "name": "book-list-server",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "server cloud function for book list",
   "main": "index.js",
   "author": "Jacek Kopecky <jacek@jacek.cz>",
