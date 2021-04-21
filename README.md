@@ -52,3 +52,12 @@ cd server # if not already there
 npm ci
 npm run deploy
 ```
+
+To run a local testing version, you'll need `gcloud` and datastore emulator,
+then run:
+
+```sh
+cd server # if not already there
+npm run localds & # wait for the datastore emulator to start
+npm run local
+```
