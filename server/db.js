@@ -161,3 +161,8 @@ exports.listUsers = async () => {
 
   return list.map((e) => e[datastore.KEY].name);
 };
+
+exports.getBookCount = async (email) => {
+  const books = await getBooksForUser(email, datastore);
+  return books.length;
+};
