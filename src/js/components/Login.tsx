@@ -64,6 +64,11 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     void (async () => {
       try {
         await auth2Promise;
+
+        // we cannot do await on the response from gapi.auth2.init
+        // even though it looks like a promise
+        // see https://developers.google.com/identity/sign-in/web/reference#googleauththenoninit_onerror
+
         gapi.auth2.init({
           client_id: config.clientId,
         }).then(
