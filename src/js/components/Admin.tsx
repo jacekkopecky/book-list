@@ -77,11 +77,34 @@ function Message({ text }: { text: string }): JSX.Element {
 }
 
 function UserEntry({ email }: { email: string }) {
+  const [numberOfBooks, setNumberOfBooks] = React.useState<'load' | 'err' | number>();
+
+  let booksCount;
+  if (numberOfBooks === 'load') {
+    booksCount = 'loading book count…';
+  } else if (numberOfBooks === 'err') {
+    booksCount = 'error: could not load book count';
+  } else if (typeof numberOfBooks === 'number') {
+    booksCount = `${numberOfBooks} book(s)`;
+  }
+
   return (
-    <ListItem>
+    <ListItem onClick={loadNumberOfBooks}>
       <ListItemText
         primary={email}
+        secondary={booksCount}
       />
     </ListItem>
   );
+
+  async function loadNumberOfBooks() {
+    setNumberOfBooks('load');
+    try {
+      const number = await api.adminLoadBookCount(email);
+      setNumberOfBooks(number);
+    } catch (e) {
+      console.error(e);
+      setNumberOfBooks('err');
+    }
+  }
 }

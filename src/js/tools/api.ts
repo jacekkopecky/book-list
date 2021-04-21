@@ -121,6 +121,19 @@ export async function adminListEmails(): Promise<string[] | null> {
   }
 }
 
+export async function adminLoadBookCount(email: string): Promise<number> {
+  const response = await apiRequest(`admin/users/${encodeURIComponent(email)}/bookCount`);
+  if (response.ok) {
+    const data: unknown = await response.json();
+    if (hasBookCount(data)) {
+      return data.bookCount;
+    }
+  }
+
+  // if we're here, we don't have a book count
+  throw new Error('cannot load book count');
+}
+
 // validation functions
 
 type IncomingBook = Partial<Record<keyof Book, unknown>>;
@@ -175,4 +188,10 @@ function validateBooksAndBin(maybeBooksAndBin?: unknown): maybeBooksAndBin is Bo
 
 function trimStringValues(books: Book[]) {
   books.forEach(removeEmpties);
+}
+
+function hasBookCount(obj: unknown): obj is { bookCount: number } {
+  if (typeof obj !== 'object' || obj == null) return false;
+
+  return typeof (obj as { bookCount?: number }).bookCount === 'number';
 }
