@@ -1,6 +1,18 @@
 import * as React from 'react';
 
+import Container from '@material-ui/core/Container';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+
+import { containerProps } from './theme';
+
+import EmptyListItem from './EmptyListItem';
+
 import * as api from '../tools/api';
+
+import './Admin.css';
 
 enum State {
   loading,
@@ -28,16 +40,48 @@ export default function Admin(): JSX.Element {
     });
   }, []);
 
+  let body;
   switch (state) {
-    case State.loading: return <div>loading</div>;
-    case State.error: return <div>error</div>;
-    case State.notAdmin: return <div>you are not admin</div>;
-    case State.loaded: return (
-      <div>Users:
-        <ol>
-          { emailList.length === 0 ? 'none' : emailList.map((s) => <li key={s}>{ s }</li>) }
-        </ol>
-      </div>
-    );
+    case State.loading: body = <Message text="loading" />; break;
+    case State.error: body = <Message text="error" />; break;
+    case State.notAdmin: body = <Message text="you are not admin" />; break;
+    case State.loaded:
+      body = (
+        <>
+          <Typography variant="h5">Users:</Typography>
+          <List>
+            { renderEmailList(emailList) }
+          </List>
+        </>
+      );
+      break;
   }
+
+  return (
+    <Container {...containerProps} className="Admin">
+      { body }
+    </Container>
+  );
+}
+
+function renderEmailList(list: string[]): JSX.Element | JSX.Element[] {
+  if (list.length === 0) {
+    return <EmptyListItem text="none" />;
+  } else {
+    return list.map((s) => <UserEntry key={s} email={s} />);
+  }
+}
+
+function Message({ text }: { text: string }): JSX.Element {
+  return <Typography>{ text }</Typography>;
+}
+
+function UserEntry({ email }: { email: string }) {
+  return (
+    <ListItem>
+      <ListItemText
+        primary={email}
+      />
+    </ListItem>
+  );
 }
