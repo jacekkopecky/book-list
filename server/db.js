@@ -162,7 +162,11 @@ exports.listUsers = async () => {
   return list.map((e) => e[datastore.KEY].name);
 };
 
-exports.getBookCount = async (email) => {
+exports.getBookStats = async (email) => {
   const books = await getBooksForUser(email, datastore);
-  return books.length;
+  const ownedBooks = books.filter((b) => b.owned);
+  return {
+    bookCount: books.length,
+    owned: ownedBooks.length,
+  };
 };

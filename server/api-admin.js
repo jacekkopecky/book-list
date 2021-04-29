@@ -16,7 +16,7 @@ function asyncWrap(f) {
 adminApi.use(authorizeAdmin);
 
 adminApi.get('/users', asyncWrap(listUsers));
-adminApi.get('/users/:email/bookCount', asyncWrap(loadUserBookCount));
+adminApi.get('/users/:email/bookStats', asyncWrap(loadUserBookStats));
 
 function authorizeAdmin(req, res, next) {
   const user = req.user.emails[0].value;
@@ -31,10 +31,10 @@ async function listUsers(req, res) {
   res.json(await db.listUsers());
 }
 
-async function loadUserBookCount(req, res) {
+async function loadUserBookStats(req, res) {
   const user = req.params.email;
   res.json({
+    ...await db.getBookStats(user),
     user,
-    bookCount: await db.getBookCount(user),
   });
 }

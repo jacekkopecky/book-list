@@ -16,6 +16,11 @@ export interface Book extends NewBook {
   mtime: number,
 }
 
+export interface BookStats {
+  bookCount: number,
+  owned: number,
+}
+
 export enum AppState {
   starting,
   loggedOut,

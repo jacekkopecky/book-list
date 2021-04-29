@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 
 import { containerProps } from './theme';
 
+import { BookStats } from '../types';
+
 import EmptyListItem from './EmptyListItem';
 
 import * as api from '../tools/api';
@@ -77,15 +79,16 @@ function Message({ text }: { text: string }): JSX.Element {
 }
 
 function UserEntry({ email }: { email: string }) {
-  const [numberOfBooks, setNumberOfBooks] = React.useState<'load' | 'err' | number>();
+  const [bookStats, setBookStats] = React.useState<'load' | 'err' | BookStats>();
 
   let booksCount;
-  if (numberOfBooks === 'load') {
+  if (bookStats === 'load') {
     booksCount = 'loading book count…';
-  } else if (numberOfBooks === 'err') {
+  } else if (bookStats === 'err') {
     booksCount = 'error: could not load book count';
-  } else if (typeof numberOfBooks === 'number') {
-    booksCount = `${numberOfBooks} book(s)`;
+  } else if (typeof bookStats === 'object') {
+    const wanted = bookStats.bookCount - bookStats.owned;
+    booksCount = `${wanted} wanted book(s), ${bookStats.bookCount} total`;
   }
 
   return (
@@ -98,13 +101,13 @@ function UserEntry({ email }: { email: string }) {
   );
 
   async function loadNumberOfBooks() {
-    setNumberOfBooks('load');
+    setBookStats('load');
     try {
-      const number = await api.adminLoadBookCount(email);
-      setNumberOfBooks(number);
+      const number = await api.adminLoadBookStats(email);
+      setBookStats(number);
     } catch (e) {
       console.error(e);
-      setNumberOfBooks('err');
+      setBookStats('err');
     }
   }
 }

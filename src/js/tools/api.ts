@@ -1,4 +1,9 @@
-import { Author, Book, NewBook } from '../types';
+import {
+  Author,
+  Book,
+  NewBook,
+  BookStats,
+} from '../types';
 import { removeEmpties } from './tools';
 
 import config from '../../../server/config';
@@ -121,17 +126,17 @@ export async function adminListEmails(): Promise<string[] | null> {
   }
 }
 
-export async function adminLoadBookCount(email: string): Promise<number> {
-  const response = await apiRequest(`admin/users/${encodeURIComponent(email)}/bookCount`);
+export async function adminLoadBookStats(email: string): Promise<BookStats> {
+  const response = await apiRequest(`admin/users/${encodeURIComponent(email)}/bookStats`);
   if (response.ok) {
     const data: unknown = await response.json();
-    if (hasBookCount(data)) {
-      return data.bookCount;
+    if (hasBookStats(data)) {
+      return data;
     }
   }
 
-  // if we're here, we don't have a book count
-  throw new Error('cannot load book count');
+  // if we're here, we don't have book stats
+  throw new Error('cannot load book stats');
 }
 
 // validation functions
@@ -190,8 +195,10 @@ function trimStringValues(books: Book[]) {
   books.forEach(removeEmpties);
 }
 
-function hasBookCount(obj: unknown): obj is { bookCount: number } {
+function hasBookStats(obj: unknown): obj is BookStats {
   if (typeof obj !== 'object' || obj == null) return false;
 
-  return typeof (obj as { bookCount?: number }).bookCount === 'number';
+  const partial = obj as Partial<BookStats>;
+
+  return typeof partial.bookCount === 'number' && typeof partial.owned === 'number';
 }
