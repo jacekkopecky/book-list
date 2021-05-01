@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -16,13 +17,15 @@ import {
   DeleteBookCallback,
   AddBookCallback,
 } from '../types';
-import { removeEmpties } from '../tools/tools';
+
+import * as tools from '../tools/tools';
 
 import './BookEdit.css';
 
 // we have to have either save and a book or add and a partial new book, but not both
 interface BookEditProps {
   originalBook: Book,
+  knownBooks: Book[],
   save: SaveBookCallback,
   delete: DeleteBookCallback,
   add?: undefined,
@@ -30,6 +33,7 @@ interface BookEditProps {
 
 interface BookAddProps {
   originalBook: Partial<NewBook>,
+  knownBooks: Book[],
   save?: undefined,
   add: AddBookCallback,
 }
@@ -56,7 +60,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
   const doSave = () => {
     if (!verifyNewBook(book)) return;
 
-    const bookForSaving = removeEmpties(book);
+    const bookForSaving = tools.removeEmpties(book);
 
     if (props.save) {
       if (!verifyBook(bookForSaving)) return;
@@ -120,34 +124,55 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             />
           </Grid>
           <Grid item xs={5}>
-            <TextField
-              label="Author"
-              margin="normal"
-              fullWidth
-              helperText="first name"
-              value={book.author.fname ?? ''}
-              onChange={setAuthorFname}
+            <Autocomplete
+              freeSolo
+              options={unique(props.knownBooks.map((b) => b.author?.fname))}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Author"
+                  margin="normal"
+                  fullWidth
+                  helperText="first name"
+                  value={book.author.fname ?? ''}
+                  onChange={setAuthorFname}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={1} />
           <Grid item xs={6}>
-            <TextField
-              label=" "
-              margin="normal"
-              fullWidth
-              helperText="last name"
-              value={book.author.lname ?? ''}
-              onChange={setAuthorLname}
+            <Autocomplete
+              freeSolo
+              options={unique(props.knownBooks.map((b) => b.author?.lname))}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label=" "
+                  margin="normal"
+                  fullWidth
+                  helperText="last name"
+                  value={book.author.lname ?? ''}
+                  onChange={setAuthorLname}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Series"
-              margin="normal"
-              placeholder="optional"
-              fullWidth
-              value={book.series ?? ''}
-              onChange={(e) => setBook({ ...book, series: e.target.value })}
+            <Autocomplete
+              freeSolo
+              options={unique(props.knownBooks.map((b) => b.series))}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Series"
+                  margin="normal"
+                  placeholder="optional"
+                  fullWidth
+                  value={book.series ?? ''}
+                  onChange={(e) => setBook({ ...book, series: e.target.value })}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
@@ -214,4 +239,12 @@ function verifyAuthor(book: Partial<Book>): boolean {
 
   // either both are there or both are empty
   return (fname && lname) || (!fname && !lname);
+}
+
+function unique<T>(arr: Iterable<T | undefined>): T[] {
+  const set = new Set(arr);
+  set.delete(undefined);
+
+  // now the set does not have any undefined
+  return Array.from((set as Set<T>).keys()).sort(tools.localeCompare);
 }

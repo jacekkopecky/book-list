@@ -16,9 +16,6 @@ A book has these properties:
 
 * use id not title etc. for book key where available
 * search functionality
-* editing functionality
-   - autocomplete/autosuggest matches for author / series
-   - maybe drop-down of alphabetical list for author / series
 * service worker for offline work, background sync
 * better mobile interface
    - swipe book to change status or to edit

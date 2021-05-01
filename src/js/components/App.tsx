@@ -187,7 +187,7 @@ function AppInsideRouter(): JSX.Element {
             <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
           </Route>
           <Route exact path="/new">
-            <BookEdit originalBook={bookTemplate} add={addBook} />
+            <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
           </Route>
           <Route exact path="/admin">
             <Admin />
@@ -271,6 +271,7 @@ function BookEditWithParams(props: BookEditWithParamsProps): JSX.Element {
   return (
     <BookEdit
       originalBook={book}
+      knownBooks={props.books}
       save={props.save}
       delete={props.delete}
     />
