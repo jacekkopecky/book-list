@@ -241,10 +241,10 @@ function verifyAuthor(book: Partial<Book>): boolean {
   return (fname && lname) || (!fname && !lname);
 }
 
-function unique<T>(arr: Iterable<T | undefined>): T[] {
+function unique(arr: Iterable<string | undefined>): string[] {
   const set = new Set(arr);
   set.delete(undefined);
 
   // now the set does not have any undefined
-  return Array.from((set as Set<T>).keys()).sort(tools.localeCompare);
+  return Array.from((set as Set<string>).keys()).sort(tools.localeCompare);
 }
