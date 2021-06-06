@@ -139,7 +139,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
         onClose={closeMenu}
       >
         <MenuItem onClick={closeMenu}><div id="LoginGoogleButton" /></MenuItem>
-        { state === AppState.loggedIn && (
+        { state !== AppState.loggedOut && name && (
           <MenuItem disabled>{ name }</MenuItem>
         ) }
         <MenuItem onClick={logout}>Logout</MenuItem>
