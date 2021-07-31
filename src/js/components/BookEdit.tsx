@@ -127,6 +127,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             <Autocomplete
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.fname))}
+              value={book.author.fname ?? ''}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -134,7 +135,6 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
                   margin="normal"
                   fullWidth
                   helperText="first name"
-                  value={book.author.fname ?? ''}
                   onChange={setAuthorFname}
                 />
               )}
@@ -145,6 +145,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             <Autocomplete
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.lname))}
+              value={book.author.lname ?? ''}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -152,7 +153,6 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
                   margin="normal"
                   fullWidth
                   helperText="last name"
-                  value={book.author.lname ?? ''}
                   onChange={setAuthorLname}
                 />
               )}
@@ -162,6 +162,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             <Autocomplete
               freeSolo
               options={unique(props.knownBooks.map((b) => b.series))}
+              value={book.series ?? ''}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -169,7 +170,6 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
                   margin="normal"
                   placeholder="optional"
                   fullWidth
-                  value={book.series ?? ''}
                   onChange={(e) => setBook({ ...book, series: e.target.value })}
                 />
               )}
