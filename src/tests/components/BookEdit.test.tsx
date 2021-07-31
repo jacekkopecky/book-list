@@ -67,7 +67,6 @@ describe('<BookEdit/>', () => {
     ])(
       'puts the expected data in %s textarea',
       (parentSelector: string, value?: string) => {
-        console.log({ parentSelector, value });
         const el = wrapper.find(`${parentSelector} textarea`);
         // multiline text field seems to consist of two text areas in Material-UI
         expect(el.length).toBeGreaterThan(0);
