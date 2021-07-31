@@ -115,6 +115,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           <Grid item xs={12}>
             <TextField
               label="Title"
+              className="title"
               margin="normal"
               required
               fullWidth
@@ -125,6 +126,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           </Grid>
           <Grid item xs={5}>
             <Autocomplete
+              className="fname"
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.fname))}
               value={book.author.fname ?? ''}
@@ -143,6 +145,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           <Grid item xs={1} />
           <Grid item xs={6}>
             <Autocomplete
+              className="lname"
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.lname))}
               value={book.author.lname ?? ''}
@@ -160,6 +163,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           </Grid>
           <Grid item xs={12}>
             <Autocomplete
+              className="series"
               freeSolo
               options={unique(props.knownBooks.map((b) => b.series))}
               value={book.series ?? ''}
@@ -178,6 +182,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           <Grid item xs={12}>
             <TextField
               label="Notes"
+              className="notes"
               multiline
               margin="normal"
               placeholder="optional"
