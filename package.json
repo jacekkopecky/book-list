@@ -12,7 +12,7 @@
     "lint": "echo lint javascript && npm run --silent lint:js && echo lint css && npm run --silent lint:css",
     "lint:js": "eslint src server --ext .js,.json,.ts,.tsx",
     "lint:css": "stylelint 'src/**/*.css' 'src/**/*.html'",
-    "postinstall": "(cd server; npm ci)"
+    "postinstall-disabled": "(cd server; npm ci)"
   },
   "repository": {
     "type": "git",

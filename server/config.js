@@ -1,5 +1,6 @@
 module.exports = {
-  clientId: '672418106267-kdholo3jd9fchkvf9a0qbr50s8pn5h7o.apps.googleusercontent.com',
-  serverURL: 'https://europe-west2-book-list-309615.cloudfunctions.net/bookListAPI/api/',
+  auth0ClientId: 'N9qSgGHtOj1eLg5fDwiaeO9yu9NEJjQq',
+  auth0Domain: 'dev-bl7cntsbvqqv2sju.uk.auth0.com',
+  serverURL: 'https://europe-west2-book-list-309615.cloudfunctions.net/bookListAPIv2/api/',
   serverURL2: 'http://localhost:8082/api/',
 };

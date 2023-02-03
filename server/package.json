@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Jacek Kopecky <jacek@jacek.cz>",
   "scripts": {
-    "deploy": "gcloud functions deploy bookListAPI --runtime nodejs14 --trigger-http --allow-unauthenticated",
+    "deploy": "gcloud functions deploy bookListAPIv2 --runtime nodejs18 --trigger-http --allow-unauthenticated",
     "local": "TESTING=true DATASTORE_EMULATOR_HOST=localhost:8081 node ./index.js",
     "localds": "gcloud beta emulators datastore start --no-store-on-disk"
   },

@@ -20,7 +20,7 @@ app.get('/api/ping', (req, res) => { res.send('authorized'); });
 app.use('/api/admin', admin);
 app.use('/api', api);
 
-exports.bookListAPI = app;
+exports.bookListAPIv2 = app;
 
 if (process.env.TESTING && require.main === module) {
   const port = Number(process.env.PORT) || 8082;

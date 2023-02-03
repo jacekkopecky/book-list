@@ -20,7 +20,7 @@ adminApi.get('/users/:email/bookStats', asyncWrap(loadUserBookStats));
 
 function authorizeAdmin(req, res, next) {
   const user = req.user.emails[0].value;
-  if (user !== 'jacek.kopecky@port.ac.uk') {
+  if (user !== 'jackopecky@gmail.com') {
     res.sendStatus(403);
   } else {
     next();
