@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Author, Book, NewBook } from '../types';
 
@@ -52,12 +52,12 @@ export function useQuery(): URLSearchParams {
 }
 
 export function useShowingOwned(): [boolean, (value: boolean) => void] {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const showingOwned = useQuery().has('owned');
 
   const setShowingOwned = (value: boolean) => {
-    history.replace(value ? '?owned' : '?');
+    navigate(value ? '?owned' : '?', { replace: true });
   };
 
   return [showingOwned, setShowingOwned];

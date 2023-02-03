@@ -1,20 +1,11 @@
 import * as React from 'react';
 
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Tooltip from '@material-ui/core/Tooltip';
-
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import {
+  Button, CircularProgress, IconButton, Menu, MenuItem, Tooltip,
+} from '@material-ui/core';
+import { ErrorOutline, AccountCircle } from '@material-ui/icons';
 
 import { AppState } from '../types';
-
-import config from '../../../server/config';
-
-const auth2Promise = initializeGapi();
 
 interface StateSetter {
   (state: AppState.loggedIn, email: string): void,
@@ -28,7 +19,7 @@ interface LoginProps {
 
 export default function Login({ state, setState }: LoginProps): JSX.Element {
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [name, setName] = React.useState('');
+  const [name] = React.useState('');
 
   const openMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchorEl(e.currentTarget);
@@ -38,16 +29,9 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     setMenuAnchorEl(null);
   };
 
-  const onLogin = (user: gapi.auth2.GoogleUser) => {
-    closeMenu();
-    setName(user.getBasicProfile().getName());
-    setState(AppState.loggedIn, user.getBasicProfile().getEmail());
-  };
-
-  const logout = async () => {
+  const logout = () => {
     closeMenu();
     try {
-      await gapi.auth2.getAuthInstance().signOut();
       setState(AppState.loggedOut);
     } catch (e) {
       console.error('error logging out', e);
@@ -55,42 +39,11 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     }
   };
 
-  const error = (reason: unknown) => {
-    console.error('failed to initialize Gapi auth2', reason);
-    setState(AppState.error);
-  };
-
   React.useEffect(() => {
-    void (async () => {
+    void (() => {
       try {
-        await auth2Promise;
-
-        // we cannot do await on the response from gapi.auth2.init
-        // even though it looks like a promise
-        // see https://developers.google.com/identity/sign-in/web/reference#googleauththenoninit_onerror
-
-        gapi.auth2.init({
-          client_id: config.clientId,
-        }).then(
-          (googleAuth) => {
-            gapi.signin2.render('LoginGoogleButton', {
-              theme: 'light',
-              onsuccess: onLogin,
-              onfailure: error,
-            });
-
-            if (googleAuth.isSignedIn.get()) {
-              const email = googleAuth.currentUser.get().getBasicProfile().getEmail();
-              setState(AppState.loggedIn, email);
-            } else {
-              setState(AppState.loggedOut);
-            }
-          },
-          (reason) => {
-            console.error('failed to initialize Gapi auth2', reason);
-            setState(AppState.error);
-          },
-        );
+        // log in somehow
+        setState(AppState.loggedIn, 'jackopecky@gmail.com');
       } catch (e) {
         console.error(e);
         setState(AppState.error);
@@ -108,14 +61,18 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
       );
       break;
     case AppState.loggedOut:
-      mainEl = <Button color="inherit" onClick={openMenu}>Login</Button>;
+      mainEl = (
+        <Button color="inherit" onClick={openMenu}>
+          Login
+        </Button>
+      );
       break;
     case AppState.loggedIn:
     case AppState.progress:
     case AppState.connected:
       mainEl = (
         <IconButton title="account" color="inherit" onClick={openMenu}>
-          <AccountCircleIcon />
+          <AccountCircle />
         </IconButton>
       );
       break;
@@ -123,7 +80,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     default:
       mainEl = (
         <Tooltip title="log-in or connection error, try again later">
-          <ErrorOutlineIcon />
+          <ErrorOutline />
         </Tooltip>
       );
   }
@@ -138,13 +95,25 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
         open={Boolean(menuAnchorEl)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={closeMenu}><div id="LoginGoogleButton" /></MenuItem>
-        { state !== AppState.loggedOut && name && (
-          <MenuItem disabled>{ name }</MenuItem>
-        ) }
+        <MenuItem onClick={closeMenu}>
+          <div id="LoginGoogleButton" />
+        </MenuItem>
+        { state !== AppState.loggedOut && name && <MenuItem disabled>{ name }</MenuItem> }
         <MenuItem onClick={logout}>Logout</MenuItem>
-        <MenuItem onClick={() => { window.location.href = '/version.txt'; }}>Version</MenuItem>
-        <MenuItem onClick={() => { window.location.href = '/admin'; }}>Admin</MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.location.href = '/version.txt';
+          }}
+        >
+          Version
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            window.location.href = '/admin';
+          }}
+        >
+          Admin
+        </MenuItem>
       </Menu>
     </>
   );
@@ -154,16 +123,4 @@ declare global {
   interface Window {
     googleAuthInit: () => void,
   }
-}
-
-function initializeGapi() {
-  return new Promise<void>((resolve, reject) => {
-    window.googleAuthInit = () => {
-      gapi.load('auth2', () => {
-        if (gapi.auth2) resolve();
-        else reject(new Error('cannot load auth2'));
-      });
-    };
-    if (window.gapi) window.googleAuthInit();
-  });
 }

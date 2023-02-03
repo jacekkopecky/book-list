@@ -32,6 +32,8 @@ A book has these properties:
    - problem: books listed by author are not listed in order they should be read
    - solution: add first line of notes in collapsed book entry
 
+- [ ] fix tests
+
 ## API
 
 See [`docs/API.md`](docs/API.md) for documentation of the API.

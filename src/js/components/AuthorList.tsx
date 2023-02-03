@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import { List, ListItem, ListItemText } from '@material-ui/core';
 
 import { Author, Book, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
@@ -49,7 +47,9 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
     const link = `/author/${id}${showingOwned ? '?owned' : ''}`;
     return (
       <ListItem key={key} button divider component={Link} to={link}>
-        <ListItemText>{ author.fname } { author.lname }</ListItemText>
+        <ListItemText>
+          { author.fname } { author.lname }
+        </ListItemText>
       </ListItem>
     );
   }

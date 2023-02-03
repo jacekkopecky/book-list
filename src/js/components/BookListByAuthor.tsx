@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { makeStyles, createStyles } from '@material-ui/core/styles';
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-
-import Folder from '@material-ui/icons/Folder';
+import {
+  makeStyles, createStyles, List, ListItem, ListItemText, ListItemIcon,
+} from '@material-ui/core';
+import { Folder } from '@material-ui/icons';
 
 import { Book, SetOwnedCallback, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
@@ -35,10 +31,7 @@ type BookOrSeries = Book | Series;
 
 export default function BookListByAuthor(props: BookListProps): JSX.Element {
   const {
-    books,
-    authorPath,
-    setOwned,
-    addBookTrigger,
+    books, authorPath, setOwned, addBookTrigger,
   } = props;
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
@@ -52,11 +45,11 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
   const entries = [...selectedBooks, ...series];
   entries.sort((a, b) => tools.localeCompare(a.title, b.title));
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const firstBook = booksByAuthor[0];
   if (!firstBook) {
     React.useEffect(() => {
-      history.goBack();
+      navigate(-1);
     });
     return <ErrorComponent text="empty book list – how did that happen?" />;
   }
@@ -66,7 +59,11 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
   return (
     <MainHeading title={prefix + tools.authorName(firstBook.author)}>
       <List className="BookListByAuthor">
-        { entries.length > 0 ? entries.map((x) => renderBookOrSeries(x, setOwned)) : <EmptyListItem text="no books" /> }
+        { entries.length > 0 ? (
+          entries.map((x) => renderBookOrSeries(x, setOwned))
+        ) : (
+          <EmptyListItem text="no books" />
+        ) }
       </List>
       <ActionButtons
         itemName="books"
@@ -78,7 +75,7 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
   );
 }
 
-function isBook(x: BookOrSeries) : x is Book {
+function isBook(x: BookOrSeries): x is Book {
   return 'id' in x && x.id != null;
 }
 
@@ -110,9 +107,7 @@ function renderBookOrSeries(x: BookOrSeries, setOwned: SetOwnedCallback) {
 }
 
 function renderBook(book: Book, setOwned: SetOwnedCallback) {
-  return (
-    <BookEntry key={book.title} book={book} setOwned={setOwned} />
-  );
+  return <BookEntry key={book.title} book={book} setOwned={setOwned} />;
 }
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -139,7 +134,9 @@ function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element 
   return (
     <>
       <ListItem>
-        <ListItemIcon><Folder /></ListItemIcon>
+        <ListItemIcon>
+          <Folder />
+        </ListItemIcon>
         <ListItemText primary={title} />
       </ListItem>
       <ListItem className={classes.nested}>

@@ -1,12 +1,7 @@
 import * as React from 'react';
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-import Container from '@material-ui/core/Container';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
+import { Container, Tab, Tabs } from '@material-ui/core';
 
 import * as tools from '../tools/tools';
 import { containerProps } from './theme';

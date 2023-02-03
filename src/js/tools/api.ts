@@ -1,3 +1,4 @@
+import config from '../../../server/config';
 import {
   Author,
   Book,
@@ -6,10 +7,8 @@ import {
 } from '../types';
 import { removeEmpties } from './tools';
 
-import config from '../../../server/config';
-
 function apiRequest(path: string, options?: RequestInit): Promise<Response> {
-  const idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+  const idToken = 'foo';
   return fetch(config.serverURL + path, {
     method: 'GET',
     ...options,

@@ -1,21 +1,22 @@
 import * as React from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   useParams,
   useLocation,
-  useHistory,
+  useNavigate,
 } from 'react-router-dom';
 
-import AppBar from '@material-ui/core/AppBar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-
-import { ThemeProvider } from '@material-ui/core/styles';
+import {
+  AppBar,
+  CircularProgress,
+  Container,
+  CssBaseline,
+  Toolbar,
+  Typography,
+  ThemeProvider,
+} from '@material-ui/core';
 
 import './App.css';
 import theme, { containerProps } from './theme';
@@ -42,7 +43,11 @@ import Login from './Login';
 import Admin from './Admin';
 
 export default function App(): JSX.Element {
-  return <Router><AppInsideRouter /></Router>;
+  return (
+    <Router>
+      <AppInsideRouter />
+    </Router>
+  );
 }
 
 function AppInsideRouter(): JSX.Element {
@@ -116,11 +121,11 @@ function AppInsideRouter(): JSX.Element {
     saveBook(newBook);
   };
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const addBookTrigger: AddBookTrigger = (template = {}) => {
     setBookTemplate(template);
-    history.push('/new');
+    navigate('/new');
   };
 
   const setStateAndEmail = (s: AppState, e?: string) => {
@@ -169,59 +174,73 @@ function AppInsideRouter(): JSX.Element {
 
   function mainContent(): JSX.Element {
     switch (state) {
-      case AppState.connected: return (
-        <Switch>
-          <Route exact path="/">
-            <AuthorList books={books} addBookTrigger={addBookTrigger} />
-          </Route>
-          <Route exact path="/series">
-            <SeriesList books={books} addBookTrigger={addBookTrigger} />
-          </Route>
-          <Route exact path="/author/:id">
-            <BookListWithParams variant="author" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
-          </Route>
-          <Route exact path="/series/:id">
-            <BookListWithParams variant="series" books={books} setOwned={setOwned} addBookTrigger={addBookTrigger} />
-          </Route>
-          <Route exact path="/edit/:id">
-            <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
-          </Route>
-          <Route exact path="/new">
-            <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
-          </Route>
-          <Route exact path="/admin">
-            <Admin />
-          </Route>
-          <Route path="*">
-            <NotFound />
-          </Route>
-        </Switch>
-      );
-      case AppState.starting: return (
-        <Container {...containerProps} className="messageOnly">
-          <Typography>Starting…</Typography>
-        </Container>
-      );
-      case AppState.progress: return (
-        <Container {...containerProps} className="messageOnly">
-          <Typography>{ customMessage || 'Please wait…' }</Typography>
-        </Container>
-      );
-      case AppState.loggedIn: return (
-        <Container {...containerProps} className="messageOnly">
-          <CircularProgress />
-          <Typography>Loading books…</Typography>
-        </Container>
-      );
-      case AppState.loggedOut: return (
-        <Container {...containerProps} className="messageOnly">
-          <Typography>Please log in.</Typography>
-        </Container>
-      );
+      case AppState.connected:
+        return (
+          <Routes>
+            <Route path="/">
+              <AuthorList books={books} addBookTrigger={addBookTrigger} />
+            </Route>
+            <Route path="/series">
+              <SeriesList books={books} addBookTrigger={addBookTrigger} />
+            </Route>
+            <Route path="/author/:id">
+              <BookListWithParams
+                variant="author"
+                books={books}
+                setOwned={setOwned}
+                addBookTrigger={addBookTrigger}
+              />
+            </Route>
+            <Route path="/series/:id">
+              <BookListWithParams
+                variant="series"
+                books={books}
+                setOwned={setOwned}
+                addBookTrigger={addBookTrigger}
+              />
+            </Route>
+            <Route path="/edit/:id">
+              <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
+            </Route>
+            <Route path="/new">
+              <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
+            </Route>
+            <Route path="/admin">
+              <Admin />
+            </Route>
+            <Route path="*">
+              <NotFound />
+            </Route>
+          </Routes>
+        );
+      case AppState.starting:
+        return (
+          <Container {...containerProps} className="messageOnly">
+            <Typography>Starting…</Typography>
+          </Container>
+        );
+      case AppState.progress:
+        return (
+          <Container {...containerProps} className="messageOnly">
+            <Typography>{ customMessage || 'Please wait…' }</Typography>
+          </Container>
+        );
+      case AppState.loggedIn:
+        return (
+          <Container {...containerProps} className="messageOnly">
+            <CircularProgress />
+            <Typography>Loading books…</Typography>
+          </Container>
+        );
+      case AppState.loggedOut:
+        return (
+          <Container {...containerProps} className="messageOnly">
+            <Typography>Please log in.</Typography>
+          </Container>
+        );
       case AppState.error:
-      default: return (
-        <ErrorComponent text="error, please try later" />
-      );
+      default:
+        return <ErrorComponent text="error, please try later" />;
     }
   }
 }
@@ -233,24 +252,14 @@ interface BookListWithParamsProps {
   addBookTrigger: AddBookTrigger,
 }
 
-function BookListWithParams(props : BookListWithParamsProps): JSX.Element {
+function BookListWithParams(props: BookListWithParamsProps): JSX.Element {
   const params = useParams<Record<'id', string>>();
 
   switch (props.variant) {
     case 'author':
-      return (
-        <BookListByAuthor
-          {...props}
-          authorPath={params.id}
-        />
-      );
+      return <BookListByAuthor {...props} authorPath={params.id ?? ''} />;
     case 'series':
-      return (
-        <BookListBySeries
-          {...props}
-          seriesPath={params.id}
-        />
-      );
+      return <BookListBySeries {...props} seriesPath={params.id ?? ''} />;
   }
 }
 
@@ -265,7 +274,7 @@ function BookEditWithParams(props: BookEditWithParamsProps): JSX.Element {
 
   const book = props.books.find((b) => String(b.id) === params.id);
   if (!book) {
-    return <ErrorComponent text={`cannot find book for id ${params.id}`} />;
+    return <ErrorComponent text={`cannot find book for id ${params.id ?? ''}`} />;
   }
 
   return (

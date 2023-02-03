@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-import Container from '@material-ui/core/Container';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
+import {
+  Container, List, ListItem, ListItemText, Typography,
+} from '@material-ui/core';
 
 import { containerProps } from './theme';
 
@@ -44,16 +42,20 @@ export default function Admin(): JSX.Element {
 
   let body;
   switch (state) {
-    case State.loading: body = <Message text="loading" />; break;
-    case State.error: body = <Message text="error" />; break;
-    case State.notAdmin: body = <Message text="you are not admin" />; break;
+    case State.loading:
+      body = <Message text="loading" />;
+      break;
+    case State.error:
+      body = <Message text="error" />;
+      break;
+    case State.notAdmin:
+      body = <Message text="you are not admin" />;
+      break;
     case State.loaded:
       body = (
         <>
           <Typography variant="h5">Users:</Typography>
-          <List>
-            { renderEmailList(emailList) }
-          </List>
+          <List>{ renderEmailList(emailList) }</List>
         </>
       );
       break;
@@ -93,10 +95,7 @@ function UserEntry({ email }: { email: string }) {
 
   return (
     <ListItem onClick={loadNumberOfBooks}>
-      <ListItemText
-        primary={email}
-        secondary={booksCount}
-      />
+      <ListItemText primary={email} secondary={booksCount} />
     </ListItem>
   );
 

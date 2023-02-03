@@ -1,21 +1,15 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Switch from '@material-ui/core/Switch';
+import { Autocomplete } from '@material-ui/lab';
+import {
+  Button, Grid, TextField, Typography, Switch,
+} from '@material-ui/core';
 
 import MainHeading from './MainHeading';
 
 import {
-  Book,
-  NewBook,
-  SaveBookCallback,
-  DeleteBookCallback,
-  AddBookCallback,
+  Book, NewBook, SaveBookCallback, DeleteBookCallback, AddBookCallback,
 } from '../types';
 
 import * as tools from '../tools/tools';
@@ -39,11 +33,14 @@ interface BookAddProps {
 }
 
 export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // clone the book for changing
   // we use an empty author so it's easier to handle, and we remove it when saving
-  const [book, setBook] = React.useState(() => ({ author: { fname: '', lname: '' }, ...props.originalBook }));
+  const [book, setBook] = React.useState(() => ({
+    author: { fname: '', lname: '' },
+    ...props.originalBook,
+  }));
 
   const setAuthorFname = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newBook = { ...book };
@@ -68,10 +65,10 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
     } else {
       props.add(bookForSaving);
     }
-    history.goBack();
+    navigate(-1);
     // todo could go forward instead (then browser back will return to editing)
-    // but if we don't have an ID, we need to get it from props.add() and first history.replace
-    // as if we were editing that book all along
+    // but if we don't have an ID, we need to get it from props.add()
+    // and first navigate(...,{replace:true}) as if we were editing that book all along
     // going forward would go to the list of books by the same author,
     // owned or not depending on the book
   };
@@ -82,25 +79,29 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
     // eslint-disable-next-line no-alert
     if (window.confirm(`Are you sure to delete “${props.originalBook.title}”?`)) {
       props.delete(props.originalBook);
-      history.goBack();
+      navigate(-1);
     }
   };
 
   const doCancel = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const title = props.save ? `Editing ${props.originalBook.title}` : 'Adding a new book';
 
   return (
-    <MainHeading
-      title={title}
-    >
+    <MainHeading title={title}>
       <Typography component="div" className="BookEdit">
         <Grid container spacing={1}>
           <Grid item xs={6} />
           <Grid item xs={6}>
-            <Grid component="label" container alignItems="center" justify="flex-end" spacing={1}>
+            <Grid
+              component="label"
+              container
+              alignItems="center"
+              justifyContent="flex-end"
+              spacing={1}
+            >
               <Grid item>Want it</Grid>
               <Grid item>
                 <Switch
@@ -126,13 +127,13 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           </Grid>
           <Grid item xs={5}>
             <Autocomplete
-              className="fname"
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.fname))}
               value={book.author.fname ?? ''}
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  className="fname"
                   label="Author"
                   margin="normal"
                   fullWidth
@@ -145,12 +146,12 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           <Grid item xs={1} />
           <Grid item xs={6}>
             <Autocomplete
-              className="lname"
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.lname))}
               value={book.author.lname ?? ''}
               renderInput={(params) => (
                 <TextField
+                  className="lname"
                   {...params}
                   label=" "
                   margin="normal"
@@ -163,12 +164,12 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           </Grid>
           <Grid item xs={12}>
             <Autocomplete
-              className="series"
               freeSolo
               options={unique(props.knownBooks.map((b) => b.series))}
               value={book.series ?? ''}
               renderInput={(params) => (
                 <TextField
+                  className="series"
                   {...params}
                   label="Series"
                   margin="normal"
@@ -195,19 +196,11 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
         <Grid container alignContent="flex-end" className="bottom">
           <Grid item container xs={6} justify="flex-start">
             { props.save ? (
-              <Button
-                className="delete"
-                color="secondary"
-                variant="contained"
-                onClick={doDelete}
-              >
+              <Button className="delete" color="secondary" variant="contained" onClick={doDelete}>
                 Delete
               </Button>
             ) : (
-              <Button
-                variant="contained"
-                onClick={doCancel}
-              >
+              <Button variant="contained" onClick={doCancel}>
                 Cancel
               </Button>
             ) }

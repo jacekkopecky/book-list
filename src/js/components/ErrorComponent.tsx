@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import { Container, Typography } from '@material-ui/core';
 
 import { containerProps } from './theme';
 
