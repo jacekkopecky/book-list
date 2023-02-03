@@ -32,7 +32,17 @@ A book has these properties:
    - problem: books listed by author are not listed in order they should be read
    - solution: add first line of notes in collapsed book entry
 
+### update for 2022
+
+- [x] aut0 app
+- [x] login
+- [ ] auth0 api
+- [ ] probably introduce useApi in api.ts that uses useAuth0 and getAccessTokenSilently()
+  - with authenticationParams
 - [ ] fix tests
+- [ ] make sure admin works
+  - [ ] put admins in the database
+- [ ] update auth0 link to icon to stable link
 
 ## API
 

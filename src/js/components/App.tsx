@@ -1,3 +1,4 @@
+import { Auth0Provider } from '@auth0/auth0-react';
 import * as React from 'react';
 import {
   BrowserRouter as Router,
@@ -44,9 +45,17 @@ import Admin from './Admin';
 
 export default function App(): JSX.Element {
   return (
-    <Router>
-      <AppInsideRouter />
-    </Router>
+    <Auth0Provider
+      domain={api.config.auth0Domain}
+      clientId={api.config.auth0ClientId}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+      }}
+    >
+      <Router>
+        <AppInsideRouter />
+      </Router>
+    </Auth0Provider>
   );
 }
 
@@ -177,40 +186,64 @@ function AppInsideRouter(): JSX.Element {
       case AppState.connected:
         return (
           <Routes>
-            <Route path="/">
-              <AuthorList books={books} addBookTrigger={addBookTrigger} />
-            </Route>
-            <Route path="/series">
-              <SeriesList books={books} addBookTrigger={addBookTrigger} />
-            </Route>
-            <Route path="/author/:id">
-              <BookListWithParams
-                variant="author"
-                books={books}
-                setOwned={setOwned}
-                addBookTrigger={addBookTrigger}
-              />
-            </Route>
-            <Route path="/series/:id">
-              <BookListWithParams
-                variant="series"
-                books={books}
-                setOwned={setOwned}
-                addBookTrigger={addBookTrigger}
-              />
-            </Route>
-            <Route path="/edit/:id">
-              <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
-            </Route>
-            <Route path="/new">
-              <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
-            </Route>
-            <Route path="/admin">
-              <Admin />
-            </Route>
-            <Route path="*">
-              <NotFound />
-            </Route>
+            <Route
+              path="/"
+              element={
+                <AuthorList books={books} addBookTrigger={addBookTrigger} />
+              }
+            />
+            <Route
+              path="/series"
+              element={
+                <SeriesList books={books} addBookTrigger={addBookTrigger} />
+              }
+            />
+            <Route
+              path="/author/:id"
+              element={(
+                <BookListWithParams
+                  variant="author"
+                  books={books}
+                  setOwned={setOwned}
+                  addBookTrigger={addBookTrigger}
+                />
+              )}
+            />
+            <Route
+              path="/series/:id"
+              element={(
+                <BookListWithParams
+                  variant="series"
+                  books={books}
+                  setOwned={setOwned}
+                  addBookTrigger={addBookTrigger}
+                />
+              )}
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
+              }
+            />
+            <Route
+              path="/new"
+              element={
+                <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <Admin />
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <NotFound />
+              }
+            />
           </Routes>
         );
       case AppState.starting:

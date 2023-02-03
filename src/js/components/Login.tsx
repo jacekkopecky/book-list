@@ -1,11 +1,14 @@
 import * as React from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import {
-  Button, CircularProgress, IconButton, Menu, MenuItem, Tooltip,
+  Button, CircularProgress, Menu, MenuItem, Tooltip,
 } from '@material-ui/core';
 import { ErrorOutline, AccountCircle } from '@material-ui/icons';
 
 import { AppState } from '../types';
+
+import './Login.css';
 
 interface StateSetter {
   (state: AppState.loggedIn, email: string): void,
@@ -18,8 +21,10 @@ interface LoginProps {
 }
 
 export default function Login({ state, setState }: LoginProps): JSX.Element {
+  const {
+    loginWithRedirect, logout, isAuthenticated, user, isLoading,
+  } = useAuth0();
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [name] = React.useState('');
 
   const openMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchorEl(e.currentTarget);
@@ -29,37 +34,22 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     setMenuAnchorEl(null);
   };
 
-  const logout = () => {
-    closeMenu();
-    try {
-      setState(AppState.loggedOut);
-    } catch (e) {
-      console.error('error logging out', e);
-      setState(AppState.error);
-    }
-  };
-
   React.useEffect(() => {
-    void (() => {
-      try {
-        // log in somehow
-        setState(AppState.loggedIn, 'jackopecky@gmail.com');
-      } catch (e) {
-        console.error(e);
-        setState(AppState.error);
-      }
-    })();
-  }, []);
+    // todo this isn't great, we shouldn't have state redundant to useAuth
+    if (!isLoading && isAuthenticated && state === AppState.starting && user?.email) {
+      setState(AppState.loggedIn, user.email);
+    }
+  });
+
+  const doLogout = () => {
+    closeMenu();
+    logout();
+    setState(AppState.loggedOut);
+  };
 
   let mainEl: JSX.Element;
   switch (state) {
     case AppState.starting:
-      mainEl = (
-        <Tooltip title="logging in">
-          <CircularProgress color="inherit" size="2em" />
-        </Tooltip>
-      );
-      break;
     case AppState.loggedOut:
       mainEl = (
         <Button color="inherit" onClick={openMenu}>
@@ -71,9 +61,14 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     case AppState.progress:
     case AppState.connected:
       mainEl = (
-        <IconButton title="account" color="inherit" onClick={openMenu}>
-          <AccountCircle />
-        </IconButton>
+        <Button title="account" color="inherit" onClick={openMenu}>
+          { user?.name && `${user.name}\u00a0` }
+          { user?.picture ? (
+            <img className="user-icon" src={user.picture} alt="user avatar" />
+          ) : (
+            <AccountCircle />
+          ) }
+        </Button>
       );
       break;
     case AppState.error:
@@ -85,42 +80,33 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
       );
   }
 
+  if (isLoading) {
+    return (
+      <Tooltip title="logging in">
+        <CircularProgress color="inherit" size="2em" />
+      </Tooltip>
+    );
+  }
+
   return (
     <>
       { mainEl }
       <Menu
         id="simple-menu"
         anchorEl={menuAnchorEl}
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
         keepMounted
         open={Boolean(menuAnchorEl)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={closeMenu}>
-          <div id="LoginGoogleButton" />
-        </MenuItem>
-        { state !== AppState.loggedOut && name && <MenuItem disabled>{ name }</MenuItem> }
-        <MenuItem onClick={logout}>Logout</MenuItem>
-        <MenuItem
-          onClick={() => {
-            window.location.href = '/version.txt';
-          }}
-        >
-          Version
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            window.location.href = '/admin';
-          }}
-        >
-          Admin
-        </MenuItem>
+        { isAuthenticated && user?.name && <MenuItem disabled>{ user.name }</MenuItem> }
+        { !isAuthenticated && (<MenuItem onClick={() => loginWithRedirect()}>Log in</MenuItem>) }
+        { isAuthenticated && <MenuItem onClick={doLogout}>Log out</MenuItem> }
+        { isAuthenticated && (
+          <MenuItem onClick={() => { window.location.href = '/admin'; }}>Admin</MenuItem>
+        ) }
+        <MenuItem onClick={() => { window.location.href = '/version.txt'; }}>Version</MenuItem>
       </Menu>
     </>
   );
-}
-
-declare global {
-  interface Window {
-    googleAuthInit: () => void,
-  }
 }

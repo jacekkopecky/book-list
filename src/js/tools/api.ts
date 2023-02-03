@@ -7,6 +7,8 @@ import {
 } from '../types';
 import { removeEmpties } from './tools';
 
+export { config };
+
 function apiRequest(path: string, options?: RequestInit): Promise<Response> {
   const idToken = 'foo';
   return fetch(config.serverURL + path, {
@@ -20,22 +22,24 @@ function apiRequest(path: string, options?: RequestInit): Promise<Response> {
 }
 
 export async function loadBooks(): Promise<BooksAndBin> {
-  const response = await apiRequest('books');
-  if (response.ok) {
-    const data: unknown = await response.json();
+  return Promise.resolve({ books: [], bin: [] });
 
-    if (validateBooksAndBin(data)) {
-      trimStringValues(data.books);
-      trimStringValues(data.bin);
-      return data;
-    } else {
-      console.error('invalid book array', data);
-      throw new Error('received invalid array of books');
-    }
-  } else {
-    console.error(response);
-    throw new Error('could not load books');
-  }
+  // const response = await apiRequest('books');
+  // if (response.ok) {
+  //   const data: unknown = await response.json();
+
+  //   if (validateBooksAndBin(data)) {
+  //     trimStringValues(data.books);
+  //     trimStringValues(data.bin);
+  //     return data;
+  //   } else {
+  //     console.error('invalid book array', data);
+  //     throw new Error('received invalid array of books');
+  //   }
+  // } else {
+  //   console.error(response);
+  //   throw new Error('could not load books');
+  // }
 }
 
 export async function submitNewBook(book: NewBook): Promise<Book> {
