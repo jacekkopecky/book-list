@@ -21,7 +21,7 @@ import {
 
 import './App.css';
 import theme, { containerProps } from './theme';
-import * as api from '../tools/api';
+import { config, useApi } from '../tools/api';
 
 import {
   Book,
@@ -46,10 +46,11 @@ import Admin from './Admin';
 export default function App(): JSX.Element {
   return (
     <Auth0Provider
-      domain={api.config.auth0Domain}
-      clientId={api.config.auth0ClientId}
+      domain={config.auth0.domain}
+      clientId={config.auth0.clientId}
       authorizationParams={{
         redirect_uri: window.location.origin,
+        audience: config.auth0.audience,
       }}
     >
       <Router>
@@ -65,6 +66,7 @@ function AppInsideRouter(): JSX.Element {
   const [customMessage, setCustomMessage] = React.useState('');
   const [email, setEmail] = React.useState<string>();
   const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});
+  const api = useApi();
 
   // state that holds the actual books
   const [books, setBooks] = React.useState<Book[]>([]);

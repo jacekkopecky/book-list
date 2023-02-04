@@ -1,3 +1,5 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import React from 'react';
 import config from '../../../server/config';
 import {
   Author,
@@ -9,137 +11,154 @@ import { removeEmpties } from './tools';
 
 export { config };
 
-function apiRequest(path: string, options?: RequestInit): Promise<Response> {
-  const idToken = 'foo';
-  return fetch(config.serverURL + path, {
-    method: 'GET',
-    ...options,
-    headers: {
-      ...options?.headers,
-      Authorization: `Bearer ${idToken}`,
+export function useApi() {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const apiRequest = React.useCallback(
+    async (path: string, options?: RequestInit): Promise<Response> => {
+      const idToken = await getAccessTokenSilently();
+      return fetch(config.serverURL + path, {
+        method: 'GET',
+        ...options,
+        headers: {
+          ...options?.headers,
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
     },
-  });
-}
+    [getAccessTokenSilently],
+  );
 
-export async function loadBooks(): Promise<BooksAndBin> {
-  return Promise.resolve({ books: [], bin: [] });
+  const loadBooks = React.useCallback(
+    async (): Promise<BooksAndBin> => {
+      const response = await apiRequest('books');
+      if (response.ok) {
+        const data: unknown = await response.json();
 
-  // const response = await apiRequest('books');
-  // if (response.ok) {
-  //   const data: unknown = await response.json();
-
-  //   if (validateBooksAndBin(data)) {
-  //     trimStringValues(data.books);
-  //     trimStringValues(data.bin);
-  //     return data;
-  //   } else {
-  //     console.error('invalid book array', data);
-  //     throw new Error('received invalid array of books');
-  //   }
-  // } else {
-  //   console.error(response);
-  //   throw new Error('could not load books');
-  // }
-}
-
-export async function submitNewBook(book: NewBook): Promise<Book> {
-  const response = await apiRequest('books', {
-    method: 'POST',
-    body: JSON.stringify(book),
-    headers: {
-      'Content-type': 'application/json',
+        if (validateBooksAndBin(data)) {
+          trimStringValues(data.books);
+          trimStringValues(data.bin);
+          return data;
+        } else {
+          console.error('invalid book array', data);
+          throw new Error('received invalid array of books');
+        }
+      } else {
+        console.error(response);
+        throw new Error('could not load books');
+      }
     },
-  });
+    [apiRequest],
+  );
 
-  if (response.ok) {
-    const data: unknown = await response.json();
+  const submitNewBook = React.useCallback(async (book: NewBook): Promise<Book> => {
+    const response = await apiRequest('books', {
+      method: 'POST',
+      body: JSON.stringify(book),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
 
-    if (validateBook(data)) {
-      return data;
+    if (response.ok) {
+      const data: unknown = await response.json();
+
+      if (validateBook(data)) {
+        return data;
+      } else {
+        console.error('invalid book', data);
+        throw new Error('received invalid book');
+      }
     } else {
-      console.error('invalid book', data);
-      throw new Error('received invalid book');
+      console.error(response);
+      throw new Error('could not save new book');
     }
-  } else {
-    console.error(response);
-    throw new Error('could not save new book');
-  }
-}
+  }, [apiRequest]);
 
-export async function saveBook(book: Book): Promise<Book> {
-  const response = await apiRequest(`books/${book.id}`, {
-    method: 'PUT',
-    body: JSON.stringify(book),
-    headers: {
-      'Content-type': 'application/json',
-    },
-  });
+  const saveBook = React.useCallback(async (book: Book): Promise<Book> => {
+    const response = await apiRequest(`books/${book.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(book),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
 
-  if (response.ok) {
-    const data: unknown = await response.json();
+    if (response.ok) {
+      const data: unknown = await response.json();
 
-    if (validateBook(data)) {
-      return data;
+      if (validateBook(data)) {
+        return data;
+      } else {
+        console.error('invalid book', data);
+        throw new Error('received invalid book');
+      }
     } else {
-      console.error('invalid book', data);
-      throw new Error('received invalid book');
+      console.error(response);
+      throw new Error('could not save book');
     }
-  } else {
-    console.error(response);
-    throw new Error('could not save book');
-  }
-}
+  }, [apiRequest]);
 
-export async function deleteBook(book: Book): Promise<Book[]> {
-  const response = await apiRequest(`books/${book.id}`, {
-    method: 'DELETE',
-  });
+  const deleteBook = React.useCallback(async (book: Book): Promise<Book[]> => {
+    const response = await apiRequest(`books/${book.id}`, {
+      method: 'DELETE',
+    });
 
-  if (response.ok) {
-    const data: unknown = await response.json();
+    if (response.ok) {
+      const data: unknown = await response.json();
 
-    if (validateBookArray(data)) {
-      return data;
+      if (validateBookArray(data)) {
+        return data;
+      } else {
+        console.error('invalid book', data);
+        throw new Error('received invalid bin');
+      }
     } else {
-      console.error('invalid book', data);
-      throw new Error('received invalid bin');
+      console.error(response);
+      throw new Error('could not delete book');
     }
-  } else {
-    console.error(response);
-    throw new Error('could not delete book');
-  }
-}
+  }, [apiRequest]);
 
-// returns a list of users, or null if the caller is not admin
-export async function adminListEmails(): Promise<string[] | null> {
-  const response = await apiRequest('admin/users');
-  if (response.ok) {
-    const data: unknown = await response.json();
-    if (Array.isArray(data) && data.every((d) => typeof d === 'string')) {
-      return data as string[];
+  // returns a list of users, or null if the caller is not admin
+  const adminListEmails = React.useCallback(async (): Promise<string[] | null> => {
+    const response = await apiRequest('admin/users');
+    if (response.ok) {
+      const data: unknown = await response.json();
+      if (Array.isArray(data) && data.every((d) => typeof d === 'string')) {
+        return data as string[];
+      } else {
+        console.error('invalid user list array', data);
+        throw new Error('received invalid array of users');
+      }
+    } else if (response.status === 403) {
+      return null;
     } else {
-      console.error('invalid user list array', data);
-      throw new Error('received invalid array of users');
+      console.error(response);
+      throw new Error('could not load users');
     }
-  } else if (response.status === 403) {
-    return null;
-  } else {
-    console.error(response);
-    throw new Error('could not load users');
-  }
-}
+  }, [apiRequest]);
 
-export async function adminLoadBookStats(email: string): Promise<BookStats> {
-  const response = await apiRequest(`admin/users/${encodeURIComponent(email)}/bookStats`);
-  if (response.ok) {
-    const data: unknown = await response.json();
-    if (hasBookStats(data)) {
-      return data;
+  const adminLoadBookStats = React.useCallback(async (email: string): Promise<BookStats> => {
+    const response = await apiRequest(`admin/users/${encodeURIComponent(email)}/bookStats`);
+    if (response.ok) {
+      const data: unknown = await response.json();
+      if (hasBookStats(data)) {
+        return data;
+      }
     }
-  }
 
-  // if we're here, we don't have book stats
-  throw new Error('cannot load book stats');
+    // if we're here, we don't have book stats
+    throw new Error('cannot load book stats');
+  }, [apiRequest]);
+
+  return {
+    loadBooks,
+    submitNewBook,
+    saveBook,
+    deleteBook,
+    adminListEmails,
+    adminLoadBookStats,
+  };
 }
 
 // validation functions

@@ -36,9 +36,9 @@ A book has these properties:
 
 - [x] aut0 app
 - [x] login
-- [ ] auth0 api
-- [ ] probably introduce useApi in api.ts that uses useAuth0 and getAccessTokenSilently()
-  - with authenticationParams
+- [x] auth0 api
+  - [x] probably introduce useApi in api.ts that uses useAuth0 and getAccessTokenSilently()
+  - [x] with authenticationParams (given in setup?)
 - [ ] server
   - [ ] re-enable postinstall script
 - [ ] fix tests

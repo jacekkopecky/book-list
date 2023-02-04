@@ -10,7 +10,7 @@ import { BookStats } from '../types';
 
 import EmptyListItem from './EmptyListItem';
 
-import * as api from '../tools/api';
+import { useApi } from '../tools/api';
 
 import './Admin.css';
 
@@ -24,6 +24,7 @@ enum State {
 export default function Admin(): JSX.Element {
   const [emailList, setEmailList] = React.useState<string[]>([]);
   const [state, setState] = React.useState(State.loading);
+  const api = useApi();
 
   React.useEffect(() => {
     (async () => {
@@ -82,6 +83,7 @@ function Message({ text }: { text: string }): JSX.Element {
 
 function UserEntry({ email }: { email: string }) {
   const [bookStats, setBookStats] = React.useState<'load' | 'err' | BookStats>();
+  const api = useApi();
 
   let booksCount;
   if (bookStats === 'load') {
