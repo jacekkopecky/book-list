@@ -42,6 +42,8 @@ A book has these properties:
 - [x] server
   - [x] re-enable postinstall script
 - [ ] fix tests
+- [ ] put GITHUB_TOKEN in github secrets
+  - [ ] publish version 1.2.0 with a tag
 - [ ] make sure admin works
   - [ ] put admins in the database
 - [ ] update auth0 link to icon to stable link
