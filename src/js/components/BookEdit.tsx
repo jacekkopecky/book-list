@@ -116,7 +116,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           <Grid item xs={12}>
             <TextField
               label="Title"
-              className="title"
+              data-testid="title"
               margin="normal"
               required
               fullWidth
@@ -133,8 +133,8 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  className="fname"
                   label="Author"
+                  data-testid="fname"
                   margin="normal"
                   fullWidth
                   helperText="first name"
@@ -151,9 +151,9 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               value={book.author.lname ?? ''}
               renderInput={(params) => (
                 <TextField
-                  className="lname"
                   {...params}
                   label=" "
+                  data-testid="lname"
                   margin="normal"
                   fullWidth
                   helperText="last name"
@@ -169,9 +169,9 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               value={book.series ?? ''}
               renderInput={(params) => (
                 <TextField
-                  className="series"
                   {...params}
                   label="Series"
+                  data-testid="series"
                   margin="normal"
                   placeholder="optional"
                   fullWidth
@@ -183,7 +183,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           <Grid item xs={12}>
             <TextField
               label="Notes"
-              className="notes"
+              data-testid="notes"
               multiline
               margin="normal"
               placeholder="optional"
@@ -194,7 +194,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
           </Grid>
         </Grid>
         <Grid container alignContent="flex-end" className="bottom">
-          <Grid item container xs={6} justify="flex-start">
+          <Grid item container xs={6} justifyContent="flex-start">
             { props.save ? (
               <Button className="delete" color="secondary" variant="contained" onClick={doDelete}>
                 Delete
@@ -205,7 +205,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               </Button>
             ) }
           </Grid>
-          <Grid item container xs={6} justify="flex-end">
+          <Grid item container xs={6} justifyContent="flex-end">
             <Button
               color="primary"
               variant="contained"

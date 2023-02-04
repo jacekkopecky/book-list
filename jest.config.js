@@ -139,7 +139,7 @@ export default {
 
   // A list of paths to modules that run some code to configure or set up the testing
   // framework before each test
-  // setupFilesAfterEnv: ['<rootDir>/src/tests/setup/setup-enzyme.js'],
+  setupFilesAfterEnv: ['<rootDir>/src/tests/setup/setup-tests.js'],
 
   // The number of seconds after which a test is considered as slow and reported as
   // such in the results.
@@ -149,7 +149,7 @@ export default {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-jsdom",
+  testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

@@ -41,8 +41,9 @@ A book has these properties:
   - [x] with authenticationParams (given in setup?)
 - [x] server
   - [x] re-enable postinstall script
-- [ ] fix tests
-- [ ] put GITHUB_TOKEN in github secrets
+- [x] fix tests
+- [ ] update to mui 5 or later https://mui.com/material-ui/migration/migration-v4/
+- [/] put GITHUB_TOKEN in github secrets
   - [ ] publish version 1.2.0 with a tag
 - [ ] make sure admin works
   - [ ] put admins in the database
