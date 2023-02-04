@@ -1,6 +1,7 @@
 const express = require('express');
 
 const db = require('./db');
+const auth = require('./auth');
 
 const adminApi = express.Router();
 module.exports = adminApi;
@@ -19,7 +20,7 @@ adminApi.get('/users', asyncWrap(listUsers));
 adminApi.get('/users/:email/bookStats', asyncWrap(loadUserBookStats));
 
 function authorizeAdmin(req, res, next) {
-  const user = req.user.emails[0].value;
+  const user = auth.getUserEmail(req);
   if (user !== 'jackopecky@gmail.com') {
     res.sendStatus(403);
   } else {

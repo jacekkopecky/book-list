@@ -1,6 +1,7 @@
 const express = require('express');
 
 const db = require('./db');
+const auth = require('./auth');
 
 const api = express.Router();
 module.exports = api;
@@ -29,12 +30,12 @@ function asyncWrap(f) {
  */
 
 async function retrieveBooks(req, res) {
-  const user = req.user.emails[0].value;
+  const user = auth.getUserEmail(req);
   res.json(await db.listBooks(user));
 }
 
 async function addBook(req, res) {
-  const user = req.user.emails[0].value;
+  const user = auth.getUserEmail(req);
   const validatedNewBook = validateNewBook(req.body);
   if (!validatedNewBook) {
     res.sendStatus(400);
@@ -45,7 +46,7 @@ async function addBook(req, res) {
 }
 
 async function updateBook(req, res) {
-  const user = req.user.emails[0].value;
+  const user = auth.getUserEmail(req);
   const validatedBook = validateBook(req.body, req.params.id);
   if (!validatedBook) {
     res.sendStatus(400);
@@ -62,7 +63,7 @@ async function updateBook(req, res) {
 }
 
 async function moveBookToBin(req, res) {
-  const user = req.user.emails[0].value;
+  const user = auth.getUserEmail(req);
   const moved = await db.moveBookToBin(user, req.params.id);
   if (moved) {
     res.json(await db.getBin(user));

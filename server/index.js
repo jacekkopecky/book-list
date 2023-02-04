@@ -1,21 +1,20 @@
 const express = require('express');
 const cors = require('cors');
-const GoogleAuth = require('simple-google-openid');
 
-const config = require('./config');
+const auth = require('./auth');
 const api = require('./api');
 const admin = require('./api-admin');
 
 const app = express();
 
 app.use(cors());
-app.use(GoogleAuth(config.clientId));
+app.use(auth.authenticationMiddleware);
 
 app.get('/', (req, res) => { res.send('function running'); });
 
-app.use('/api', GoogleAuth.guardMiddleware());
+app.use('/api', auth.onlySignedInMiddleware);
 
-app.get('/api/ping', (req, res) => { res.send('authorized'); });
+app.get('/api/ping', (req, res) => { res.send(`authorized as ${auth.getUserEmail(req)}`); });
 
 app.use('/api/admin', admin);
 app.use('/api', api);

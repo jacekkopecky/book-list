@@ -4,4 +4,5 @@ export const auth0: {
   readonly clientId: string,
   readonly domain: string,
   readonly audience: string,
+  readonly tokenSigningAlg: string,
 };
