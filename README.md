@@ -32,21 +32,9 @@ A book has these properties:
    - problem: books listed by author are not listed in order they should be read
    - solution: add first line of notes in collapsed book entry
 
-### update for 2022
-
-- [x] aut0 app
-- [x] login
-- [x] auth0 api
-  - [x] probably introduce useApi in api.ts that uses useAuth0 and getAccessTokenSilently()
-  - [x] with authenticationParams (given in setup?)
-- [x] server
-  - [x] re-enable postinstall script
-- [x] fix tests
+- [ ] add by-title display
+- [ ] put admins in the database
 - [ ] update to mui 5 or later https://mui.com/material-ui/migration/migration-v4/
-- [/] put GITHUB_TOKEN in github secrets
-  - [ ] publish version 1.2.0 with a tag
-- [ ] make sure admin works
-  - [ ] put admins in the database
 - [ ] update auth0 link to icon to stable link
 
 ## API
