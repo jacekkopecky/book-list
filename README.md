@@ -39,8 +39,8 @@ A book has these properties:
 - [x] auth0 api
   - [x] probably introduce useApi in api.ts that uses useAuth0 and getAccessTokenSilently()
   - [x] with authenticationParams (given in setup?)
-- [ ] server
-  - [ ] re-enable postinstall script
+- [x] server
+  - [x] re-enable postinstall script
 - [ ] fix tests
 - [ ] make sure admin works
   - [ ] put admins in the database
