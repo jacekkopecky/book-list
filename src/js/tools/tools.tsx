@@ -14,10 +14,10 @@ export function authorKey(author?: Author): string | null {
 }
 
 export function authorPath(author: Author = UNKNOWN): string {
-  return encodeURIComponent(authorName(author).replace(/\s/g, '-'));
+  return valuePath(authorName(author));
 }
 
-export function seriesPath(series: string): string {
+export function valuePath(series: string): string {
   return encodeURIComponent(series.replace(/\s/g, '-'));
 }
 

@@ -16,31 +16,27 @@ import MainHeading from './MainHeading';
 
 interface BookListProps {
   books: Book[],
-  seriesPath: string,
+  titlePath: string,
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
 }
 
-type BookInSeries = Book & Required<Pick<Book, 'series'>>;
-
-export default function BookListBySeries(props: BookListProps): JSX.Element {
+export default function BookListByTitle(props: BookListProps): JSX.Element {
   const {
-    books, seriesPath, setOwned, addBookTrigger,
+    books, titlePath, setOwned, addBookTrigger,
   } = props;
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
-  const booksInSeries = selectBooksInSeries(books, seriesPath);
+  const booksByTitle = books.filter((b) => tools.valuePath(b.title) === titlePath);
 
-  const singleAuthor = new Set(booksInSeries.map((b) => tools.authorName(b.author))).size === 1;
-
-  const selectedBooks = booksInSeries.filter((b) => b.owned === showingOwned);
+  const selectedBooks = booksByTitle.filter((b) => b.owned === showingOwned);
   selectedBooks.sort((a, b) => a.title.localeCompare(b.title));
 
   const singleBook = selectedBooks.length === 1;
 
   const navigate = useNavigate();
-  const firstBook = booksInSeries[0];
+  const firstBook = booksByTitle[0];
   if (!firstBook) {
     React.useEffect(() => {
       navigate(-1);
@@ -48,26 +44,19 @@ export default function BookListBySeries(props: BookListProps): JSX.Element {
     return <ErrorComponent text="empty book list – how did that happen?" />;
   }
 
-  const titlePrefix = showingOwned
-    ? `Books I Have In ${firstBook.series} Series`
-    : `Wanted Books In ${firstBook.series} Series`;
-  const titleAuthor = `(By ${tools.authorName(firstBook.author)})`.replace(/\s/g, '\u00a0');
-
-  const title = singleAuthor ? `${titlePrefix} ${titleAuthor}` : titlePrefix;
+  const title = showingOwned
+    ? `Books I Have Titled ${firstBook.title}`
+    : `Wanted Books Titled ${firstBook.title}`;
 
   const addBookTemplate: Partial<NewBook> = {
-    series: firstBook.series,
     owned: showingOwned,
   };
-  if (singleAuthor && firstBook.author) {
-    addBookTemplate.author = { ...firstBook.author };
-  }
 
   return (
     <MainHeading title={title}>
       <List>
         { selectedBooks.length > 0 ? (
-          selectedBooks.map((x) => renderBook(x, setOwned, singleAuthor, singleBook))
+          selectedBooks.map((x) => renderBook(x, setOwned, singleBook))
         ) : (
           <EmptyListItem text="no books" />
         ) }
@@ -83,30 +72,16 @@ export default function BookListBySeries(props: BookListProps): JSX.Element {
 }
 
 function renderBook(
-  book: BookInSeries,
+  book: Book,
   setOwned: SetOwnedCallback,
-  singleAuthor: boolean,
   singleBook: boolean,
 ) {
   return (
     <BookEntry
-      key={book.title}
+      key={book.id}
       book={book}
       setOwned={setOwned}
-      hideAuthor={singleAuthor}
       startExpanded={singleBook}
     />
   );
-}
-
-function selectBooksInSeries(books: Book[], seriesPath: string): BookInSeries[] {
-  const retval: BookInSeries[] = [];
-  for (const book of books) {
-    if (hasSeries(book) && tools.valuePath(book.series) === seriesPath) retval.push(book);
-  }
-  return retval;
-}
-
-function hasSeries(book: Book): book is BookInSeries {
-  return Boolean(book.series?.trim());
 }

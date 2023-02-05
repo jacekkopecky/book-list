@@ -35,8 +35,10 @@ import {
 import theme from './theme';
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
+import TitlesList from './TitlesList';
 import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
+import BookListByTitle from './BookListByTitle';
 import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
 import Login from './Login';
@@ -207,6 +209,12 @@ function AppInsideRouter(): JSX.Element {
               }
             />
             <Route
+              path="/titles"
+              element={
+                <TitlesList books={books} addBookTrigger={addBookTrigger} />
+              }
+            />
+            <Route
               path="/author/:id"
               element={(
                 <BookListWithParams
@@ -222,6 +230,17 @@ function AppInsideRouter(): JSX.Element {
               element={(
                 <BookListWithParams
                   variant="series"
+                  books={books}
+                  setOwned={setOwned}
+                  addBookTrigger={addBookTrigger}
+                />
+              )}
+            />
+            <Route
+              path="/title/:id"
+              element={(
+                <BookListWithParams
+                  variant="title"
                   books={books}
                   setOwned={setOwned}
                   addBookTrigger={addBookTrigger}
@@ -276,7 +295,7 @@ function AppInsideRouter(): JSX.Element {
 
 interface BookListWithParamsProps {
   books: Book[],
-  variant: 'author' | 'series',
+  variant: 'author' | 'series' | 'title',
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
 }
@@ -289,6 +308,8 @@ function BookListWithParams(props: BookListWithParamsProps): JSX.Element {
       return <BookListByAuthor {...props} authorPath={params.id ?? ''} />;
     case 'series':
       return <BookListBySeries {...props} seriesPath={params.id ?? ''} />;
+    case 'title':
+      return <BookListByTitle {...props} titlePath={params.id ?? ''} />;
   }
 }
 

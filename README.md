@@ -27,6 +27,7 @@ A book has these properties:
 * top-level menu, about, version
 * instead of whole-screen "saving", "adding", "deleting" these should be just a spinner over the "save" or "delete" button
 * ci/cd deployment of server? (then fix notes below)
+* use prettier
 
 * resolved:
    - problem: books listed by author are not listed in order they should be read

@@ -10,31 +10,31 @@ import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
 import MainTabs from './MainTabs';
 
-interface SeriesListProps {
+interface TitlesListProps {
   books: Book[],
   addBookTrigger: AddBookTrigger,
 }
 
-export default function SeriesList({ books, addBookTrigger }: SeriesListProps): JSX.Element {
+export default function TitlesList({ books, addBookTrigger }: TitlesListProps): JSX.Element {
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
-  const series = new Set<string>();
+  const titles = new Set<string>();
 
   const selectedBooks = books.filter((b) => b.owned === showingOwned);
   for (const book of selectedBooks) {
-    if (book.series) series.add(book.series);
+    if (book.title) titles.add(book.title);
   }
 
-  const sorted = Array.from(series).sort(tools.localeCompare);
+  const sorted = Array.from(titles).sort(tools.localeCompare);
 
   return (
     <MainTabs>
       <List>
-        { sorted.length > 0 ? sorted.map(renderSeries) : <EmptyListItem text="no series" /> }
+        { sorted.length > 0 ? sorted.map(renderTitle) : <EmptyListItem text="no titles" /> }
       </List>
 
       <ActionButtons
-        itemName="series"
+        itemName="titles"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
         addBook={() => addBookTrigger({ owned: showingOwned })}
@@ -42,12 +42,12 @@ export default function SeriesList({ books, addBookTrigger }: SeriesListProps): 
     </MainTabs>
   );
 
-  function renderSeries(name: string) {
-    const id = tools.valuePath(name);
-    const link = `/series/${id}${showingOwned ? '?owned' : ''}`;
+  function renderTitle(title: string) {
+    const id = tools.valuePath(title);
+    const link = `/title/${id}${showingOwned ? '?owned' : ''}`;
     return (
-      <ListItem key={name} divider component={Link} to={link}>
-        <ListItemText>{ name }</ListItemText>
+      <ListItem key={title} divider component={Link} to={link}>
+        <ListItemText>{ title }</ListItemText>
       </ListItem>
     );
   }

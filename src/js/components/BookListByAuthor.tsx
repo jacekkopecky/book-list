@@ -40,7 +40,9 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
 
   const selectedBooks = booksByAuthor.filter((b) => b.owned === showingOwned);
 
-  const series = findSeries(selectedBooks);
+  const singleBook = selectedBooks.length === 1;
+
+  const series = singleBook ? [] : findSeries(selectedBooks);
 
   const entries = [...selectedBooks, ...series];
   entries.sort((a, b) => tools.localeCompare(a.title, b.title));
@@ -60,7 +62,7 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
     <MainHeading title={prefix + tools.authorName(firstBook.author)}>
       <List>
         { entries.length > 0 ? (
-          entries.map((x) => renderBookOrSeries(x, setOwned))
+          entries.map((x) => renderBookOrSeries(x, setOwned, singleBook))
         ) : (
           <EmptyListItem text="no books" />
         ) }
@@ -98,16 +100,24 @@ function findSeries(books: Book[]): Series[] {
   return Array.from(seriesMap.values());
 }
 
-function renderBookOrSeries(x: BookOrSeries, setOwned: SetOwnedCallback) {
+function renderBookOrSeries(x: BookOrSeries, setOwned: SetOwnedCallback, singleBook: boolean) {
   if (isBook(x)) {
-    return renderBook(x, setOwned);
+    return renderBook(x, setOwned, singleBook);
   } else {
     return <BookSeriesList series={x} key={`${x.title} (series contents)`} setOwned={setOwned} />;
   }
 }
 
-function renderBook(book: Book, setOwned: SetOwnedCallback) {
-  return <BookEntry key={book.title} book={book} setOwned={setOwned} hideAuthor />;
+function renderBook(book: Book, setOwned: SetOwnedCallback, singleBook: boolean) {
+  return (
+    <BookEntry
+      key={book.title}
+      book={book}
+      setOwned={setOwned}
+      hideAuthor
+      startExpanded={singleBook}
+    />
+  );
 }
 
 interface BookSeriesListProps {
@@ -129,7 +139,7 @@ function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element 
       </ListItem>
       <ListItem sx={(theme) => ({ paddingLeft: theme.spacing(4), paddingRight: 0 })}>
         <List disablePadding sx={{ width: '100%' }}>
-          { series.books.map((b) => renderBook(b, setOwned)) }
+          { series.books.map((b) => renderBook(b, setOwned, false)) }
         </List>
       </ListItem>
     </>

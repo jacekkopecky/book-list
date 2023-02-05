@@ -13,6 +13,7 @@ interface BookEntryProps {
   book: Book,
   setOwned: SetOwnedCallback,
   hideAuthor?: boolean,
+  startExpanded?: boolean,
 }
 
 const emptyStyle = {
@@ -20,8 +21,10 @@ const emptyStyle = {
   opacity: 0.6,
 };
 
-export default function BookEntry({ book, setOwned, hideAuthor }: BookEntryProps): JSX.Element {
-  const [expanded, setExpanded] = React.useState(false);
+export default function BookEntry({
+  book, setOwned, hideAuthor, startExpanded,
+}: BookEntryProps): JSX.Element {
+  const [expanded, setExpanded] = React.useState(startExpanded);
 
   const navigate = useNavigate();
   const edit = () => {

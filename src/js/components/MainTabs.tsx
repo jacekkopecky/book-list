@@ -15,22 +15,7 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
   const query = tools.useQuery();
   const ownedPostfix = query.has('owned') ? 'I have' : 'I want';
 
-  const tabs = [
-    <Tab
-      key={0}
-      component={Link}
-      value="/"
-      label={`Authors ${ownedPostfix}`}
-      to={`/${location.search}`}
-    />,
-    <Tab
-      key={1}
-      component={Link}
-      value="/series"
-      label={`Series ${ownedPostfix}`}
-      to={`/series${location.search}`}
-    />,
-  ];
+  const separator = <div style={{ alignSelf: 'center', margin: '0.25em' }}>/</div>;
 
   return (
     <Main top={(
@@ -39,7 +24,26 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
         indicatorColor="primary"
         sx={(theme) => ({ '& .MuiTab-root.Mui-selected': { color: theme.palette.text.primary } })}
       >
-        { tabs }
+        <Tab
+          component={Link}
+          value="/"
+          label={`Authors ${ownedPostfix}`}
+          to={`/${location.search}`}
+        />
+        { separator }
+        <Tab
+          component={Link}
+          value="/series"
+          label="Series"
+          to={`/series${location.search}`}
+        />
+        { separator }
+        <Tab
+          component={Link}
+          value="/titles"
+          label="Titles"
+          to={`/titles${location.search}`}
+        />
       </Tabs>
     )}
     >

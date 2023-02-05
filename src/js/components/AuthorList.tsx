@@ -47,7 +47,7 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
     const id = tools.authorPath(author);
     const link = `/author/${id}${showingOwned ? '?owned' : ''}`;
     return (
-      <ListItem key={key} button divider component={Link} to={link}>
+      <ListItem key={key} divider component={Link} to={link}>
         <ListItemText>{ author.fname } { author.lname }</ListItemText>
       </ListItem>
     );
