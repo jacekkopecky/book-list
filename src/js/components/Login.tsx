@@ -64,7 +64,6 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     case AppState.connected:
       mainEl = (
         <Button title="account" color="inherit" onClick={openMenu}>
-          { user?.name && `${user.name}\u00a0` }
           { user?.picture ? (
             <img
               style={{
