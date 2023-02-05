@@ -19,6 +19,7 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const authors = new Map<string | null, Author | undefined>();
+
   const selectedBooks = books.filter((b) => b.owned === showingOwned);
   for (const book of selectedBooks) {
     authors.set(tools.authorKey(book.author), book.author);
@@ -47,9 +48,7 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
     const link = `/author/${id}${showingOwned ? '?owned' : ''}`;
     return (
       <ListItem key={key} button divider component={Link} to={link}>
-        <ListItemText>
-          { author.fname } { author.lname }
-        </ListItemText>
+        <ListItemText>{ author.fname } { author.lname }</ListItemText>
       </ListItem>
     );
   }
