@@ -40,9 +40,9 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
         { separator }
         <Tab
           component={Link}
-          value="/titles"
-          label="Titles"
-          to={`/titles${location.search}`}
+          value="/singles"
+          label="Singles"
+          to={`/singles${location.search}`}
         />
       </Tabs>
     )}

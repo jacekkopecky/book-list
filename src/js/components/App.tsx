@@ -35,7 +35,7 @@ import {
 import theme from './theme';
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
-import TitlesList from './TitlesList';
+import TitleList from './TitleList';
 import ErrorComponent from './ErrorComponent';
 import BookListByAuthor from './BookListByAuthor';
 import BookListByTitle from './BookListByTitle';
@@ -209,9 +209,9 @@ function AppInsideRouter(): JSX.Element {
               }
             />
             <Route
-              path="/titles"
+              path="/singles"
               element={
-                <TitlesList books={books} addBookTrigger={addBookTrigger} />
+                <TitleList books={books} addBookTrigger={addBookTrigger} singlesOnly />
               }
             />
             <Route

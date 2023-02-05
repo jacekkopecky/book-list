@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItemButton, ListItemText } from '@mui/material';
 
 import { Book, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
@@ -10,17 +10,23 @@ import ActionButtons from './ActionButtons';
 import EmptyListItem from './EmptyListItem';
 import MainTabs from './MainTabs';
 
-interface TitlesListProps {
+interface TitleListProps {
   books: Book[],
   addBookTrigger: AddBookTrigger,
+  singlesOnly?: boolean,
 }
 
-export default function TitlesList({ books, addBookTrigger }: TitlesListProps): JSX.Element {
+export default function TitleList({
+  books, addBookTrigger, singlesOnly,
+}: TitleListProps): JSX.Element {
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const titles = new Set<string>();
 
-  const selectedBooks = books.filter((b) => b.owned === showingOwned);
+  const selectedBooks = books.filter(
+    (b) => (b.owned === showingOwned) && (!singlesOnly || !b.series),
+  );
+
   for (const book of selectedBooks) {
     if (book.title) titles.add(book.title);
   }
@@ -46,9 +52,9 @@ export default function TitlesList({ books, addBookTrigger }: TitlesListProps): 
     const id = tools.valuePath(title);
     const link = `/title/${id}${showingOwned ? '?owned' : ''}`;
     return (
-      <ListItem key={title} divider component={Link} to={link}>
+      <ListItemButton key={title} divider component={Link} to={link}>
         <ListItemText>{ title }</ListItemText>
-      </ListItem>
+      </ListItemButton>
     );
   }
 }

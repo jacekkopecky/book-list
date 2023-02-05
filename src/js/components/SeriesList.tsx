@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItemButton, ListItemText } from '@mui/material';
 
 import { Book, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
@@ -46,9 +46,9 @@ export default function SeriesList({ books, addBookTrigger }: SeriesListProps): 
     const id = tools.valuePath(name);
     const link = `/series/${id}${showingOwned ? '?owned' : ''}`;
     return (
-      <ListItem key={name} divider component={Link} to={link}>
+      <ListItemButton key={name} divider component={Link} to={link}>
         <ListItemText>{ name }</ListItemText>
-      </ListItem>
+      </ListItemButton>
     );
   }
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItemButton, ListItemText } from '@mui/material';
 
 import { Author, Book, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
@@ -47,9 +47,9 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
     const id = tools.authorPath(author);
     const link = `/author/${id}${showingOwned ? '?owned' : ''}`;
     return (
-      <ListItem key={key} divider component={Link} to={link}>
+      <ListItemButton key={key} divider component={Link} to={link}>
         <ListItemText>{ author.fname } { author.lname }</ListItemText>
-      </ListItem>
+      </ListItemButton>
     );
   }
 }
