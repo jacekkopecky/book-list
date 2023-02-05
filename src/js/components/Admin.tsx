@@ -1,18 +1,14 @@
 import * as React from 'react';
 
 import {
-  Container, List, ListItem, ListItemText, Typography,
-} from '@material-ui/core';
-
-import { containerProps } from './theme';
+  List, ListItem, ListItemText, Typography,
+} from '@mui/material';
 
 import { BookStats } from '../types';
-
-import EmptyListItem from './EmptyListItem';
-
 import { useApi } from '../tools/api';
 
-import './Admin.css';
+import EmptyListItem from './EmptyListItem';
+import Main from './Main';
 
 enum State {
   loading,
@@ -63,9 +59,9 @@ export default function Admin(): JSX.Element {
   }
 
   return (
-    <Container {...containerProps} className="Admin">
+    <Main style={{ paddingTop: '1em' }}>
       { body }
-    </Container>
+    </Main>
   );
 }
 

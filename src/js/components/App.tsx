@@ -12,17 +12,15 @@ import {
 import {
   AppBar,
   CircularProgress,
-  Container,
   CssBaseline,
   Toolbar,
   Typography,
   ThemeProvider,
-} from '@material-ui/core';
+  Stack,
+  Link,
+} from '@mui/material';
 
-import './App.css';
-import theme, { containerProps } from './theme';
 import { config, useApi } from '../tools/api';
-
 import {
   Book,
   NewBook,
@@ -34,6 +32,7 @@ import {
   AppState,
 } from '../types';
 
+import theme from './theme';
 import AuthorList from './AuthorList';
 import SeriesList from './SeriesList';
 import ErrorComponent from './ErrorComponent';
@@ -42,6 +41,7 @@ import BookListBySeries from './BookListBySeries';
 import BookEdit from './BookEdit';
 import Login from './Login';
 import Admin from './Admin';
+import Main from './Main';
 
 export default function App(): JSX.Element {
   return (
@@ -152,7 +152,7 @@ function AppInsideRouter(): JSX.Element {
     if (email) {
       (async () => {
         setState(AppState.progress);
-        setCustomMessage('loading your books from the cloud');
+        setCustomMessage('Loading your books from the cloud…');
 
         const booksAndBin = await api.loadBooks();
 
@@ -169,12 +169,18 @@ function AppInsideRouter(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="static">
+      <AppBar position="static" sx={{ zIndex: 1000 }}>
         <Toolbar>
-          <Typography variant="h5" style={{ flexGrow: 1 }}>
+          <Link
+            href="/"
+            variant="h5"
+            color="inherit"
+            sx={{ flexGrow: 1 }}
+            underline="none"
+          >
             bananas for books
             { /* when changing the title above, also change it in index.html and 404.html */ }
-          </Typography>
+          </Link>
           <Login state={state} setState={setStateAndEmail} />
         </Toolbar>
       </AppBar>
@@ -250,28 +256,16 @@ function AppInsideRouter(): JSX.Element {
         );
       case AppState.starting:
         return (
-          <Container {...containerProps} className="messageOnly">
-            <Typography>Starting…</Typography>
-          </Container>
-        );
-      case AppState.progress:
-        return (
-          <Container {...containerProps} className="messageOnly">
-            <Typography>{ customMessage || 'Please wait…' }</Typography>
-          </Container>
+          <MessageOnly message="Starting…" withSpinner />
         );
       case AppState.loggedIn:
+      case AppState.progress:
         return (
-          <Container {...containerProps} className="messageOnly">
-            <CircularProgress />
-            <Typography>Loading books…</Typography>
-          </Container>
+          <MessageOnly message={customMessage || 'Please wait…'} withSpinner />
         );
       case AppState.loggedOut:
         return (
-          <Container {...containerProps} className="messageOnly">
-            <Typography>Please log in.</Typography>
-          </Container>
+          <MessageOnly message="Please log in." />
         );
       case AppState.error:
       default:
@@ -326,4 +320,25 @@ function NotFound() {
   const location = useLocation();
 
   return <ErrorComponent text={`404 page not found: ${location.pathname}`} />;
+}
+
+interface MessageOnlyProps {
+  message: string,
+  withSpinner?: boolean,
+}
+
+function MessageOnly({ message, withSpinner } : MessageOnlyProps) {
+  return (
+    <Main>
+      <Stack
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        flexGrow={1}
+      >
+        <Typography>{ message }</Typography>
+        { withSpinner && <CircularProgress style={{ marginTop: '1em' }} /> }
+      </Stack>
+    </Main>
+  );
 }

@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { Container, Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 
 import * as tools from '../tools/tools';
-import { containerProps } from './theme';
-
-import './MainTabs.css';
+import Main from './Main';
 
 interface MainTabsProps {
   children?: React.ReactNode,
@@ -35,11 +33,17 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
   ];
 
   return (
-    <Container {...containerProps}>
-      <Tabs value={location.pathname} indicatorColor="primary">
+    <Main top={(
+      <Tabs
+        value={location.pathname}
+        indicatorColor="primary"
+        sx={(theme) => ({ '& .MuiTab-root.Mui-selected': { color: theme.palette.text.primary } })}
+      >
         { tabs }
       </Tabs>
+    )}
+    >
       { children }
-    </Container>
+    </Main>
   );
 }

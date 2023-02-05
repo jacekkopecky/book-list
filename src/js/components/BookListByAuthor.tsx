@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  makeStyles, createStyles, List, ListItem, ListItemText, ListItemIcon,
-} from '@material-ui/core';
-import { Folder } from '@material-ui/icons';
+  List, ListItem, ListItemText, ListItemIcon,
+} from '@mui/material';
+import { Folder } from '@mui/icons-material';
 
 import { Book, SetOwnedCallback, AddBookTrigger } from '../types';
 import * as tools from '../tools/tools';
@@ -58,7 +58,7 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
 
   return (
     <MainHeading title={prefix + tools.authorName(firstBook.author)}>
-      <List className="BookListByAuthor">
+      <List>
         { entries.length > 0 ? (
           entries.map((x) => renderBookOrSeries(x, setOwned))
         ) : (
@@ -107,18 +107,8 @@ function renderBookOrSeries(x: BookOrSeries, setOwned: SetOwnedCallback) {
 }
 
 function renderBook(book: Book, setOwned: SetOwnedCallback) {
-  return <BookEntry key={book.title} book={book} setOwned={setOwned} />;
+  return <BookEntry key={book.title} book={book} setOwned={setOwned} hideAuthor />;
 }
-
-const useStyles = makeStyles((theme) => createStyles({
-  nested: {
-    paddingLeft: theme.spacing(4),
-    paddingRight: '0',
-  },
-  wide: {
-    width: '100%',
-  },
-}));
 
 interface BookSeriesListProps {
   series: Series,
@@ -126,8 +116,6 @@ interface BookSeriesListProps {
 }
 
 function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element {
-  const classes = useStyles();
-
   series.books.sort((a, b) => tools.localeCompare(a.title, b.title));
   const title = `${series.title} (series)`;
 
@@ -139,8 +127,8 @@ function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element 
         </ListItemIcon>
         <ListItemText primary={title} />
       </ListItem>
-      <ListItem className={classes.nested}>
-        <List disablePadding className={classes.wide}>
+      <ListItem sx={(theme) => ({ paddingLeft: theme.spacing(4), paddingRight: 0 })}>
+        <List disablePadding sx={{ width: '100%' }}>
           { series.books.map((b) => renderBook(b, setOwned)) }
         </List>
       </ListItem>

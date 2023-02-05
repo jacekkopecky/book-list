@@ -1,15 +1,13 @@
 import * as React from 'react';
 
-import { Container, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
-import { containerProps } from './theme';
-
-import './ErrorComponent.css';
+import Main from './Main';
 
 export default function ErrorComponent({ text }: { text: string }): JSX.Element {
   return (
-    <Container {...containerProps} className="ErrorComponent">
+    <Main style={{ paddingTop: '1em' }}>
       <Typography>Error: { text }</Typography>
-    </Container>
+    </Main>
   );
 }

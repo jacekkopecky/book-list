@@ -3,12 +3,10 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 import {
   Button, CircularProgress, Menu, MenuItem, Tooltip,
-} from '@material-ui/core';
-import { ErrorOutline, AccountCircle } from '@material-ui/icons';
+} from '@mui/material';
+import { ErrorOutline, AccountCircle } from '@mui/icons-material';
 
 import { AppState } from '../types';
-
-import './Login.css';
 
 interface StateSetter {
   (state: AppState.loggedIn, email: string): void,
@@ -36,8 +34,12 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
 
   React.useEffect(() => {
     // todo this isn't great, we shouldn't have state redundant to useAuth
-    if (!isLoading && isAuthenticated && state === AppState.starting && user?.email) {
-      setState(AppState.loggedIn, user.email);
+    if (state === AppState.starting && !isLoading) {
+      if (isAuthenticated && user?.email) {
+        setState(AppState.loggedIn, user.email);
+      } else {
+        setState(AppState.loggedOut);
+      }
     }
   });
 
@@ -64,7 +66,17 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
         <Button title="account" color="inherit" onClick={openMenu}>
           { user?.name && `${user.name}\u00a0` }
           { user?.picture ? (
-            <img className="user-icon" src={user.picture} alt="user avatar" />
+            <img
+              style={{
+                height: '2em',
+                width: '2em',
+                margin: '0 0.5em',
+                borderRadius: '1em',
+                boxShadow: '0 0 0.25em 0.2em #fffa',
+              }}
+              src={user.picture}
+              alt="user avatar"
+            />
           ) : (
             <AccountCircle />
           ) }

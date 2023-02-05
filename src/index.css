@@ -42,20 +42,3 @@ body {
     z-index: -1;
   }
 }
-
-#app > main.messageOnly {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-#app > main:not(.messageOnly) > :first-child {
-  position: sticky;
-  top: 0;
-  background-color: var(--bg);
-  z-index: 1;
-}
-
-#app > main:not(.messageOnly) > :nth-child(2) {
-  flex-grow: 1;
-}

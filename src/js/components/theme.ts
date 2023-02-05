@@ -1,6 +1,13 @@
-import { createTheme } from '@material-ui/core';
+import { createTheme } from '@mui/material';
 
 const theme = createTheme({
+  components: {
+    MuiTextField: {
+      defaultProps: {
+        variant: 'standard',
+      },
+    },
+  },
   palette: {
     primary: {
       main: '#4488ff',
@@ -16,10 +23,3 @@ const theme = createTheme({
 });
 
 export default theme;
-
-export const containerProps = {
-  component: 'main' as const,
-  style: {
-    '--bg': theme.palette.background.paper,
-  } as React.CSSProperties,
-};

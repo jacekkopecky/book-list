@@ -2,12 +2,11 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  Container, IconButton, Tab, Tabs, Toolbar,
-} from '@material-ui/core';
+  IconButton, Tab, Tabs, Toolbar,
+} from '@mui/material';
 
-import { ArrowBack } from '@material-ui/icons';
-
-import { containerProps } from './theme';
+import { ArrowBack } from '@mui/icons-material';
+import Main from './Main';
 
 interface MainTabsProps {
   title: string,
@@ -29,9 +28,15 @@ export default function MainHeading({ title, children }: MainTabsProps): JSX.Ele
   );
 
   return (
-    <Container {...containerProps}>
-      <Toolbar disableGutters>{ tabs }</Toolbar>
+    <Main top={(
+      <Toolbar
+        disableGutters
+        sx={(theme) => ({ '& .MuiTab-root.Mui-selected': { color: theme.palette.text.primary } })}
+      >{ tabs }
+      </Toolbar>
+    )}
+    >
       { children }
-    </Container>
+    </Main>
   );
 }

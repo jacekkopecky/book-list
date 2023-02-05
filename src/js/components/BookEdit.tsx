@@ -1,20 +1,16 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Autocomplete } from '@material-ui/lab';
 import {
-  Button, Grid, TextField, Typography, Switch,
-} from '@material-ui/core';
+  Autocomplete, Button, Grid, TextField, Typography, Switch,
+} from '@mui/material';
 
 import MainHeading from './MainHeading';
 
 import {
   Book, NewBook, SaveBookCallback, DeleteBookCallback, AddBookCallback,
 } from '../types';
-
 import * as tools from '../tools/tools';
-
-import './BookEdit.css';
 
 // we have to have either save and a book or add and a partial new book, but not both
 interface BookEditProps {
@@ -42,15 +38,15 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
     ...props.originalBook,
   }));
 
-  const setAuthorFname = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const setAuthorFname = (value: string) => {
     const newBook = { ...book };
-    newBook.author.fname = e.target.value;
+    newBook.author.fname = value;
     setBook(newBook);
   };
 
-  const setAuthorLname = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const setAuthorLname = (value: string) => {
     const newBook = { ...book };
-    newBook.author.lname = e.target.value;
+    newBook.author.lname = value;
     setBook(newBook);
   };
 
@@ -91,27 +87,34 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
 
   return (
     <MainHeading title={title}>
-      <Typography component="div" className="BookEdit">
+      <Typography
+        component="div"
+        style={{
+          paddingTop: '1em',
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+        }}
+      >
         <Grid container spacing={1}>
-          <Grid item xs={6} />
-          <Grid item xs={6}>
-            <Grid
-              component="label"
-              container
-              alignItems="center"
-              justifyContent="flex-end"
-              spacing={1}
-            >
-              <Grid item>Want it</Grid>
-              <Grid item>
-                <Switch
-                  checked={book.owned ?? false}
-                  color="primary"
-                  onChange={(e) => setBook({ ...book, owned: e.target.checked })}
-                />
-              </Grid>
-              <Grid item>Have it</Grid>
-            </Grid>
+          <Grid
+            xs={12}
+            item
+            container
+            flexGrow={1}
+            direction="row"
+            gap={1}
+            component="label"
+            justifyContent="flex-end"
+            alignItems="center"
+          >
+            <span>Want it</span>
+            <Switch
+              checked={book.owned ?? false}
+              color="primary"
+              onChange={(e) => setBook({ ...book, owned: e.target.checked })}
+            />
+            <span>Have it</span>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -130,6 +133,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.fname))}
               value={book.author.fname ?? ''}
+              onChange={(_, value) => setAuthorFname(value ?? '')}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -138,7 +142,6 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
                   margin="normal"
                   fullWidth
                   helperText="first name"
-                  onChange={setAuthorFname}
                 />
               )}
             />
@@ -149,6 +152,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.lname))}
               value={book.author.lname ?? ''}
+              onChange={(_, value) => setAuthorLname(value ?? '')}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -157,7 +161,6 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
                   margin="normal"
                   fullWidth
                   helperText="last name"
-                  onChange={setAuthorLname}
                 />
               )}
             />
@@ -167,6 +170,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               freeSolo
               options={unique(props.knownBooks.map((b) => b.series))}
               value={book.series ?? ''}
+              onChange={(_, value) => setBook({ ...book, series: value ?? undefined })}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -175,7 +179,6 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
                   margin="normal"
                   placeholder="optional"
                   fullWidth
-                  onChange={(e) => setBook({ ...book, series: e.target.value })}
                 />
               )}
             />
@@ -193,10 +196,17 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             />
           </Grid>
         </Grid>
-        <Grid container alignContent="flex-end" className="bottom">
+        <Grid
+          container
+          alignContent="flex-end"
+          style={{
+            flexGrow: 1,
+            marginBottom: '24px',
+          }}
+        >
           <Grid item container xs={6} justifyContent="flex-start">
             { props.save ? (
-              <Button className="delete" color="secondary" variant="contained" onClick={doDelete}>
+              <Button color="secondary" variant="contained" onClick={doDelete}>
                 Delete
               </Button>
             ) : (

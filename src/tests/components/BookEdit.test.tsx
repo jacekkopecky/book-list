@@ -39,17 +39,17 @@ describe('<BookEdit/>', () => {
 
   describe('rendering existing data', () => {
     it.each([
-      ['title', firstBook.title],
-      ['lname', firstBook.author?.lname],
-      ['fname', firstBook.author?.fname],
-      ['series', firstBook.series],
-      ['notes', firstBook.notes],
+      ['title', 'textbox', firstBook.title],
+      ['lname', 'combobox', firstBook.author?.lname],
+      ['fname', 'combobox', firstBook.author?.fname],
+      ['series', 'combobox', firstBook.series],
+      ['notes', 'textbox', firstBook.notes],
     ])(
       'puts the expected data in %s input',
-      (testid: string, value?: string) => {
+      (testid: string, role: string, value?: string) => {
         const el = screen.getByTestId(testid);
         expect(el).toBeVisible();
-        expect(getByRole(el, 'textbox')).toHaveValue(value);
+        expect(getByRole(el, role)).toHaveValue(value);
       },
     );
   });

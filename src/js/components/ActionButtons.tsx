@@ -1,9 +1,7 @@
 import * as React from 'react';
 
-import { Fab, Container } from '@material-ui/core';
-import { Add, ImportExport, Search } from '@material-ui/icons';
-
-import './ActionButtons.css';
+import { Fab, Stack } from '@mui/material';
+import { Add, ImportExport, Search } from '@mui/icons-material';
 
 interface ActionButtonsProps {
   itemName: string,
@@ -20,8 +18,27 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
   const switchText = showingOwned ? `Show ${itemName} I\u00a0want` : `Show ${itemName} I\u00a0have`;
 
   return (
-    <div className="action-buttons">
-      <Container maxWidth="sm">
+    <Stack
+      direction="column-reverse"
+      flexGrow={1}
+      style={{
+        position: 'sticky',
+        bottom: '24px',
+        left: 0,
+        right: 0,
+        marginTop: '24px',
+      }}
+    >
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-evenly"
+        sx={{
+          '& .MuiFab-root': {
+            lineHeight: 1.2, // useful when the button is narrow and text wraps
+          },
+        }}
+      >
         <Fab aria-label="search" color="primary" disabled>
           <Search />
         </Fab>
@@ -32,7 +49,7 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
         <Fab aria-label="add" color="primary" onClick={addBook}>
           <Add />
         </Fab>
-      </Container>
-    </div>
+      </Stack>
+    </Stack>
   );
 }

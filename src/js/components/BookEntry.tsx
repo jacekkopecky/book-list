@@ -2,11 +2,9 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  Button, Grid, Collapse, ListItem, ListItemText, ListItemIcon,
-} from '@material-ui/core';
-import { ExpandMore, ExpandLess, MenuBook } from '@material-ui/icons';
-
-import './BookEntry.css';
+  Button, Collapse, ListItem, ListItemText, ListItemIcon, ListItemButton, Stack,
+} from '@mui/material';
+import { ExpandMore, ExpandLess, MenuBook } from '@mui/icons-material';
 
 import { Book, SetOwnedCallback } from '../types';
 import * as tools from '../tools/tools';
@@ -14,9 +12,15 @@ import * as tools from '../tools/tools';
 interface BookEntryProps {
   book: Book,
   setOwned: SetOwnedCallback,
+  hideAuthor?: boolean,
 }
 
-export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Element {
+const emptyStyle = {
+  fontStyle: 'italic',
+  opacity: 0.6,
+};
+
+export default function BookEntry({ book, setOwned, hideAuthor }: BookEntryProps): JSX.Element {
   const [expanded, setExpanded] = React.useState(false);
 
   const navigate = useNavigate();
@@ -30,7 +34,12 @@ export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Eleme
 
   return (
     <>
-      <ListItem className="BookEntry" button onClick={() => setExpanded(!expanded)}>
+      <ListItemButton
+        onClick={() => setExpanded(!expanded)}
+        sx={{
+          '&:hover .ExpandButton': { opacity: 1 },
+        }}
+      >
         <ListItemIcon>
           <MenuBook />
         </ListItemIcon>
@@ -39,38 +48,49 @@ export default function BookEntry({ book, setOwned }: BookEntryProps): JSX.Eleme
           secondary={expanded ? null : book.notes}
           secondaryTypographyProps={{ noWrap: true }}
         />
-        { expanded ? <ExpandLess /> : <ExpandMore className="ExpandButton" /> }
-      </ListItem>
+        { expanded
+          ? <ExpandLess />
+          : <ExpandMore className="ExpandButton" sx={{ opacity: 0 }} /> }
+      </ListItemButton>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <ListItem className="ExpandedBook">
+        <ListItem>
           <ListItemText inset>
-            { book.series && <div className="series">Series: { book.series }</div> }
+            { book.series && <div>Series: { book.series }</div> }
 
-            { book.author ? (
-              <div className="author">Author: { tools.authorName(book.author) }</div>
+            { !hideAuthor
+            && (book.author ? (
+              <div>Author: { tools.authorName(book.author) }</div>
             ) : (
-              <div className="author unknown">Author unknown</div>
-            ) }
+              <div style={emptyStyle}>Author unknown</div>
+            )) }
 
             { book.notes ? (
-              <div className="notes">Notes: { book.notes }</div>
+              <div
+                style={{
+                  whiteSpace: 'pre-line',
+                  marginTop: '0.25em',
+                  marginBottom: '0.25em',
+                }}
+              >Notes: { book.notes }
+              </div>
             ) : (
-              <div className="notes none">No notes.</div>
+              <div style={emptyStyle}>No notes.</div>
             ) }
 
-            <div className="mtime">Last updated { tools.formatMTime(book.mtime) }</div>
-            <Grid container className="buttons">
-              <>
-                { book.owned || (
-                  <Button color="primary" variant="outlined" onClick={setBookOwned}>
-                    I have it now
-                  </Button>
-                ) }
-                <Button color="primary" variant="outlined" onClick={edit}>
-                  Edit
+            <div style={{ marginBottom: '0.5em' }}>
+              { 'Last updated ' }
+              { tools.formatMTime(book.mtime) }
+            </div>
+            <Stack direction="row" justifyContent="flex-end" gap="1em">
+              { book.owned || (
+                <Button color="primary" variant="outlined" onClick={setBookOwned}>
+                  I have it now
                 </Button>
-              </>
-            </Grid>
+              ) }
+              <Button color="primary" variant="outlined" onClick={edit}>
+                Edit
+              </Button>
+            </Stack>
           </ListItemText>
         </ListItem>
       </Collapse>
