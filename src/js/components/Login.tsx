@@ -63,13 +63,17 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     case AppState.progress:
     case AppState.connected:
       mainEl = (
-        <Button title="account" color="inherit" onClick={openMenu}>
+        <Button
+          title="account"
+          color="inherit"
+          onClick={openMenu}
+          sx={{ padding: 0, minWidth: 0 }}
+        >
           { user?.picture ? (
             <img
               style={{
                 height: '2em',
                 width: '2em',
-                margin: '0 0.5em',
                 borderRadius: '1em',
                 boxShadow: '0 0 0.25em 0.2em #fffa',
               }}
