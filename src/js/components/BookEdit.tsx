@@ -137,6 +137,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  onChange={(e) => setAuthorFname(e.target.value)}
                   label="Author"
                   data-testid="fname"
                   margin="normal"
@@ -156,6 +157,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  onChange={(e) => setAuthorLname(e.target.value)}
                   label=" "
                   data-testid="lname"
                   margin="normal"
@@ -174,6 +176,7 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  onChange={(e) => setBook({ ...book, series: e.target.value })}
                   label="Series"
                   data-testid="series"
                   margin="normal"
