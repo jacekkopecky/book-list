@@ -1,0 +1,2 @@
+html,body{height:100%;margin:0;padding:0;position:relative;font-size:1rem!important}#app{flex-direction:column;height:100%;display:flex;position:relative}#app>main{background-color:var(--bg);flex-direction:column;flex-grow:1;display:flex;overflow:auto}@media screen and (width>=42em){#app>main{background-color:#0000;max-width:none;padding-left:calc(50% - 20em);padding-right:calc(50% - 20em)}#app>main:before{content:" ";background-color:var(--bg);z-index:-1;display:block;position:absolute;inset:0 calc(50% - 21em)}}
+/*# sourceMappingURL=index.d539dbac.css.map */
