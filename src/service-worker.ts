@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 /// <reference lib="webworker" />
 
 import { manifest, version } from '@parcel/service-worker';
@@ -28,13 +27,19 @@ async function activate() {
   );
 }
 
-const cacheFirst = async (request: Request) => {
-  const url = new URL(request.url);
-  const cacheKey = url.pathname === '/' ? new URL('index.html', url) : request;
+async function cacheFirst(request: Request) {
+  if (request.method === 'GET') {
+    const directCacheHit = await caches.match(request);
+    if (directCacheHit) return directCacheHit;
 
-  const responseFromCache = await caches.match(cacheKey);
-  return responseFromCache || fetch(request);
-};
+    if (request.url.startsWith(self.location.origin)) {
+      const defaultCacheHit = await caches.match(new URL('/index.html', self.location.origin));
+      if (defaultCacheHit) return defaultCacheHit;
+    }
+  }
+
+  return fetch(request);
+}
 
 self.addEventListener('install', (e) => e.waitUntil(install()));
 self.addEventListener('activate', (e) => e.waitUntil(activate()));
