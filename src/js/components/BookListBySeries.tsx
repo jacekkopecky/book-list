@@ -19,13 +19,14 @@ interface BookListProps {
   seriesPath: string,
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
+  readOnly?: boolean,
 }
 
 type BookInSeries = Book & Required<Pick<Book, 'series'>>;
 
 export default function BookListBySeries(props: BookListProps): JSX.Element {
   const {
-    books, seriesPath, setOwned, addBookTrigger,
+    books, seriesPath, setOwned, addBookTrigger, readOnly,
   } = props;
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
@@ -67,7 +68,16 @@ export default function BookListBySeries(props: BookListProps): JSX.Element {
     <MainHeading title={title}>
       <List>
         { selectedBooks.length > 0 ? (
-          selectedBooks.map((x) => renderBook(x, setOwned, singleAuthor, singleBook))
+          selectedBooks.map((book) => (
+            <BookEntry
+              key={book.title}
+              book={book}
+              setOwned={setOwned}
+              hideAuthor={singleAuthor}
+              startExpanded={singleBook}
+              readOnly={readOnly}
+            />
+          ))
         ) : (
           <EmptyListItem text="no books" />
         ) }
@@ -76,26 +86,9 @@ export default function BookListBySeries(props: BookListProps): JSX.Element {
         itemName="books"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger(addBookTemplate)}
+        addBook={readOnly ? undefined : () => addBookTrigger(addBookTemplate)}
       />
     </MainHeading>
-  );
-}
-
-function renderBook(
-  book: BookInSeries,
-  setOwned: SetOwnedCallback,
-  singleAuthor: boolean,
-  singleBook: boolean,
-) {
-  return (
-    <BookEntry
-      key={book.title}
-      book={book}
-      setOwned={setOwned}
-      hideAuthor={singleAuthor}
-      startExpanded={singleBook}
-    />
   );
 }
 

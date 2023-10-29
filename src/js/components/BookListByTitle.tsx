@@ -19,11 +19,12 @@ interface BookListProps {
   titlePath: string,
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
+  readOnly?: boolean,
 }
 
 export default function BookListByTitle(props: BookListProps): JSX.Element {
   const {
-    books, titlePath, setOwned, addBookTrigger,
+    books, titlePath, setOwned, addBookTrigger, readOnly,
   } = props;
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
@@ -56,7 +57,15 @@ export default function BookListByTitle(props: BookListProps): JSX.Element {
     <MainHeading title={title}>
       <List>
         { selectedBooks.length > 0 ? (
-          selectedBooks.map((x) => renderBook(x, setOwned, singleBook))
+          selectedBooks.map((book) => (
+            <BookEntry
+              key={book.id}
+              book={book}
+              setOwned={setOwned}
+              startExpanded={singleBook}
+              readOnly={readOnly}
+            />
+          ))
         ) : (
           <EmptyListItem text="no books" />
         ) }
@@ -65,23 +74,8 @@ export default function BookListByTitle(props: BookListProps): JSX.Element {
         itemName="books"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger(addBookTemplate)}
+        addBook={readOnly ? undefined : () => addBookTrigger(addBookTemplate)}
       />
     </MainHeading>
-  );
-}
-
-function renderBook(
-  book: Book,
-  setOwned: SetOwnedCallback,
-  singleBook: boolean,
-) {
-  return (
-    <BookEntry
-      key={book.id}
-      book={book}
-      setOwned={setOwned}
-      startExpanded={singleBook}
-    />
   );
 }

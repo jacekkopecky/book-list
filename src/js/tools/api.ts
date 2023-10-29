@@ -38,6 +38,7 @@ export function useApi() {
         if (validateBooksAndBin(data)) {
           trimStringValues(data.books);
           trimStringValues(data.bin);
+          saveOfflineBooks(data);
           return data;
         } else {
           console.error('invalid book array', data);
@@ -153,6 +154,7 @@ export function useApi() {
 
   return {
     loadBooks,
+    loadOfflineBooks,
     submitNewBook,
     saveBook,
     deleteBook,
@@ -223,4 +225,27 @@ function hasBookStats(obj: unknown): obj is BookStats {
   const partial = obj as Partial<BookStats>;
 
   return typeof partial.bookCount === 'number' && typeof partial.owned === 'number';
+}
+
+/* *******************************
+ * offline functionality, only saving books, not the bin
+ * ******************************* */
+
+const OFFLINE_KEY = 'offline_books';
+
+function saveOfflineBooks(booksAndBin: BooksAndBin) {
+  localStorage.setItem(OFFLINE_KEY, JSON.stringify(booksAndBin.books));
+}
+
+function loadOfflineBooks(): BooksAndBin | undefined {
+  try {
+    const booksJson = localStorage.getItem(OFFLINE_KEY);
+    const books = booksJson && JSON.parse(booksJson) as unknown;
+    const booksAndBin = { books, bin: [] };
+    if (validateBooksAndBin(booksAndBin)) return booksAndBin;
+  } catch (e) {
+    console.info('error parsing offline books', e);
+  }
+
+  return undefined;
 }

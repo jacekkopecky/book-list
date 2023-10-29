@@ -13,9 +13,11 @@ import MainTabs from './MainTabs';
 interface AuthorListProps {
   books: Book[],
   addBookTrigger: AddBookTrigger,
+  readOnly?: boolean,
 }
 
-export default function AuthorList({ books, addBookTrigger }: AuthorListProps): JSX.Element {
+export default function AuthorList(props: AuthorListProps): JSX.Element {
+  const { books, addBookTrigger, readOnly } = props;
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const authors = new Map<string | null, Author | undefined>();
@@ -37,7 +39,7 @@ export default function AuthorList({ books, addBookTrigger }: AuthorListProps): 
         itemName="authors"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger({ owned: showingOwned })}
+        addBook={readOnly ? undefined : () => addBookTrigger({ owned: showingOwned })}
       />
     </MainTabs>
   );

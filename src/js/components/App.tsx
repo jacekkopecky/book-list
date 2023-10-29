@@ -142,16 +142,16 @@ function AppInsideRouter(): JSX.Element {
   };
 
   const setStateAndEmail = (s: AppState, e?: string) => {
-    setState(s);
     if (s === AppState.loggedIn) {
       setEmail(e);
     } else {
       setEmail(undefined);
     }
+    setState(s);
   };
 
   React.useEffect(() => {
-    if (email) {
+    if (email && state === AppState.loggedIn) {
       (async () => {
         setState(AppState.progress);
         setCustomMessage('Loading your books from the cloud…');
@@ -165,8 +165,15 @@ function AppInsideRouter(): JSX.Element {
         console.error(e);
         setState(AppState.error);
       });
+    } else if (state === AppState.loggedOut && !navigator.onLine) {
+      const booksAndBin = api.loadOfflineBooks();
+      if (booksAndBin) {
+        setBooks(booksAndBin.books);
+        setBin(booksAndBin.bin);
+        setState(AppState.offline);
+      }
     }
-  }, [email]);
+  }, [email, state]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -192,27 +199,42 @@ function AppInsideRouter(): JSX.Element {
   );
 
   function mainContent(): JSX.Element {
+    const offline = state === AppState.offline;
     switch (state) {
       case AppState.connected:
+      case AppState.offline:
         return (
           <Routes>
             <Route
               path="/"
-              element={
-                <AuthorList books={books} addBookTrigger={addBookTrigger} />
-              }
+              element={(
+                <AuthorList
+                  books={books}
+                  addBookTrigger={addBookTrigger}
+                  readOnly={offline}
+                />
+              )}
             />
             <Route
               path="/series"
-              element={
-                <SeriesList books={books} addBookTrigger={addBookTrigger} />
-              }
+              element={(
+                <SeriesList
+                  books={books}
+                  addBookTrigger={addBookTrigger}
+                  readOnly={offline}
+                />
+              )}
             />
             <Route
               path="/singles"
-              element={
-                <TitleList books={books} addBookTrigger={addBookTrigger} singlesOnly />
-              }
+              element={(
+                <TitleList
+                  books={books}
+                  addBookTrigger={addBookTrigger}
+                  singlesOnly
+                  readOnly={offline}
+                />
+              )}
             />
             <Route
               path="/author/:id"
@@ -222,6 +244,7 @@ function AppInsideRouter(): JSX.Element {
                   books={books}
                   setOwned={setOwned}
                   addBookTrigger={addBookTrigger}
+                  readOnly={offline}
                 />
               )}
             />
@@ -233,6 +256,7 @@ function AppInsideRouter(): JSX.Element {
                   books={books}
                   setOwned={setOwned}
                   addBookTrigger={addBookTrigger}
+                  readOnly={offline}
                 />
               )}
             />
@@ -244,25 +268,33 @@ function AppInsideRouter(): JSX.Element {
                   books={books}
                   setOwned={setOwned}
                   addBookTrigger={addBookTrigger}
+                  readOnly={offline}
                 />
               )}
             />
             <Route
               path="/edit/:id"
-              element={
-                <BookEditWithParams books={books} save={saveBook} delete={deleteBook} />
-              }
+              element={(
+                <BookEditWithParams
+                  books={books}
+                  save={saveBook}
+                  delete={deleteBook}
+                  readOnly={offline}
+                />
+              )}
             />
             <Route
               path="/new"
               element={
-                <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
+                offline ? <MessageOnly message="Cannot add a new book when offline (yet)" />
+                  : <BookEdit knownBooks={books} originalBook={bookTemplate} add={addBook} />
               }
             />
             <Route
               path="/admin"
               element={
-                <Admin />
+                offline ? <MessageOnly message="Cannot use admin when offline (yet)" />
+                  : <Admin />
               }
             />
             <Route
@@ -298,6 +330,7 @@ interface BookListWithParamsProps {
   variant: 'author' | 'series' | 'title',
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
+  readOnly?: boolean,
 }
 
 function BookListWithParams(props: BookListWithParamsProps): JSX.Element {
@@ -317,6 +350,7 @@ interface BookEditWithParamsProps {
   books: Book[],
   save: SaveBookCallback,
   delete: DeleteBookCallback,
+  readOnly?: boolean,
 }
 
 function BookEditWithParams(props: BookEditWithParamsProps): JSX.Element {
@@ -333,6 +367,7 @@ function BookEditWithParams(props: BookEditWithParamsProps): JSX.Element {
       knownBooks={props.books}
       save={props.save}
       delete={props.delete}
+      readOnly={props.readOnly}
     />
   );
 }

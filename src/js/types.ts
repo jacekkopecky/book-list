@@ -27,6 +27,7 @@ export enum AppState {
   loggedIn,
   connected,
   progress,
+  offline,
   error,
 }
 

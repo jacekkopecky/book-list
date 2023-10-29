@@ -14,6 +14,7 @@ interface BookEntryProps {
   setOwned: SetOwnedCallback,
   hideAuthor?: boolean,
   startExpanded?: boolean,
+  readOnly?: boolean,
 }
 
 const emptyStyle = {
@@ -21,9 +22,10 @@ const emptyStyle = {
   opacity: 0.6,
 };
 
-export default function BookEntry({
-  book, setOwned, hideAuthor, startExpanded,
-}: BookEntryProps): JSX.Element {
+export default function BookEntry(props: BookEntryProps): JSX.Element {
+  const {
+    book, setOwned, hideAuthor, startExpanded, readOnly,
+  } = props;
   const [expanded, setExpanded] = React.useState(startExpanded);
 
   const navigate = useNavigate();
@@ -85,13 +87,17 @@ export default function BookEntry({
               { tools.formatMTime(book.mtime) }
             </div>
             <Stack direction="row" justifyContent="flex-end" gap="1em">
-              { book.owned || (
-                <Button color="primary" variant="outlined" onClick={setBookOwned}>
+              { (!book.owned && !readOnly) && (
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={setBookOwned}
+                >
                   I have it now
                 </Button>
               ) }
               <Button color="primary" variant="outlined" onClick={edit}>
-                Edit
+                { readOnly ? 'Offline view' : 'Edit' }
               </Button>
             </Stack>
           </ListItemText>

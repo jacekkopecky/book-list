@@ -20,6 +20,7 @@ interface BookListProps {
   authorPath: string,
   setOwned: SetOwnedCallback,
   addBookTrigger: AddBookTrigger,
+  readOnly?: boolean,
 }
 
 interface Series {
@@ -31,7 +32,7 @@ type BookOrSeries = Book | Series;
 
 export default function BookListByAuthor(props: BookListProps): JSX.Element {
   const {
-    books, authorPath, setOwned, addBookTrigger,
+    books, authorPath, setOwned, addBookTrigger, readOnly,
   } = props;
 
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
@@ -62,7 +63,7 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
     <MainHeading title={prefix + tools.authorName(firstBook.author)}>
       <List>
         { entries.length > 0 ? (
-          entries.map((x) => renderBookOrSeries(x, setOwned, singleBook))
+          entries.map((x) => renderBookOrSeries(x))
         ) : (
           <EmptyListItem text="no books" />
         ) }
@@ -71,10 +72,36 @@ export default function BookListByAuthor(props: BookListProps): JSX.Element {
         itemName="books"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger({ author: firstBook.author, owned: showingOwned })}
+        addBook={readOnly
+          ? undefined
+          : () => addBookTrigger({ author: firstBook.author, owned: showingOwned })}
       />
     </MainHeading>
   );
+
+  function renderBookOrSeries(x: BookOrSeries) {
+    if (isBook(x)) {
+      return (
+        <BookEntry
+          key={x.title}
+          book={x}
+          setOwned={setOwned}
+          hideAuthor
+          startExpanded={singleBook}
+          readOnly={readOnly}
+        />
+      );
+    } else {
+      return (
+        <BookSeriesList
+          series={x}
+          key={`${x.title} (series contents)`}
+          setOwned={setOwned}
+          readOnly={readOnly}
+        />
+      );
+    }
+  }
 }
 
 function isBook(x: BookOrSeries): x is Book {
@@ -100,32 +127,13 @@ function findSeries(books: Book[]): Series[] {
   return Array.from(seriesMap.values());
 }
 
-function renderBookOrSeries(x: BookOrSeries, setOwned: SetOwnedCallback, singleBook: boolean) {
-  if (isBook(x)) {
-    return renderBook(x, setOwned, singleBook);
-  } else {
-    return <BookSeriesList series={x} key={`${x.title} (series contents)`} setOwned={setOwned} />;
-  }
-}
-
-function renderBook(book: Book, setOwned: SetOwnedCallback, singleBook: boolean) {
-  return (
-    <BookEntry
-      key={book.title}
-      book={book}
-      setOwned={setOwned}
-      hideAuthor
-      startExpanded={singleBook}
-    />
-  );
-}
-
 interface BookSeriesListProps {
   series: Series,
   setOwned: SetOwnedCallback,
+  readOnly?: boolean,
 }
 
-function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element {
+function BookSeriesList({ series, setOwned, readOnly }: BookSeriesListProps): JSX.Element {
   series.books.sort((a, b) => tools.localeCompare(a.title, b.title));
   const title = `${series.title} (series)`;
 
@@ -139,7 +147,15 @@ function BookSeriesList({ series, setOwned }: BookSeriesListProps): JSX.Element 
       </ListItem>
       <ListItem sx={(theme) => ({ paddingLeft: theme.spacing(4), paddingRight: 0 })}>
         <List disablePadding sx={{ width: '100%' }}>
-          { series.books.map((b) => renderBook(b, setOwned, false)) }
+          { series.books.map((book) => (
+            <BookEntry
+              key={book.title}
+              book={book}
+              setOwned={setOwned}
+              hideAuthor
+              readOnly={readOnly}
+            />
+          )) }
         </List>
       </ListItem>
     </>

@@ -14,11 +14,13 @@ interface TitleListProps {
   books: Book[],
   addBookTrigger: AddBookTrigger,
   singlesOnly?: boolean,
+  readOnly?: boolean,
 }
 
-export default function TitleList({
-  books, addBookTrigger, singlesOnly,
-}: TitleListProps): JSX.Element {
+export default function TitleList(props: TitleListProps): JSX.Element {
+  const {
+    books, addBookTrigger, singlesOnly, readOnly,
+  } = props;
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const titles = new Set<string>();
@@ -43,7 +45,7 @@ export default function TitleList({
         itemName="titles"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger({ owned: showingOwned })}
+        addBook={readOnly ? undefined : () => addBookTrigger({ owned: showingOwned })}
       />
     </MainTabs>
   );

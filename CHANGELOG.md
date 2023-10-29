@@ -4,6 +4,7 @@
 
 - add a service worker for basic caching
 - 1.4.1 fix service worker location and working
+- 1.4.2 add offline view with last books stored in local storage
 
 ## 1.3.0 Add lists by title (2023-01-05)
 

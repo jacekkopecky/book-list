@@ -13,9 +13,11 @@ import MainTabs from './MainTabs';
 interface SeriesListProps {
   books: Book[],
   addBookTrigger: AddBookTrigger,
+  readOnly?: boolean,
 }
 
-export default function SeriesList({ books, addBookTrigger }: SeriesListProps): JSX.Element {
+export default function SeriesList(props: SeriesListProps): JSX.Element {
+  const { books, addBookTrigger, readOnly } = props;
   const [showingOwned, setShowingOwned] = tools.useShowingOwned();
 
   const series = new Set<string>();
@@ -37,7 +39,7 @@ export default function SeriesList({ books, addBookTrigger }: SeriesListProps): 
         itemName="series"
         onSwitchOwned={setShowingOwned}
         showingOwned={showingOwned}
-        addBook={() => addBookTrigger({ owned: showingOwned })}
+        addBook={readOnly ? undefined : () => addBookTrigger({ owned: showingOwned })}
       />
     </MainTabs>
   );

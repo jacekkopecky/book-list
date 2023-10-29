@@ -7,7 +7,7 @@ interface ActionButtonsProps {
   itemName: string,
   showingOwned: boolean,
   onSwitchOwned: (val: boolean) => void,
-  addBook: () => void,
+  addBook?: () => void,
 }
 
 export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
@@ -46,7 +46,7 @@ export default function ActionButtons(props: ActionButtonsProps): JSX.Element {
           <ImportExport />
           { switchText }
         </Fab>
-        <Fab aria-label="add" color="primary" onClick={addBook}>
+        <Fab aria-label="add" color="primary" onClick={addBook} disabled={addBook == null}>
           <Add />
         </Fab>
       </Stack>

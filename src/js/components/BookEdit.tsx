@@ -19,6 +19,7 @@ interface BookEditProps {
   save: SaveBookCallback,
   delete: DeleteBookCallback,
   add?: undefined,
+  readOnly?: boolean,
 }
 
 interface BookAddProps {
@@ -26,9 +27,11 @@ interface BookAddProps {
   knownBooks: Book[],
   save?: undefined,
   add: AddBookCallback,
+  readOnly?: boolean,
 }
 
 export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Element {
+  const { readOnly } = props;
   const navigate = useNavigate();
 
   // clone the book for changing
@@ -83,7 +86,9 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
     navigate(-1);
   };
 
-  const title = props.save ? `Editing ${props.originalBook.title}` : 'Adding a new book';
+  // eslint-disable-next-line no-nested-ternary
+  const title = props.readOnly ? `Offline view: ${props.originalBook.title ?? 'new book'}`
+    : props.save ? `Editing ${props.originalBook.title}` : 'Adding a new book';
 
   return (
     <MainHeading title={title}>
@@ -112,7 +117,8 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             <Switch
               checked={book.owned ?? false}
               color="primary"
-              onChange={(e) => setBook({ ...book, owned: e.target.checked })}
+              onChange={(e) => !readOnly && setBook({ ...book, owned: e.target.checked })}
+              disabled={readOnly}
             />
             <span>Have it</span>
           </Grid>
@@ -125,7 +131,8 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               fullWidth
               autoFocus
               value={book.title ?? ''}
-              onChange={(e) => setBook({ ...book, title: e.target.value })}
+              onChange={(e) => !readOnly && setBook({ ...book, title: e.target.value })}
+              disabled={readOnly}
             />
           </Grid>
           <Grid item xs={5}>
@@ -133,11 +140,13 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.fname))}
               value={book.author.fname ?? ''}
-              onChange={(_, value) => setAuthorFname(value ?? '')}
+              onChange={(_, value) => !readOnly && setAuthorFname(value ?? '')}
+              disabled={readOnly}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  onChange={(e) => setAuthorFname(e.target.value)}
+                  onChange={(e) => !readOnly && setAuthorFname(e.target.value)}
+                  disabled={readOnly}
                   label="Author"
                   data-testid="fname"
                   margin="normal"
@@ -153,11 +162,13 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               freeSolo
               options={unique(props.knownBooks.map((b) => b.author?.lname))}
               value={book.author.lname ?? ''}
-              onChange={(_, value) => setAuthorLname(value ?? '')}
+              onChange={(_, value) => !readOnly && setAuthorLname(value ?? '')}
+              disabled={readOnly}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  onChange={(e) => setAuthorLname(e.target.value)}
+                  onChange={(e) => !readOnly && setAuthorLname(e.target.value)}
+                  disabled={readOnly}
                   label=" "
                   data-testid="lname"
                   margin="normal"
@@ -172,11 +183,13 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               freeSolo
               options={unique(props.knownBooks.map((b) => b.series))}
               value={book.series ?? ''}
-              onChange={(_, value) => setBook({ ...book, series: value ?? undefined })}
+              onChange={(_, value) => !readOnly && setBook({ ...book, series: value ?? undefined })}
+              disabled={readOnly}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  onChange={(e) => setBook({ ...book, series: e.target.value })}
+                  onChange={(e) => !readOnly && setBook({ ...book, series: e.target.value })}
+                  disabled={readOnly}
                   label="Series"
                   data-testid="series"
                   margin="normal"
@@ -195,7 +208,8 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
               placeholder="optional"
               fullWidth
               value={book.notes ?? ''}
-              onChange={(e) => setBook({ ...book, notes: e.target.value })}
+              onChange={(e) => !readOnly && setBook({ ...book, notes: e.target.value })}
+              disabled={readOnly}
             />
           </Grid>
         </Grid>
@@ -207,26 +221,37 @@ export default function BookEdit(props: BookEditProps | BookAddProps): JSX.Eleme
             marginBottom: '24px',
           }}
         >
-          <Grid item container xs={6} justifyContent="flex-start">
-            { props.save ? (
-              <Button color="secondary" variant="contained" onClick={doDelete}>
-                Delete
-              </Button>
-            ) : (
-              <Button variant="contained" onClick={doCancel}>
-                Cancel
-              </Button>
-            ) }
-          </Grid>
+          { !readOnly
+          && (
+            <Grid item container xs={6} justifyContent="flex-start">
+              { props.save ? (
+                <Button color="secondary" variant="contained" onClick={doDelete}>
+                  Delete
+                </Button>
+              ) : (
+                <Button variant="contained" onClick={doCancel}>
+                  Cancel
+                </Button>
+              ) }
+            </Grid>
+          ) }
           <Grid item container xs={6} justifyContent="flex-end">
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={!verifyNewBook(book)}
-              onClick={doSave}
-            >
-              Save
-            </Button>
+            { readOnly
+              ? (
+                <Button variant="contained" onClick={doCancel}>
+                  Back
+                </Button>
+              )
+              : (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={!verifyNewBook(book)}
+                  onClick={doSave}
+                >
+                  Save
+                </Button>
+              ) }
           </Grid>
         </Grid>
       </Typography>
