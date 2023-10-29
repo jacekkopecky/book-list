@@ -49,6 +49,14 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
     setState(AppState.loggedOut);
   };
 
+  if (state !== AppState.offline && isLoading) {
+    return (
+      <Tooltip title="logging in">
+        <CircularProgress color="inherit" size="2em" />
+      </Tooltip>
+    );
+  }
+
   let mainEl: JSX.Element;
   switch (state) {
     case AppState.starting:
@@ -92,14 +100,6 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
           <ErrorOutline />
         </Tooltip>
       );
-  }
-
-  if (isLoading) {
-    return (
-      <Tooltip title="logging in">
-        <CircularProgress color="inherit" size="2em" />
-      </Tooltip>
-    );
   }
 
   return (
