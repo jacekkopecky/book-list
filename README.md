@@ -64,3 +64,12 @@ cd server # if not already there
 npm run localds & # wait for the datastore emulator to start
 npm run local
 ```
+
+## Development
+
+* make changes and test them
+* update `CHANGELOG.md`
+* commit
+* `npm version patch/minor/major`
+* `git push`
+* `git push --tags`
