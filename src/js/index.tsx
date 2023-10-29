@@ -11,8 +11,9 @@ async function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
-        new URL('./service-worker.ts', import.meta.url),
+        new URL('../service-worker.ts', import.meta.url),
         {
+          scope: '/',
           type: 'module',
         },
       );
