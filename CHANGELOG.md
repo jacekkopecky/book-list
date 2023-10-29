@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.4.0 PWA
+
+- add a service worker for basic caching
+
 ## 1.3.0 Add lists by title (2023-01-05)
 
 - added a new tab - singles - for showing books that aren't in series
