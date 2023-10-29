@@ -64,7 +64,9 @@ export default function App(): JSX.Element {
 
 function AppInsideRouter(): JSX.Element {
   // state for application
-  const [state, setState] = React.useState<AppState>(AppState.starting);
+  const [state, setState] = React.useState<AppState>(
+    navigator.onLine ? AppState.starting : AppState.loggedOut,
+  );
   const [customMessage, setCustomMessage] = React.useState('');
   const [email, setEmail] = React.useState<string>();
   const [bookTemplate, setBookTemplate] = React.useState<Partial<NewBook>>({});

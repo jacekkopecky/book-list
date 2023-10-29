@@ -52,13 +52,11 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
   let mainEl: JSX.Element;
   switch (state) {
     case AppState.starting:
-    case AppState.offline:
     case AppState.loggedOut:
-      mainEl = (
-        <Button color="inherit" onClick={openMenu}>
-          { state === AppState.offline ? 'Offline' : 'Login' }
-        </Button>
-      );
+      mainEl = <Button color="inherit" onClick={openMenu}>Login</Button>;
+      break;
+    case AppState.offline:
+      mainEl = <Button color="secondary" variant="contained" onClick={openMenu}>Offline</Button>;
       break;
     case AppState.loggedIn:
     case AppState.progress:
