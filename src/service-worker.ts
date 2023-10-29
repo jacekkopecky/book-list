@@ -6,11 +6,12 @@ declare let self: ServiceWorkerGlobalScope;
 
 async function install() {
   console.log({ version });
-  for (const path of manifest) {
+  const files = [...manifest, '/version.txt'];
+  for (const path of files) {
     console.log('adding cache', path);
   }
   const cache = await caches.open(version);
-  await cache.addAll(manifest);
+  await cache.addAll(files);
 }
 
 async function activate() {
