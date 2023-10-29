@@ -45,7 +45,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
 
   const doLogout = () => {
     closeMenu();
-    logout().catch(console.error);
+    logout({ openUrl: false }).catch(console.error);
     setState(AppState.loggedOut);
   };
 
