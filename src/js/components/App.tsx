@@ -54,6 +54,7 @@ export default function App(): JSX.Element {
         redirect_uri: window.location.origin,
         audience: config.auth0.audience,
       }}
+      useRefreshTokens
     >
       <Router>
         <AppInsideRouter />

@@ -10,6 +10,7 @@
 - 1.4.5 also cache version.txt
 - 1.4.6 fix offline button
 - 1.4.7 prevent generation of parcel runtime file
+- 1.4.8 update dependencies and fix a MUI DOM and 3rd-party-cookie warnings
 
 ## 1.3.0 Add lists by title (2023-01-05)
 
