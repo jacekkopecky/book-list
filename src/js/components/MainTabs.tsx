@@ -15,8 +15,6 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
   const query = tools.useQuery();
   const ownedPostfix = query.has('owned') ? 'I have' : 'I want';
 
-  const separator = <div style={{ alignSelf: 'center', margin: '0.25em' }}>/</div>;
-
   return (
     <Main top={(
       <Tabs
@@ -30,14 +28,14 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
           label={`Authors ${ownedPostfix}`}
           to={`/${location.search}`}
         />
-        { separator }
+        <Separator />
         <Tab
           component={Link}
           value="/series"
           label="Series"
           to={`/series${location.search}`}
         />
-        { separator }
+        <Separator />
         <Tab
           component={Link}
           value="/singles"
@@ -50,4 +48,8 @@ export default function MainTabs({ children }: MainTabsProps): JSX.Element {
       { children }
     </Main>
   );
+}
+
+function Separator() {
+  return <div style={{ alignSelf: 'center', margin: '0.25em' }}>/</div>;
 }
