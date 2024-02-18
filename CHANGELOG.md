@@ -9,6 +9,7 @@
 - 1.4.4 fix logout url
 - 1.4.5 also cache version.txt
 - 1.4.6 fix offline button
+- 1.4.7 prevent generation of parcel runtime file
 
 ## 1.3.0 Add lists by title (2023-01-05)
 

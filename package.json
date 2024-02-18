@@ -86,5 +86,8 @@
     ],
     "ext": "js,ts,tsx,json",
     "delay": 2500
+  },
+  "@parcel/runtime-js": {
+    "splitManifestThreshold": 100000000
   }
 }
