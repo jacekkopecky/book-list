@@ -1,11 +1,13 @@
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import './tools/github-spa';
 
 import App from './components/App';
 
-ReactDom.render(<App />, document.querySelector('#app'));
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.querySelector('#app')!);
+root.render(<App />);
 
 async function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
