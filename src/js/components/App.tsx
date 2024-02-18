@@ -169,12 +169,17 @@ function AppInsideRouter(): JSX.Element {
         setState(AppState.error);
       });
     } else if (state === AppState.loggedOut && !navigator.onLine) {
-      const booksAndBin = api.loadOfflineBooks();
-      if (booksAndBin) {
-        setBooks(booksAndBin.books);
-        setBin(booksAndBin.bin);
-        setState(AppState.offline);
-      }
+      (async () => {
+        const booksAndBin = await api.loadOfflineBooks();
+        if (booksAndBin) {
+          setBooks(booksAndBin.books);
+          setBin(booksAndBin.bin);
+          setState(AppState.offline);
+        }
+      })().catch((e) => {
+        console.error(e);
+        setState(AppState.error);
+      });
     }
   }, [email, state]);
 

@@ -11,6 +11,7 @@
 - 1.4.6 fix offline button
 - 1.4.7 prevent generation of parcel runtime file
 - 1.4.8 update dependencies and fix a MUI DOM and 3rd-party-cookie warnings
+- 1.4.9 use service worker cache instead of local storage
 
 ## 1.3.0 Add lists by title (2023-01-05)
 

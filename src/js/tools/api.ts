@@ -17,7 +17,7 @@ export function useApi() {
   const apiRequest = React.useCallback(
     async (path: string, options?: RequestInit): Promise<Response> => {
       const idToken = await getAccessTokenSilently();
-      return fetch(config.serverURL + path, {
+      return serverFetch(path, {
         method: 'GET',
         ...options,
         headers: {
@@ -32,22 +32,7 @@ export function useApi() {
   const loadBooks = React.useCallback(
     async (): Promise<BooksAndBin> => {
       const response = await apiRequest('books');
-      if (response.ok) {
-        const data: unknown = await response.json();
-
-        if (validateBooksAndBin(data)) {
-          trimStringValues(data.books);
-          trimStringValues(data.bin);
-          saveOfflineBooks(data);
-          return data;
-        } else {
-          console.error('invalid book array', data);
-          throw new Error('received invalid array of books');
-        }
-      } else {
-        console.error(response);
-        throw new Error('could not load books');
-      }
+      return processBooksResponse(response);
     },
     [apiRequest],
   );
@@ -163,6 +148,12 @@ export function useApi() {
   };
 }
 
+function serverFetch(...opts: Parameters<typeof fetch>) {
+  const path = opts[0];
+  if (typeof path === 'string') opts[0] = config.serverURL + path;
+  return fetch(...opts);
+}
+
 // validation functions
 
 type IncomingBook = Partial<Record<keyof Book, unknown>>;
@@ -228,24 +219,37 @@ function hasBookStats(obj: unknown): obj is BookStats {
 }
 
 /* *******************************
- * offline functionality, only saving books, not the bin
+ * offline functionality, loading from the API without a token
  * ******************************* */
 
-const OFFLINE_KEY = 'offline_books';
-
-function saveOfflineBooks(booksAndBin: BooksAndBin) {
-  localStorage.setItem(OFFLINE_KEY, JSON.stringify(booksAndBin.books));
-}
-
-function loadOfflineBooks(): BooksAndBin | undefined {
+async function loadOfflineBooks(): Promise<BooksAndBin | undefined> {
+  await Promise.resolve();
+  // try to get it from service worker API first
   try {
-    const booksJson = localStorage.getItem(OFFLINE_KEY);
-    const books = booksJson && JSON.parse(booksJson) as unknown;
-    const booksAndBin = { books, bin: [] };
-    if (validateBooksAndBin(booksAndBin)) return booksAndBin;
+    const response = await serverFetch('books');
+    console.log('getting from api');
+    return processBooksResponse(response);
   } catch (e) {
-    console.info('error parsing offline books', e);
+    console.log('ignoring fetch exception while offline', e);
   }
 
   return undefined;
+}
+
+async function processBooksResponse(response: Response) {
+  if (response.ok) {
+    const data: unknown = await response.json();
+
+    if (validateBooksAndBin(data)) {
+      trimStringValues(data.books);
+      trimStringValues(data.bin);
+      return data;
+    } else {
+      console.error('invalid book array', data);
+      throw new Error('received invalid array of books');
+    }
+  } else {
+    console.error(response);
+    throw new Error('could not load books');
+  }
 }
