@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.5.0 Offline notifications (2024-02-19)
+
+- add push notifications to up to 3 devices when you change your books
+- you still need to manually refresh for the changes to be available offline
+
 ## 1.4.0 PWA with offline (2023-10-29)
 
 - add a service worker for basic caching
