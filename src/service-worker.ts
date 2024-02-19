@@ -33,15 +33,7 @@ async function activate() {
 
 async function cacheFirst(request: Request) {
   if (request.method === 'GET') {
-    const directCacheHit = await caches.match(request);
-    if (directCacheHit) return directCacheHit;
-
-    if (request.url.startsWith(self.location.origin)) {
-      const defaultCacheHit = await caches.match(new URL('/index.html', self.location.origin));
-      if (defaultCacheHit) return defaultCacheHit;
-    }
-
-    // cache API requests for later use if we go offline
+    // network-first cache API requests for later use if we go offline
     if (request.url.startsWith(config.serverURL)) {
       try {
         const response = await fetch(request);
@@ -53,6 +45,16 @@ async function cacheFirst(request: Request) {
         if (match) return match;
         else throw e;
       }
+    }
+
+    // cache the rest of the files
+    const directCacheHit = await caches.match(request);
+    if (directCacheHit) return directCacheHit;
+
+    // respond with index.html for anything local but not cached
+    if (request.url.startsWith(self.location.origin)) {
+      const defaultCacheHit = await caches.match(new URL('/index.html', self.location.origin));
+      if (defaultCacheHit) return defaultCacheHit;
     }
   }
 
