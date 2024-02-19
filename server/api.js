@@ -1,26 +1,11 @@
 const express = require('express');
-const webPush = require('web-push');
 
-const config = require('./config');
 const db = require('./db');
 const auth = require('./auth');
+const push = require('./web-push');
 
 const api = express.Router();
 module.exports = api;
-
-let useWebPush = false;
-
-if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webPush.setVapidDetails(
-    config.website,
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY,
-  );
-  useWebPush = true;
-  console.log('using webPush');
-} else {
-  console.log('not using webPush');
-}
 
 api.get('/books', asyncWrap(retrieveBooks));
 api.post('/books', express.json(), asyncWrap(addBook));
@@ -28,8 +13,9 @@ api.put('/books/:id', express.json(), asyncWrap(updateBook));
 api.delete('/books/:id', express.json(), asyncWrap(moveBookToBin));
 
 // push notifications
-api.post('/push/register', express.json({ limit: 4096 }), asyncWrap(registerForPush));
-api.get('/push/vapid-public-key', sendVapidKey);
+push.init();
+api.post('/push/register', express.json({ limit: 4096 }), asyncWrap(push.registerForPush));
+api.get('/push/vapid-public-key', push.getVapidKey);
 
 // wrap async function for express.js error handling
 function asyncWrap(f) {
@@ -63,6 +49,7 @@ async function addBook(req, res) {
   }
 
   res.json(await db.addBook(user, validatedNewBook));
+  push.sendNotifications(req);
 }
 
 async function updateBook(req, res) {
@@ -80,6 +67,7 @@ async function updateBook(req, res) {
     return;
   }
   res.json(book);
+  push.sendNotifications(req);
 }
 
 async function moveBookToBin(req, res) {
@@ -90,27 +78,7 @@ async function moveBookToBin(req, res) {
   } else {
     res.sendStatus(409);
   }
-}
-
-async function registerForPush(req, res) {
-  if (!useWebPush) {
-    res.sendStatus(202);
-    return;
-  }
-
-  const user = auth.getUserEmail(req);
-  const subscription = req.body;
-  if (!subscription) {
-    res.sendStatus(400);
-    return;
-  }
-
-  await db.addSubscription(user, subscription);
-  res.sendStatus(204);
-}
-
-function sendVapidKey(req, res) {
-  res.send(useWebPush ? process.env.VAPID_PUBLIC_KEY : 'none');
+  push.sendNotifications(req);
 }
 
 // validation functions

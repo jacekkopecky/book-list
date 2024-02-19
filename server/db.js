@@ -195,6 +195,8 @@ exports.getBookStats = async (email) => {
   };
 };
 
+// web push subscriptions functions
+
 // keep the last 3 subscriptions for every user
 exports.addSubscription = async (user, subscription) => {
   const tx = datastore.transaction();
@@ -217,3 +219,5 @@ exports.addSubscription = async (user, subscription) => {
     throw new Error('error adding subscription');
   }
 };
+
+exports.listSubscriptions = async (user) => getSubscriptionsForUser(user, datastore);
