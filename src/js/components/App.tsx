@@ -46,6 +46,12 @@ import Admin from './Admin';
 import Main from './Main';
 
 export default function App(): JSX.Element {
+  return <Router><AppInsideRouter /></Router>;
+}
+
+function AppInsideRouter(): JSX.Element {
+  const navigate = useNavigate();
+
   return (
     <Auth0Provider
       domain={config.auth0.domain}
@@ -55,15 +61,16 @@ export default function App(): JSX.Element {
         audience: config.auth0.audience,
       }}
       useRefreshTokens
+      onRedirectCallback={(appState) => {
+        navigate((appState && appState.returnTo) || window.location.pathname);
+      }}
     >
-      <Router>
-        <AppInsideRouter />
-      </Router>
+      <MainApp />
     </Auth0Provider>
   );
 }
 
-function AppInsideRouter(): JSX.Element {
+function MainApp(): JSX.Element {
   // state for application
   const [state, setState] = React.useState<AppState>(
     navigator.onLine ? AppState.starting : AppState.loggedOut,

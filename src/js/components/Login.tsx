@@ -102,6 +102,8 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
       );
   }
 
+  const doLogin = () => loginWithRedirect({ appState: { returnTo: window.location.pathname } });
+
   return (
     <>
       { mainEl }
@@ -114,7 +116,7 @@ export default function Login({ state, setState }: LoginProps): JSX.Element {
         onClose={closeMenu}
       >
         { isAuthenticated && user?.name && <MenuItem disabled>{ user.name }</MenuItem> }
-        { !isAuthenticated && (<MenuItem onClick={() => loginWithRedirect()}>Log in</MenuItem>) }
+        { !isAuthenticated && (<MenuItem onClick={doLogin}>Log in </MenuItem>) }
         { isAuthenticated && <MenuItem onClick={doLogout}>Log out</MenuItem> }
         { isAuthenticated && (
           <MenuItem onClick={() => { window.location.href = '/admin'; }}>Admin</MenuItem>
