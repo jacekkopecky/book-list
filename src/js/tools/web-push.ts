@@ -27,9 +27,7 @@ export async function registerWebPush(
     headers: {
       'Content-type': 'application/json',
     },
-    body: JSON.stringify({
-      subscription,
-    }),
+    body: JSON.stringify(subscription),
   });
 }
 
