@@ -59,9 +59,20 @@ async function cacheFirst(request: Request) {
   return fetch(request);
 }
 
+function reloadBooks() {
+  // optimally we could reload the books, but we'd need to override the JWT auth
+  // for now, just ask the user to refresh
+
+  return self.registration.showNotification('Bananas for Books', {
+    body: 'Your books have been updated, please refresh',
+  });
+}
+
 self.addEventListener('install', (e) => e.waitUntil(install()));
 self.addEventListener('activate', (e) => e.waitUntil(activate()));
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(cacheFirst(event.request));
 });
+
+self.addEventListener('push', (e) => e.waitUntil(reloadBooks()));

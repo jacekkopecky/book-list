@@ -8,6 +8,7 @@ import {
   BookStats,
 } from '../types';
 import { removeEmpties } from './tools';
+import * as webPush from './web-push';
 
 export { config };
 
@@ -137,6 +138,11 @@ export function useApi() {
     throw new Error('cannot load book stats');
   }, [apiRequest]);
 
+  const registerWebPush = React.useCallback(
+    () => webPush.registerWebPush(apiRequest),
+    [apiRequest],
+  );
+
   return {
     loadBooks,
     loadOfflineBooks,
@@ -145,6 +151,7 @@ export function useApi() {
     deleteBook,
     adminListEmails,
     adminLoadBookStats,
+    registerWebPush,
   };
 }
 

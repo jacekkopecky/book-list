@@ -168,6 +168,10 @@ function AppInsideRouter(): JSX.Element {
         console.error(e);
         setState(AppState.error);
       });
+
+      api.registerWebPush().catch((e) => {
+        console.error('ignoring error registering for web push', e);
+      });
     } else if (state === AppState.loggedOut && !navigator.onLine) {
       (async () => {
         const booksAndBin = await api.loadOfflineBooks();
