@@ -7,6 +7,7 @@ const datastore = new Datastore({ namespace: 'v1' });
 const BOOKS_KIND = 'Books';
 const BIN_KIND = 'Bin';
 const IDS_KEY = datastore.key([BOOKS_KIND]);
+const SUBSCRIPTIONS_KIND = 'Subscriptions';
 
 // returns {
 //   books: [ …books ],
@@ -153,6 +154,29 @@ async function saveBinForUser(user, books, tx) {
   await tx.save(entity);
 }
 
+async function getSubscriptionsForUser(user, tx) {
+  const subsKey = datastore.key([SUBSCRIPTIONS_KIND, user]);
+  const subscriptions = await tx.get(subsKey);
+
+  if (subscriptions[0]) {
+    return JSON.parse(subscriptions[0].json);
+  } else {
+    return [];
+  }
+}
+
+async function saveSubscriptionsForUser(user, subscriptions, tx) {
+  const subsKey = datastore.key([SUBSCRIPTIONS_KIND, user]);
+  const entity = {
+    key: subsKey,
+    excludeLargeProperties: true,
+    excludeFromIndexes: ['json'],
+    data: { json: JSON.stringify(subscriptions) },
+  };
+
+  await tx.save(entity);
+}
+
 // admin functions
 
 exports.listUsers = async () => {
@@ -169,4 +193,27 @@ exports.getBookStats = async (email) => {
     bookCount: books.length,
     owned: ownedBooks.length,
   };
+};
+
+// keep the last 3 subscriptions for every user
+exports.addSubscription = async (user, subscription) => {
+  const tx = datastore.transaction();
+  try {
+    await tx.run();
+    const subscriptions = await getSubscriptionsForUser(user, tx);
+    const existingIndex = subscriptions.findIndex((s) => s.endpoint === subscription.endpoint);
+    if (existingIndex > -1) {
+      subscriptions[existingIndex] = subscription;
+    } else {
+      subscriptions.unshift(subscription);
+      if (subscriptions.length > 3) subscriptions.length = 3;
+    }
+
+    await saveSubscriptionsForUser(user, subscriptions, tx);
+    await tx.commit();
+  } catch (e) {
+    await tx.rollback();
+    console.error('error adding subscription', e);
+    throw new Error('error adding subscription');
+  }
 };

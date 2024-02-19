@@ -9,4 +9,5 @@ module.exports = Object.freeze({
   }),
   serverURL: 'https://europe-west2-book-list-309615.cloudfunctions.net/bookListAPIv2/api/',
   serverURL2: 'http://localhost:8082/api/',
+  website: 'https://books.jacek.cz/',
 });
